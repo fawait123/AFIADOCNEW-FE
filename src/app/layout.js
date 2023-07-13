@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
       <ConfigProvider
         theme={{
           token: {
-            colorPrimary: "#F9031A",
+            colorPrimary: "#474AC9",
           },
         }}
       >

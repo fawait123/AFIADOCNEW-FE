@@ -18,6 +18,7 @@ import { Layout, Menu, Button, theme } from "antd";
 import { Dropdown, message, Space, Tooltip } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { colorPallate } from "@/utils/colorpallate";
 
 const { Header, Sider, Content } = Layout;
 const DashboardLayout = ({ children }) => {
@@ -73,8 +74,20 @@ const DashboardLayout = ({ children }) => {
         collapsible
         collapsed={collapsed}
       >
-        <div className="demo-logo-vertical flex ml-5 my-4">
-          <Image width={40} height={40} src={"/assets/logo.png"} />
+        <div
+          className="demo-logo-vertical"
+          style={{
+            display: "flex",
+            marginLeft: 20,
+            alignItems: "center",
+          }}
+        >
+          <Image
+            width={55}
+            height={55}
+            style={{ objectFit: "contain", marginTop: 5, marginBottom: 5 }}
+            src={"/assets/logo.png"}
+          />
         </div>
         <Menu
           theme="light"
@@ -129,20 +142,25 @@ const DashboardLayout = ({ children }) => {
             }}
           />
           <Dropdown
-            className="mr-4"
             menu={{
               items,
             }}
           >
             <a
               onClick={(e) => e.preventDefault()}
-              className="flex items-center"
+              style={{ display: "flex", alignItems: "center", marginRight: 20 }}
             >
               <img
                 src={
                   "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
                 }
-                className="rounded-full border-2 border-blue-400 w-10 h-10 object-center mr-2"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "100%",
+                  marginRight: 10,
+                  border: `2px solid ${colorPallate.blue}`,
+                }}
               />
               <p>User</p>
             </a>
