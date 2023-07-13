@@ -56,12 +56,13 @@ const User = () => {
     <DashboardLayout>
       <div>
         <div>
-          <button
+          <Button
+            type="primary"
+            style={{ marginBottom: 10 }}
             onClick={() => setOpen(true)}
-            className="bg-blue-600 py-2 px-4 w-24 mb-5 rounded-md text-white"
           >
             Tambah
-          </button>
+          </Button>
           <Modal
             title="Modal 1000px width"
             centered
@@ -69,7 +70,6 @@ const User = () => {
             onOk={() => setOpen(false)}
             onCancel={() => setOpen(false)}
             width={1000}
-            footer={null}
           >
             <Form
               name="basic"
@@ -106,16 +106,16 @@ const User = () => {
               >
                 <Input.Password placeholder="Password" />
               </Form.Item>
-              <button
-                onClick={() => setOpen(true)}
-                className="bg-blue-600 py-2 px-4 w-24 mb-5 rounded-md text-white"
-              >
-                Simpan
-              </button>
             </Form>
           </Modal>
         </div>
-        <Row className="flex justify-between mb-10">
+        <Row
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: 10,
+          }}
+        >
           <Col>
             <Select
               defaultValue="10"
@@ -145,11 +145,22 @@ const User = () => {
             />
           </Col>
           <Col>
-            <Input placeholder="Search..." />
+            <Input style={{ width: 200 }} placeholder="Search..." />
           </Col>
         </Row>
-        <Table dataSource={data}>
-          <Column title="First Name" dataIndex="firstName" key="firstName" />
+        {/* <div style={{ overflow: "auto" }}> */}
+        <Table
+          dataSource={data}
+          scroll={{
+            x: 1500,
+          }}
+        >
+          <Column
+            title="First Name"
+            fixed="left"
+            dataIndex="firstName"
+            key="firstName"
+          />
           <Column title="Last Name" dataIndex="lastName" key="lastName" />
 
           <Column title="Age" dataIndex="age" key="age" />
@@ -180,6 +191,7 @@ const User = () => {
           />
         </Table>
       </div>
+      {/* </div> */}
     </DashboardLayout>
   );
 };

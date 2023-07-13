@@ -1,24 +1,36 @@
 "use client";
 import React from "react";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input, theme } from "antd";
 import Card from "antd/es/card/Card";
 import Image from "next/image";
-const onFinish = (values) => {
-  console.log("Success:", values);
-};
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
+import { colorPallate } from "@/utils/colorpallate";
+
 const Login = () => {
+  const { useToken } = theme;
+
+  const onFinish = (values) => {
+    console.log("Success:", values);
+  };
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        backgroundColor: colorPallate.gray,
+      }}
+    >
       <Card
         // title="Login"
         bordered={true}
         style={{
           width: 400,
         }}
-        className="shadow-sm shadow-slate-500"
       >
         <div className="flex justify-center">
           <Image
@@ -65,14 +77,14 @@ const Login = () => {
             <Input.Password placeholder="Password" />
           </Form.Item>
 
-          {/* <Form.Item>
-            <Button type="primary"  htmlType="submit">
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
               Submit
             </Button>
-          </Form.Item> */}
-          <button className="bg-blue-600 py-2 px-4 w-full rounded-md text-white">
+          </Form.Item>
+          {/* <button className="bg-blue-600 py-2 px-4 w-full rounded-md text-white">
             Submit
-          </button>
+          </button> */}
         </Form>
       </Card>
     </div>
