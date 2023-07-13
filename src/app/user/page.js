@@ -13,6 +13,7 @@ import {
   Tag,
   Form,
   Button,
+  Checkbox,
 } from "antd";
 const User = () => {
   const { Column, ColumnGroup } = Table;
@@ -64,7 +65,7 @@ const User = () => {
             Tambah
           </Button>
           <Modal
-            title="Modal 1000px width"
+            title="Modal Tambah User"
             centered
             open={open}
             onOk={() => setOpen(false)}
@@ -81,31 +82,73 @@ const User = () => {
               autoComplete="off"
               layout="vertical"
             >
-              <Form.Item
-                label="Username"
-                name="username"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your username!",
-                  },
-                ]}
-              >
-                <Input placeholder="Username" />
-              </Form.Item>
-
-              <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your password!",
-                  },
-                ]}
-              >
-                <Input.Password placeholder="Password" />
-              </Form.Item>
+              <Row>
+                <Col flex={1} style={{ marginRight: 5 }}>
+                  <Form.Item
+                    label="Name"
+                    name="name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your name!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Name" />
+                  </Form.Item>
+                </Col>
+                <Col flex={1} style={{ marginLeft: 5 }}>
+                  <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your email!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Email" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col flex={1} style={{ marginRight: 5 }}>
+                  <Form.Item
+                    label="Username"
+                    name="username"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your username!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Username" />
+                  </Form.Item>
+                </Col>
+                <Col flex={1} style={{ marginLeft: 5 }}>
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your password!",
+                      },
+                    ]}
+                  >
+                    <Input.Password placeholder="Password" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Checkbox onChange={() => console.log("oke")}>
+                    IS ACTIVE
+                  </Checkbox>
+                </Col>
+              </Row>
             </Form>
           </Modal>
         </div>

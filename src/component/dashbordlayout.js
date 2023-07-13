@@ -49,6 +49,7 @@ const DashboardLayout = ({ children }) => {
           Profile
         </a>
       ),
+      icon: <SmileOutlined />,
     },
     {
       key: "2",
@@ -87,12 +88,13 @@ const DashboardLayout = ({ children }) => {
             height={55}
             style={{ objectFit: "contain", marginTop: 5, marginBottom: 5 }}
             src={"/assets/logo.png"}
+            alt=""
           />
         </div>
         <Menu
           theme="light"
           mode="inline"
-          defaultSelectedKeys={["2"]}
+          defaultSelectedKeys={["dashboard"]}
           // stya
           items={[
             // {
@@ -104,19 +106,19 @@ const DashboardLayout = ({ children }) => {
               key: "dashboard",
               icon: <HomeOutlined />,
               label: "Dashboard",
-              onClick: (e) => navigation.push(e.key),
+              onClick: (e) => navigation.push("/dashboard"),
             },
             {
               key: "user",
               icon: <UserOutlined />,
               label: "User",
-              onClick: (e) => navigation.push(e.key),
+              onClick: (e) => navigation.push("/user"),
             },
             {
               key: "specialist",
               icon: <SubnodeOutlined />,
               label: "Specialist",
-              onClick: (e) => navigation.push(e.key),
+              onClick: (e) => navigation.push("/specialist"),
             },
           ]}
         />
@@ -151,6 +153,7 @@ const DashboardLayout = ({ children }) => {
               style={{ display: "flex", alignItems: "center", marginRight: 20 }}
             >
               <img
+                alt=""
                 src={
                   "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
                 }
@@ -162,7 +165,7 @@ const DashboardLayout = ({ children }) => {
                   border: `2px solid ${colorPallate.blue}`,
                 }}
               />
-              <p>User</p>
+              <p>Achmad Fawait</p>
             </a>
           </Dropdown>
         </Header>
