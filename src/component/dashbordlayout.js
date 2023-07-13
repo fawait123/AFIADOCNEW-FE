@@ -1,0 +1,166 @@
+"use client";
+import {
+  DownOutlined,
+  SmileOutlined,
+  HomeOutlined,
+  SubnodeOutlined,
+} from "@ant-design/icons";
+
+import React, { useState } from "react";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UploadOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
+import { Layout, Menu, Button, theme } from "antd";
+import { Dropdown, message, Space, Tooltip } from "antd";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+const { Header, Sider, Content } = Layout;
+const DashboardLayout = ({ children }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const navigation = useRouter();
+
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+
+  const handleButtonClick = (e) => {
+    message.info("Click on left button.");
+    console.log("click left button", e);
+  };
+  const handleMenuClick = (e) => {
+    message.info("Click on menu item.");
+    console.log("click", e);
+  };
+  const items = [
+    {
+      key: "1",
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.antgroup.com"
+        >
+          Profile
+        </a>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.aliyun.com"
+        >
+          Logout
+        </a>
+      ),
+      icon: <SmileOutlined />,
+      disabled: false,
+    },
+  ];
+
+  return (
+    <Layout>
+      <Sider
+        style={{ backgroundColor: "white" }}
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+      >
+        <div className="demo-logo-vertical flex ml-5 my-4">
+          <Image width={40} height={40} src={"/assets/logo.png"} />
+        </div>
+        <Menu
+          theme="light"
+          mode="inline"
+          defaultSelectedKeys={["2"]}
+          // stya
+          items={[
+            // {
+            //   key: "1",
+            //   icon: <Image width={20} height={20} src={"/assets/logo.png"} />,
+            //   // label: "nav 1",
+            // },
+            {
+              key: "dashboard",
+              icon: <HomeOutlined />,
+              label: "Dashboard",
+              onClick: (e) => navigation.push(e.key),
+            },
+            {
+              key: "user",
+              icon: <UserOutlined />,
+              label: "User",
+              onClick: (e) => navigation.push(e.key),
+            },
+            {
+              key: "specialist",
+              icon: <SubnodeOutlined />,
+              label: "Specialist",
+              onClick: (e) => navigation.push(e.key),
+            },
+          ]}
+        />
+      </Sider>
+      <Layout>
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: "16px",
+              width: 64,
+              height: 64,
+            }}
+          />
+          <Dropdown
+            className="mr-4"
+            menu={{
+              items,
+            }}
+          >
+            <a
+              onClick={(e) => e.preventDefault()}
+              className="flex items-center"
+            >
+              <img
+                src={
+                  "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                }
+                className="rounded-full border-2 border-blue-400 w-10 h-10 object-center mr-2"
+              />
+              <p>User</p>
+            </a>
+          </Dropdown>
+        </Header>
+        <Content
+          className="font-def"
+          style={{
+            margin: "24px 16px",
+            padding: 24,
+            minHeight: "100vh",
+            background: colorBgContainer,
+          }}
+        >
+          {children}
+        </Content>
+      </Layout>
+    </Layout>
+  );
+};
+export default DashboardLayout;
