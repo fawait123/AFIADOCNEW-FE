@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import DashboardLayout from "@/component/dashbordlayout";
 import {
   Button,
   Col,
@@ -11,9 +10,41 @@ import {
   Select,
   message,
   Upload,
+  Breadcrumb,
+  Table,
+  Tag,
+  Space,
 } from "antd";
 
 import { UploadOutlined } from "@ant-design/icons";
+import Column from "antd/es/table/Column";
+
+const data = [
+  {
+    key: "1",
+    firstName: "John",
+    lastName: "Brown",
+    age: 32,
+    address: "New York No. 1 Lake Park",
+    tags: ["nice", "developer"],
+  },
+  {
+    key: "2",
+    firstName: "Jim",
+    lastName: "Green",
+    age: 42,
+    address: "London No. 1 Lake Park",
+    tags: ["loser"],
+  },
+  {
+    key: "3",
+    firstName: "Joe",
+    lastName: "Black",
+    age: 32,
+    address: "Sydney No. 1 Lake Park",
+    tags: ["cool", "teacher"],
+  },
+];
 
 const Doctors = () => {
   const [open, setOpen] = useState(false);
@@ -32,26 +63,33 @@ const Doctors = () => {
   };
 
   return (
-    <DashboardLayout>
+    <div>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          marginBottom: 20,
         }}
       >
-        <p>Doctors</p>
-        <Button onClick={() => setOpen(true)} type="primary">
-          Add Doctor
+        {/* <p>Doctors</p> */}
+        <Breadcrumb>
+          <Breadcrumb.Item>Halaman</Breadcrumb.Item>
+          <Breadcrumb.Item>Dokter</Breadcrumb.Item>
+        </Breadcrumb>
+        <Button
+          style={{ marginBottom: 10 }}
+          onClick={() => setOpen(true)}
+          type="primary"
+        >
+          Tambah Dokter
         </Button>
         <Modal
-          title="Add Doctor"
+          title="Tambah Dokter"
           centered
           open={open}
-          okText="Add Doctor"
-          okButtonProps={{
-            style: { backgroundColor: "green" },
-          }}
+          okText="Tambah Dokter"
+          cancelText="Batal"
           onOk={() => {
             // console.log(form.getFieldValue());
             form.validateFields().then(() => {
@@ -68,7 +106,7 @@ const Doctors = () => {
               <Col span={12}>
                 <Form.Item
                   name="company"
-                  label="Company"
+                  label="Instansi"
                   rules={[{ required: false }]}
                 >
                   <Select>
@@ -89,7 +127,7 @@ const Doctors = () => {
               <Col span={12}>
                 <Form.Item
                   name="name"
-                  label="Name"
+                  label="Nama"
                   rules={[{ required: false }]}
                 >
                   <Input />
@@ -98,26 +136,26 @@ const Doctors = () => {
               <Col span={12}>
                 <Form.Item
                   name="initialDegree"
-                  label="Initial Degree"
+                  label="Gelar Depan"
                   rules={[{ required: false }]}
                 >
-                  <Input placeholder="Initial Degree" />
+                  <Input placeholder="Gelar Depan" />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   name="finalDegree"
-                  label="Final Degree"
+                  label="Gelar Belakang"
                   rules={[{ required: false }]}
                 >
-                  <Input placeholder="Final Degree" />
+                  <Input placeholder="Gelar Belakang" />
                 </Form.Item>
               </Col>
 
               <Col span={12}>
                 <Form.Item
                   label="Gender"
-                  name={"gender"}
+                  name={"Jenis Kelamin"}
                   rules={[{ required: false }]}
                 >
                   <Select>
@@ -129,10 +167,10 @@ const Doctors = () => {
               <Col span={12}>
                 <Form.Item
                   name="religion"
-                  label="Religion"
+                  label="Agama"
                   rules={[{ required: false }]}
                 >
-                  <Input placeholder="Religion" />
+                  <Input placeholder="Agama" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -141,13 +179,13 @@ const Doctors = () => {
                   label="Email"
                   rules={[{ required: false, type: "email" }]}
                 >
-                  <Input placeholder="Religion" />
+                  <Input placeholder="Email" />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   name="phone"
-                  label="Phone"
+                  label="Telepon"
                   rules={[
                     {
                       required: false,
@@ -156,13 +194,13 @@ const Doctors = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Religion" />
+                  <Input placeholder="Telepon" />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   name="photos"
-                  label="Photos"
+                  label="Gambar"
                   rules={[
                     {
                       required: false,
@@ -170,7 +208,9 @@ const Doctors = () => {
                   ]}
                 >
                   <Upload {...props}>
-                    <Button icon={<UploadOutlined />}>Upload png only</Button>
+                    <Button icon={<UploadOutlined />}>
+                      File harus png | jpg | jpeg
+                    </Button>
                   </Upload>
                 </Form.Item>
               </Col>
@@ -178,7 +218,88 @@ const Doctors = () => {
           </Form>
         </Modal>
       </div>
-    </DashboardLayout>
+      <Row
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 10,
+        }}
+      >
+        <Col>
+          <Select
+            defaultValue="10"
+            style={{
+              width: 70,
+            }}
+            onChange={() => console.log("oke")}
+            options={[
+              {
+                value: "10",
+                label: "10",
+              },
+              {
+                value: "25",
+                label: "25",
+              },
+              {
+                value: "50",
+                label: "50",
+              },
+              {
+                value: "100",
+                label: "100",
+                disabled: true,
+              },
+            ]}
+          />
+        </Col>
+        <Col>
+          <Input style={{ width: 200 }} placeholder="Search..." />
+        </Col>
+      </Row>
+      {/* <div style={{ overflow: "auto" }}> */}
+      <Table
+        dataSource={data}
+        scroll={{
+          x: 1500,
+        }}
+      >
+        <Column
+          title="First Name"
+          fixed="left"
+          dataIndex="firstName"
+          key="firstName"
+        />
+        <Column title="Last Name" dataIndex="lastName" key="lastName" />
+
+        <Column title="Age" dataIndex="age" key="age" />
+        <Column title="Address" dataIndex="address" key="address" />
+        <Column
+          title="Tags"
+          dataIndex="tags"
+          key="tags"
+          render={(tags) => (
+            <>
+              {tags.map((tag) => (
+                <Tag color="blue" key={tag}>
+                  {tag}
+                </Tag>
+              ))}
+            </>
+          )}
+        />
+        <Column
+          title="Action"
+          key="action"
+          render={(_, record) => (
+            <Space size="middle">
+              <a>Invite {record.lastName}</a>
+              <a>Delete</a>
+            </Space>
+          )}
+        />
+      </Table>
+    </div>
   );
 };
 
