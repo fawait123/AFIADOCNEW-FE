@@ -11,7 +11,8 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { FaUserDoctor } from "react-icons/fa6";
+import { FaUserDoctor, FaHospital } from "react-icons/fa6";
+
 import { Layout, Menu, Button, theme } from "antd";
 import { Dropdown, message, Space, Tooltip } from "antd";
 import Image from "next/image";
@@ -125,6 +126,12 @@ const DashboardLayout = ({ children }) => {
               key: "/dashboard/specialist",
               icon: <SubnodeOutlined />,
               label: "Spesialis",
+              onClick: (e) => navigation.push(e.key),
+            },
+            {
+              key: "/dashboard/hospital",
+              icon: <FaHospital />,
+              label: "Rumah Sakit",
               onClick: (e) => navigation.push(e.key),
             },
           ]}
