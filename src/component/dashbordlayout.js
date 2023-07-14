@@ -14,17 +14,20 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
+import { FaUserDoctor } from "react-icons/fa6";
 import { Layout, Menu, Button, theme } from "antd";
 import { Dropdown, message, Space, Tooltip } from "antd";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { colorPallate } from "@/utils/colorpallate";
 
 const { Header, Sider, Content } = Layout;
 const DashboardLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const navigation = useRouter();
+  const path = usePathname();
 
+  // console.log(path);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -94,7 +97,8 @@ const DashboardLayout = ({ children }) => {
         <Menu
           theme="light"
           mode="inline"
-          defaultSelectedKeys={["dashboard"]}
+          // defaultSelectedKeys={[path]}
+          selectedKeys={[path]}
           // stya
           items={[
             // {
@@ -103,22 +107,28 @@ const DashboardLayout = ({ children }) => {
             //   // label: "nav 1",
             // },
             {
-              key: "dashboard",
+              key: "/dashboard",
               icon: <HomeOutlined />,
               label: "Dashboard",
-              onClick: (e) => navigation.push("/dashboard"),
+              onClick: (e) => navigation.push(e.key),
             },
             {
-              key: "user",
+              key: "/user",
               icon: <UserOutlined />,
               label: "User",
-              onClick: (e) => navigation.push("/user"),
+              onClick: (e) => navigation.push(e.key),
             },
             {
-              key: "specialist",
+              key: "/doctors",
+              icon: <FaUserDoctor />,
+              label: "Doctors",
+              onClick: (e) => navigation.push(e.key),
+            },
+            {
+              key: "/specialist",
               icon: <SubnodeOutlined />,
               label: "Specialist",
-              onClick: (e) => navigation.push("/specialist"),
+              onClick: (e) => navigation.push(e.key),
             },
           ]}
         />
@@ -174,8 +184,9 @@ const DashboardLayout = ({ children }) => {
           style={{
             margin: "24px 16px",
             padding: 24,
-            minHeight: "100vh",
+            minHeight: "80vh",
             background: colorBgContainer,
+            overflow: "auto",
           }}
         >
           {children}
