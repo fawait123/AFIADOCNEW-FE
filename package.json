@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@react-google-maps/api": "^2.18.1",
+    "@reduxjs/toolkit": "^1.9.5",
     "antd": "^5.7.0",
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "chart.js": "^4.3.0",
+    "debug": "^4.3.4",
     "faker": "^6.6.6",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.1",
@@ -27,6 +29,9 @@
     "react-icons": "^4.10.1",
     "react-leaflet": "^4.2.1",
     "react-leaflet-universal": "^2.2.1",
-    "react-simple-maps": "^3.0.0"
+    "react-redux": "^8.1.1",
+    "react-simple-maps": "^3.0.0",
+    "supports-color": "^9.4.0",
+    "typewriter-effect": "^2.20.1"
   }
 }

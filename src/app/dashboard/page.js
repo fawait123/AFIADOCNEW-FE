@@ -124,10 +124,10 @@ const Dashboard = () => {
         gutter={[10, 10]}
         style={{ display: "flex", alignItems: "center", marginTop: 40 }}
       >
-        <Col span={17}>
+        <Col flex={1}>
           <Line options={options} data={dataLine} />
         </Col>
-        <Col span={7}>
+        <Col flex={1}>
           <Doughnut data={data} />
         </Col>
       </Row>
@@ -139,9 +139,10 @@ const Dashboard = () => {
               { title: "Kabupten", color: "blue" },
               { title: "Kecamatan", color: "green" },
               { title: "Desa", color: "purple" },
-            ].map((x) => {
+            ].map((x, index) => {
               return (
                 <div
+                  key={index}
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -173,8 +174,10 @@ const Dashboard = () => {
             })}
           </Card>
         </Col>
-        <Col span={19}>
-          <Maps />
+        <Col flex={1}>
+          <div>
+            <Maps />
+          </div>
         </Col>
       </Row>
     </div>

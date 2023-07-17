@@ -4,16 +4,15 @@ import { Button, Checkbox, Form, Input, theme } from "antd";
 import Card from "antd/es/card/Card";
 import Image from "next/image";
 import { colorPallate } from "@/utils/colorpallate";
+import { useForm } from "antd/es/form/Form";
+import { authenticationLogin } from "@/API/http";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const { useToken } = theme;
+  const navigation = useRouter();
+  const [formValue] = useForm();
 
-  const onFinish = (values) => {
-    console.log("Success:", values);
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
   return (
     <div
       style={{
@@ -32,25 +31,16 @@ const Login = () => {
           width: 400,
         }}
       >
-        <div className="flex justify-center">
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <Image
             width={120}
             height={120}
-            className="mb-5"
+            style={{ marginBottom: 10, objectFit: "contain" }}
             src={"/assets/logo.png"}
           />
         </div>
         {/* <p className="text-center pb-10 font-bold text-xl ">LOGIN</p> */}
-        <Form
-          name="basic"
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-          layout="vertical"
-        >
+        <Form form={formValue} layout="vertical">
           <Form.Item
             label="Username"
             name="username"
@@ -76,15 +66,21 @@ const Login = () => {
           >
             <Input.Password placeholder="Password" />
           </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-          {/* <button className="bg-blue-600 py-2 px-4 w-full rounded-md text-white">
+          <Button
+            onClick={() => {
+              formValue.validateFields().then(() => {
+                const { username, password } = formValue.getFieldValue();
+                authenticationLogin({ username, password }, () => {
+                  navigation.push("/dashboard");
+                  // console.log("login");
+                });
+              });
+            }}
+            type="primary"
+            htmlType="submit"
+          >
             Submit
-          </button> */}
+          </Button>
         </Form>
       </Card>
     </div>

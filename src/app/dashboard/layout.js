@@ -12,8 +12,9 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { FaUserDoctor, FaHospital } from "react-icons/fa6";
+import { BiSolidLeftArrow, BiSolidRightArrow } from "react-icons/bi";
 
-import { Layout, Menu, Button, theme } from "antd";
+import { Layout, Menu, Button, theme, Row, Col } from "antd";
 import { Dropdown, message, Space, Tooltip } from "antd";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
@@ -21,7 +22,11 @@ import { colorPallate } from "@/utils/colorpallate";
 
 const { Header, Sider, Content } = Layout;
 const DashboardLayout = ({ children }) => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [responsiveLayout, setResponsiveLayout] = useState({
+    breakpoint: null,
+    collapse: false,
+    collapseWidth: 100,
+  });
   const navigation = useRouter();
   const path = usePathname();
 
@@ -30,14 +35,6 @@ const DashboardLayout = ({ children }) => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const handleButtonClick = (e) => {
-    message.info("Click on left button.");
-    console.log("click left button", e);
-  };
-  const handleMenuClick = (e) => {
-    message.info("Click on menu item.");
-    console.log("click", e);
-  };
   const items = [
     {
       key: "1",
@@ -71,26 +68,59 @@ const DashboardLayout = ({ children }) => {
   return (
     <Layout>
       <Sider
-        style={{ backgroundColor: "white" }}
+        style={
+          responsiveLayout.breakpoint
+            ? {
+                backgroundColor: "white",
+                overflow: "auto",
+                height: "100vh",
+                position: "fixed",
+                zIndex: 10,
+                left: 0,
+                top: 0,
+                bottom: 0,
+              }
+            : { backgroundColor: "white" }
+        }
         trigger={null}
-        collapsible
-        collapsed={collapsed}
+        collapsible={false}
+        collapsed={responsiveLayout.collapse}
+        breakpoint="md"
+        onBreakpoint={(s) => {
+          setResponsiveLayout({ ...responsiveLayout, breakpoint: s });
+        }}
+        collapsedWidth={responsiveLayout.breakpoint ? 0 : 95}
       >
         <div
           className="demo-logo-vertical"
           style={{
             display: "flex",
-            marginLeft: 20,
+            flexDirection: "column",
+            justifyContent: "center",
             alignItems: "center",
           }}
         >
           <Image
             width={55}
             height={55}
-            style={{ objectFit: "contain", marginTop: 5, marginBottom: 5 }}
+            style={{ objectFit: "contain", margin: "10px 0px" }}
             src={"/assets/logo.png"}
-            alt=""
+            alt="logo"
           />
+          {responsiveLayout.breakpoint ? (
+            <Button
+              onClick={() =>
+                setResponsiveLayout({
+                  ...responsiveLayout,
+                  collapse: !responsiveLayout.collapse,
+                })
+              }
+              type="primary"
+              style={{ width: "97%", borderRadius: 5, marginBottom: 10 }}
+            >
+              <BiSolidLeftArrow />
+            </Button>
+          ) : null}
         </div>
         <Menu
           theme="light"
@@ -149,8 +179,19 @@ const DashboardLayout = ({ children }) => {
         >
           <Button
             type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
+            icon={
+              responsiveLayout.collapse ? (
+                <MenuUnfoldOutlined />
+              ) : (
+                <MenuFoldOutlined />
+              )
+            }
+            onClick={() =>
+              setResponsiveLayout({
+                ...responsiveLayout,
+                collapse: !responsiveLayout.collapse,
+              })
+            }
             style={{
               fontSize: "16px",
               width: 64,
