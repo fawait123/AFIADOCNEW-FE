@@ -2,6 +2,8 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { ConfigProvider } from "antd";
+import { Provider } from "react-redux";
+import { StoreRedux } from "@/Redux/Store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,15 +15,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: "#474AC9",
-          },
-        }}
-      >
-        <body className={inter.className}>{children}</body>
-      </ConfigProvider>
+      <Provider store={StoreRedux}>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: "#474AC9",
+            },
+          }}
+        >
+          <body className={inter.className}>{children}</body>
+        </ConfigProvider>
+      </Provider>
     </html>
   );
 }

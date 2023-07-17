@@ -1,0 +1,16 @@
+:root {
+  --blue: #474ac9;
+  --red: #b30000;
+}
+
+.text {
+  color: gray;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.text:hover {
+  color: var(--blue);
+  cursor: pointer;
+  transform: scale(1.05);
+}
