@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -18,6 +18,8 @@ import {
 
 import { UploadOutlined } from "@ant-design/icons";
 import Column from "antd/es/table/Column";
+import { getDoctor } from "@/API/doctor";
+import moment from "moment/moment";
 
 const data = [
   {
@@ -49,6 +51,19 @@ const data = [
 const Doctors = () => {
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
+  const [dataDoctor, setDataDoctor] = useState({
+    count: 0,
+    limit: 0,
+    page: 0,
+    rows: [],
+  });
+
+  useEffect(() => {
+    getDoctor((res) => {
+      setDataDoctor(res);
+    });
+  }, []);
+
   const props = {
     beforeUpload: (file) => {
       const isPNG = file.type === "image/png";
@@ -259,34 +274,64 @@ const Doctors = () => {
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={data}
+        dataSource={dataDoctor.rows}
         scroll={{
           x: 1500,
         }}
       >
         <Column
-          title="First Name"
+          title="NIK/NIP"
           fixed="left"
-          dataIndex="firstName"
-          key="firstName"
+          key="NIK"
+          render={(_, record) => {
+            return <span>{record.NIK + "/" + record.NIP}</span>;
+          }}
         />
-        <Column title="Last Name" dataIndex="lastName" key="lastName" />
+        <Column title="Nama" dataIndex="name" key="name" />
 
-        <Column title="Age" dataIndex="age" key="age" />
-        <Column title="Address" dataIndex="address" key="address" />
         <Column
-          title="Tags"
-          dataIndex="tags"
-          key="tags"
-          render={(tags) => (
-            <>
-              {tags.map((tag) => (
-                <Tag color="blue" key={tag}>
-                  {tag}
-                </Tag>
-              ))}
-            </>
-          )}
+          title="Tempat, Tanggal Lahir"
+          key="birthdate"
+          render={(_, record) => {
+            return (
+              <span>
+                {record.placebirth +
+                  ", " +
+                  moment(record.birthdate).format("DD MMMM YYYY")}
+              </span>
+            );
+          }}
+        />
+        <Column
+          title="Jenis Kelamin"
+          key="gender"
+          render={(_, record) => {
+            return (
+              <span>{record.gender == "L" ? "Laki Laki" : "Perempuan"}</span>
+            );
+          }}
+        />
+        <Column title="Agama" key="religion" dataIndex={"religion"} />
+        <Column title="Email" key="email" dataIndex={"email"} />
+        <Column title="Telpon" key="phone" dataIndex={"phone"} />
+        <Column
+          title="Alamat"
+          key="address"
+          render={(_, record) => {
+            return record.addresses.length > 0 ? (
+              <span>
+                {record.addresses[0].province.name +
+                  ", " +
+                  record.addresses[0].district.name +
+                  ", " +
+                  record.addresses[0].subdistrict?.name +
+                  ", " +
+                  record.addresses[0].village.name +
+                  ", " +
+                  record.addresses[0].rtrw}
+              </span>
+            ) : null;
+          }}
         />
         <Column
           title="Action"
