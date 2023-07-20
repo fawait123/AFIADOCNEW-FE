@@ -1,9 +1,19 @@
 "use client";
 import {
+  destroySpecialist,
+  getSpecialist,
+  storeSpecialist,
+  updateSpecialist,
+} from "@/API/http";
+import { BASE_URL } from "@/utils/base_url";
+import { colorPallate } from "@/utils/colorpallate";
+import {
+  Avatar,
   Breadcrumb,
   Button,
   Col,
   Form,
+  Image,
   Input,
   Modal,
   Row,
@@ -11,39 +21,63 @@ import {
   Space,
   Table,
   Tag,
+  Upload,
 } from "antd";
+import { useForm } from "antd/es/form/Form";
 import Column from "antd/es/table/Column";
-import React, { useState } from "react";
-
-const data = [
-  {
-    key: "1",
-    firstName: "John",
-    lastName: "Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    firstName: "Jim",
-    lastName: "Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    firstName: "Joe",
-    lastName: "Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
+import React, { useEffect, useState } from "react";
+import { BiSolidCloudUpload } from "react-icons/bi";
+import { FaPencil, FaTrash } from "react-icons/fa6";
 
 const Specialist = () => {
+  const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false);
+  const [formValue] = useForm();
+  const { confirm } = Modal;
+  const [dataSpecialist, setDataSpecialist] = useState({
+    count: 0,
+    limit: 0,
+    page: 0,
+    rows: [],
+  });
+
+  useEffect(() => {
+    getSpecialist((res) => setDataSpecialist(res));
+  }, []);
+
+  const addSpecialist = () => {
+    let formData = new FormData();
+
+    formValue.validateFields().then(async () => {
+      const { name, picture } = formValue.getFieldValue();
+      formData.append("name", name);
+      formData.append("picture", picture.file.originFileObj);
+
+      await storeSpecialist(formData, (response) => {
+        setOpen(false);
+        formValue.resetFields();
+        getSpecialist((res) => setDataSpecialist(res));
+      });
+    });
+  };
+
+  const editSpecialist = () => {
+    let formData = new FormData();
+
+    formValue.validateFields().then(async () => {
+      const { name, picture, id } = formValue.getFieldValue();
+      formData.append("name", name);
+      if (picture.file) {
+        formData.append("picture", picture.file.originFileObj);
+      }
+      await updateSpecialist({ formData, id }, (res) => {
+        setOpen(false);
+        formValue.resetFields();
+        getSpecialist((res) => setDataSpecialist(res));
+      });
+    });
+  };
+
   const onFinish = (values) => {
     console.log("Success:", values);
   };
@@ -72,16 +106,23 @@ const Specialist = () => {
           Tambah Spesialis
         </Button>
         <Modal
-          title="Modal Tambah Spesialis"
+          title={`Modal ${edit ? "Ubah" : "Tambah"} Spesialis`}
           centered
           open={open}
-          onOk={() => setOpen(false)}
-          okText="Tambah Spesialis"
+          onOk={() => (edit ? editSpecialist() : addSpecialist())}
+          okText={`${edit ? "Ubah" : "Tambah"} Spesialis`}
           cancelText="Batal"
-          onCancel={() => setOpen(false)}
+          onCancel={() => {
+            formValue.setFieldsValue({
+              name: null,
+            });
+            setEdit(false);
+            setOpen(false);
+          }}
           width={1000}
         >
           <Form
+            form={formValue}
             name="basic"
             initialValues={{
               remember: true,
@@ -104,6 +145,22 @@ const Specialist = () => {
                   ]}
                 >
                   <Input placeholder="Nama" />
+                </Form.Item>
+              </Col>
+              <Col flex={1}>
+                <Form.Item
+                  label="Gambar"
+                  name="picture"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Gambar harus di isi!",
+                    },
+                  ]}
+                >
+                  <Upload onChange={(file) => console.log(file)} maxCount={1}>
+                    <Button icon={<BiSolidCloudUpload />}>Upload</Button>
+                  </Upload>
                 </Form.Item>
               </Col>
             </Row>
@@ -151,43 +208,67 @@ const Specialist = () => {
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={data}
+        dataSource={dataSpecialist.rows}
         scroll={{
           x: 1500,
         }}
       >
+        <Column title="Nama" dataIndex="name" key="name" />
         <Column
-          title="First Name"
-          fixed="left"
-          dataIndex="firstName"
-          key="firstName"
-        />
-        <Column title="Last Name" dataIndex="lastName" key="lastName" />
-
-        <Column title="Age" dataIndex="age" key="age" />
-        <Column title="Address" dataIndex="address" key="address" />
-        <Column
-          title="Tags"
-          dataIndex="tags"
-          key="tags"
-          render={(tags) => (
-            <>
-              {tags.map((tag) => (
-                <Tag color="blue" key={tag}>
-                  {tag}
-                </Tag>
-              ))}
-            </>
+          title="Gambar"
+          key="picture"
+          render={(_, record) => (
+            <div
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 100,
+                overflow: "hidden",
+              }}
+            >
+              <Image src={`${BASE_URL}/public/uploads/${record.picture}`} />
+            </div>
           )}
         />
         <Column
           title="Action"
           key="action"
           render={(_, record) => (
-            <Space size="middle">
-              <a>Invite {record.lastName}</a>
-              <a>Delete</a>
-            </Space>
+            <Row gutter={[10]}>
+              <Col>
+                <FaPencil
+                  color={colorPallate.blue}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    formValue.setFieldsValue(record);
+                    setEdit(true);
+                    setOpen(true);
+                  }}
+                />
+              </Col>
+              <Col>
+                <FaTrash
+                  color={colorPallate.red}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    confirm({
+                      title: "Apakah anda yakin ingin menghapus data ?",
+                      content: "Hapus data",
+                      onOk() {
+                        destroySpecialist({ id: record.id }, (res) => {
+                          getSpecialist((res) => setDataSpecialist(res));
+                        });
+                      },
+                      okText: "Hapus data",
+                      onCancel() {
+                        console.log("Cancel");
+                      },
+                      cancelText: "Batal",
+                    });
+                  }}
+                />
+              </Col>
+            </Row>
           )}
         />
       </Table>
