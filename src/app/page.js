@@ -1,17 +1,30 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row, Image } from "antd";
+import { Button, Col, Row, Image, Modal } from "antd";
 import { colorPallate } from "@/utils/colorpallate";
 import "./page.css";
 import { useRouter } from "next/navigation";
 import { publicDashboard, publicDashboardDoctor } from "@/API/http";
 import { BASE_URL } from "@/utils/base_url";
+import { IoBagSharp } from "react-icons/io5";
+import { AiFillLike } from "react-icons/ai";
 
 const Home = () => {
   const navigation = useRouter();
   const [specialistData, setSpecialistData] = useState([]);
   const [DoctorData, setDoctorData] = useState([]);
+  const [isModalChat, setIsModalChat] = useState(false);
 
+  // console.log(DoctorData);
+  const showModal = () => {
+    setIsModalChat(true);
+  };
+  const handleOk = () => {
+    setIsModalChat(false);
+  };
+  const handleCancel = () => {
+    setIsModalChat(false);
+  };
   useEffect(() => {
     publicDashboard((res) => {
       setSpecialistData(res);
@@ -37,6 +50,7 @@ const Home = () => {
             src={"/assets/logo.png"}
             width={60}
             height={60}
+            preview={false}
           />
         </Col>
         <Col xs={{ span: 0 }} md={{ span: 8 }} xl={{ span: 5 }}>
@@ -92,7 +106,14 @@ const Home = () => {
             </p>
             <Row gutter={[10, 10]} style={{ display: "flex", marginTop: 20 }}>
               <Col>
-                <Button type="primary">Chat Dokter</Button>
+                <Button
+                  onClick={() => {
+                    navigation.push("/tanyadokter");
+                  }}
+                  type="primary"
+                >
+                  Chat Dokter
+                </Button>
               </Col>
               <Col>
                 <Button type="default" style={{ border: "1px solid blue" }}>
@@ -126,18 +147,27 @@ const Home = () => {
               Spesialis
             </p>
             <Row
-              justify={"space-between"}
-              gutter={[20, 20]}
+              justify={"start"}
+              gutter={[100, 20]}
               style={{ margin: "20px 0px" }}
             >
               {specialistData.map((val, i) => {
                 return (
-                  <Col key={i}>
+                  <Col
+                    flex={1}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                    key={i}
+                  >
                     <Image
                       style={{ objectFit: "contain" }}
                       alt="afia-docs"
                       src={`${BASE_URL}/public/uploads/${val.picture}`}
                       width={60}
+                      preview={false}
                       height={60}
                     />
                     <p
@@ -161,37 +191,126 @@ const Home = () => {
               Dokter
             </p>
             <Row
-              justify={"space-between"}
-              gutter={[20, 20]}
+              justify={"start"}
+              gutter={[100, 20]}
               style={{ margin: "20px 0px" }}
             >
-              {DoctorData.map((val, i) => {
+              {DoctorData.map((doc, i) => {
                 return (
-                  <Col
-                    key={i}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Image
-                      style={{ objectFit: "contain" }}
-                      alt="afia-docs"
-                      src={`${BASE_URL}/public/uploads/${val.photos}`}
-                      width={60}
-                      preview={false}
-                      height={60}
-                    />
-                    <p
+                  // <Col
+                  //   flex={1}
+                  //   key={i}
+                  //   style={{
+                  //     display: "flex",
+                  //     flexDirection: "column",
+                  //     alignItems: "center",
+                  //   }}
+                  // >
+                  //   <Image
+                  //     style={{ objectFit: "contain" }}
+                  //     alt="afia-docs"
+                  //     src={`${BASE_URL}/public/uploads/${val.photos}`}
+                  //     width={60}
+                  //     preview={false}
+                  //     height={60}
+                  //   />
+                  //   <p
+                  //     style={{
+                  //       textAlign: "center",
+                  //       color: colorPallate.blue,
+                  //       marginTop: 10,
+                  //     }}
+                  //   >
+                  //     {val.name}, {val.initialDegree}., {val.finalDegree}
+                  //   </p>
+                  // </Col>
+                  <Col style={{ cursor: "pointer" }}>
+                    <div
+                      // name="parent"
+                      // id="parent1"
+                      key={doc.id}
                       style={{
-                        textAlign: "center",
-                        color: colorPallate.blue,
-                        marginTop: 10,
+                        padding: 10,
+                        boxShadow: "0.1px 1px 3px gray",
+                        fontSize: 12,
+                        borderRadius: 10,
+                        display: "flex",
+                        // justifyContent: "space-evenly",
+                        alignItems: "center",
                       }}
                     >
-                      {val.name}, {val.initialDegree}., {val.finalDegree}
-                    </p>
+                      <Image
+                        style={{
+                          objectFit: "cover",
+                          objectPosition: "top",
+                          // borderRadius: "100%",
+                        }}
+                        alt="afia-docs"
+                        src={`${BASE_URL}/public/uploads/${doc.photos}`}
+                        width={70}
+                        preview={false}
+                        height={100}
+                      />
+                      <div style={{ flex: 1, marginLeft: 10 }}>
+                        <p style={{ marginTop: 10, fontWeight: 500 }}>
+                          {doc.name}, {doc.initialDegree}., {doc.finalDegree}
+                        </p>
+                        <p>Dokter Umum</p>
+                        <div
+                          style={{
+                            display: "flex",
+                            // justifyContent: "space-around",
+                            margin: "10px 0px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignContent: "center",
+                            }}
+                          >
+                            <IoBagSharp />
+                            <p style={{ color: "gray", marginLeft: 5 }}>
+                              4 tahun
+                            </p>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignContent: "center",
+                              marginLeft: 10,
+                            }}
+                          >
+                            <AiFillLike />
+                            <p style={{ color: "gray", marginLeft: 5 }}>100</p>
+                          </div>
+                        </div>
+                        <Button
+                          style={{ marginLeft: 10 }}
+                          type="primary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            showModal();
+                            // e.preventDefault();
+                          }}
+                        >
+                          Chat
+                        </Button>
+                        <Modal
+                          style={{
+                            top: 250,
+                          }}
+                          title="Basic Modal"
+                          open={isModalChat}
+                          onOk={handleOk}
+                          onCancel={handleCancel}
+                        >
+                          <p>Some contents...</p>
+                          <p>Some contents...</p>
+                          <p>Some contents...</p>
+                        </Modal>
+                      </div>
+                    </div>
                   </Col>
                 );
               })}
