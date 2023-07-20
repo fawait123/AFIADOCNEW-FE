@@ -42,6 +42,20 @@ export const getUser = async (next) => {
     },
   }).then((response) => next(response.data.results.data));
 };
+export const AddUser = async (input, next) => {
+  const res = await API.post("/admin/user", input).then((response) => {
+    next(response);
+  });
+};
+
+export const getRole = async (next) => {
+  const res = await API.get("/admin/role", {
+    params: {
+      page: 0,
+      limit: 10,
+    },
+  }).then((response) => next(response.data.results.data));
+};
 
 //========================================== API GET SPECIALIST ==============================
 

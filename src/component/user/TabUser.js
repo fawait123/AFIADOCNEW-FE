@@ -15,46 +15,54 @@ import {
   Breadcrumb,
   Tabs,
 } from "antd";
+import { useForm } from "antd/es/form/Form";
+import { FaTrash } from "react-icons/fa";
+import { FaPencil } from "react-icons/fa6";
+import { isUndefined } from "lodash";
+import { AddUser } from "@/API/http";
 
-const TabUser = () => {
+const TabUser = ({ dataUser }) => {
   const { Column, ColumnGroup } = Table;
   const [open, setOpen] = useState(false);
+  const [form] = useForm();
 
-  const data = [
-    {
-      key: "1",
-      firstName: "John",
-      lastName: "Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-      tags: ["nice", "developer"],
-    },
-    {
-      key: "2",
-      firstName: "Jim",
-      lastName: "Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
-      tags: ["loser"],
-    },
-    {
-      key: "3",
-      firstName: "Joe",
-      lastName: "Black",
-      age: 32,
-      address: "Sydney No. 1 Lake Park",
-      tags: ["cool", "teacher"],
-    },
-  ];
+  // const data = [
+  //   {
+  //     key: "1",
+  //     firstName: "John",
+  //     lastName: "Brown",
+  //     age: 32,
+  //     address: "New York No. 1 Lake Park",
+  //     tags: ["nice", "developer"],
+  //   },
+  //   {
+  //     key: "2",
+  //     firstName: "Jim",
+  //     lastName: "Green",
+  //     age: 42,
+  //     address: "London No. 1 Lake Park",
+  //     tags: ["loser"],
+  //   },
+  //   {
+  //     key: "3",
+  //     firstName: "Joe",
+  //     lastName: "Black",
+  //     age: 32,
+  //     address: "Sydney No. 1 Lake Park",
+  //     tags: ["cool", "teacher"],
+  //   },
+  // ];
   const handleChange = (value) => {
     console.log(`selected ${value}`);
   };
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const onFinish = () => {
+    form.validateFields();
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
+  // console.log(dataRoles, "dataRoles");
 
   return (
     <div>
@@ -81,7 +89,14 @@ const TabUser = () => {
           title="Modal Tambah Pengguna"
           centered
           open={open}
-          onOk={() => setOpen(false)}
+          onOk={() => {
+            form.validateFields().then((value) => {
+              // console.log(value);
+              AddUser(value, (res) => {
+                console.log(res);
+              });
+            });
+          }}
           okText="Tambah Pengguna"
           cancelText="Batal"
           onCancel={() => setOpen(false)}
@@ -89,11 +104,11 @@ const TabUser = () => {
         >
           <Form
             name="basic"
+            // onFinish={onFinish}
             initialValues={{
-              remember: true,
+              IsActive: false,
             }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
+            form={form}
             autoComplete="off"
             layout="vertical"
           >
@@ -118,6 +133,7 @@ const TabUser = () => {
                   name="email"
                   rules={[
                     {
+                      type: "email",
                       required: true,
                       message: "Email harus di isi!",
                     },
@@ -159,7 +175,20 @@ const TabUser = () => {
             </Row>
             <Row>
               <Col>
-                <Checkbox onChange={() => console.log("oke")}>AKTIF</Checkbox>
+                <Form.Item
+                  label="IsActive"
+                  name="IsActive"
+                  valuePropName="checked"
+                  rules={[
+                    {
+                      type: "IsActive",
+                      required: true,
+                      message: "IsActive harus di isi!",
+                    },
+                  ]}
+                >
+                  <Checkbox>AKTIF</Checkbox>
+                </Form.Item>
               </Col>
             </Row>
           </Form>
@@ -206,44 +235,39 @@ const TabUser = () => {
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={data}
-        scroll={{
-          x: 1500,
-        }}
+        dataSource={dataUser?.rows}
+        loading={!dataUser.rows ? true : false}
       >
+        <Column title="Name" fixed="left" dataIndex="name" key="id" />
+        <Column title="Email" dataIndex="email" key="id" />
         <Column
-          title="First Name"
-          fixed="left"
-          dataIndex="firstName"
-          key="firstName"
+          title="Role"
+          key="id"
+          render={(_, record) => {
+            return <div>{record.prefix}</div>;
+          }}
         />
-        <Column title="Last Name" dataIndex="lastName" key="lastName" />
 
-        <Column title="Age" dataIndex="age" key="age" />
-        <Column title="Address" dataIndex="address" key="address" />
         <Column
-          title="Tags"
-          dataIndex="tags"
-          key="tags"
-          render={(tags) => (
-            <>
-              {tags.map((tag) => (
-                <Tag color="blue" key={tag}>
-                  {tag}
-                </Tag>
-              ))}
-            </>
-          )}
+          title="Status"
+          dataIndex="is_active"
+          key="id"
+          render={(_) => {
+            return _ ? "Active" : "-";
+          }}
         />
         <Column
           title="Action"
-          key="action"
-          render={(_, record) => (
-            <Space size="middle">
-              <a>Invite {record.lastName}</a>
-              <a>Delete</a>
-            </Space>
-          )}
+          // dataIndex="is_active"
+          key="id"
+          render={(_, record) => {
+            return (
+              <div style={{ display: "flex" }}>
+                <FaTrash color="red" />
+                <FaPencil color="blue" style={{ marginLeft: 20 }} />
+              </div>
+            );
+          }}
         />
       </Table>
     </div>

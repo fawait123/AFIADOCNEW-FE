@@ -16,36 +16,10 @@ import {
   Tabs,
 } from "antd";
 
-const TabRole = ({ dataUser }) => {
+const TabRole = ({ dataRoles }) => {
   const { Column, ColumnGroup } = Table;
   const [open, setOpen] = useState(false);
 
-  const data = [
-    {
-      key: "1",
-      firstName: "John",
-      lastName: "Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-      tags: ["nice", "developer"],
-    },
-    {
-      key: "2",
-      firstName: "Jim",
-      lastName: "Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
-      tags: ["loser"],
-    },
-    {
-      key: "3",
-      firstName: "Joe",
-      lastName: "Black",
-      age: 32,
-      address: "Sydney No. 1 Lake Park",
-      tags: ["cool", "teacher"],
-    },
-  ];
   const handleChange = (value) => {
     console.log(`selected ${value}`);
   };
@@ -171,45 +145,17 @@ const TabRole = ({ dataUser }) => {
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={dataUser?.rows}
-        loading={!dataUser.rows ? true : false}
+        dataSource={dataRoles?.rows}
+        loading={!dataRoles.rows ? true : false}
         scroll={{
           x: 1500,
         }}
       >
         <Column
-          title="First Name"
+          title="Nama Akses"
           fixed="left"
-          dataIndex="firstName"
-          key="firstName"
-        />
-        <Column title="Last Name" dataIndex="lastName" key="lastName" />
-
-        <Column title="Age" dataIndex="age" key="age" />
-        <Column title="Address" dataIndex="address" key="address" />
-        {/* <Column
-          title="Tags"
-          dataIndex="tags"
-          key="tags"
-          render={(tags) => (
-            <>
-              {tags.map((tag) => (
-                <Tag color="blue" key={tag}>
-                  {tag}
-                </Tag>
-              ))}
-            </>
-          )}
-        /> */}
-        <Column
-          title="Action"
-          key="action"
-          render={(_, record) => (
-            <Space size="middle">
-              {/* <a>Invite {record.lastName}</a> */}
-              <a>Delete</a>
-            </Space>
-          )}
+          dataIndex="display_name"
+          key="id"
         />
       </Table>
     </div>
