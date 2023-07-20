@@ -18,7 +18,7 @@ import {
 } from "antd";
 import TabUser from "@/component/user/TabUser";
 import TabRole from "@/component/user/TabRole";
-import { getUser } from "@/API/http";
+import { getRole, getUser } from "@/API/http";
 
 const User = () => {
   const [dataUser, setDataUser] = useState({
@@ -27,17 +27,44 @@ const User = () => {
     page: 0,
     rows: [],
   });
+  const [dataRoles, setDataRoles] = useState({
+    count: 0,
+    limit: 0,
+    page: 0,
+    rows: [],
+  });
   useEffect(() => {
     getUser((res) => setDataUser(res));
+    getRole((res) => setDataRoles(res));
   }, []);
-  console.log(dataUser, "user");
+
+  const refactoryDataRoles = (data) => {
+    const dataFilter = data.map((value) => {
+      return {
+        key: value.id,
+        name: value.name,
+        displayName: value.display_name,
+        children: value.roleaccesses.map((chil) => {
+          return {
+            key: chil.id,
+            name: chil.access.name,
+          };
+        }),
+      };
+    });
+
+    return dataFilter;
+  };
+
+  // console.log(refactoryDataRoles(dataRoles.rows), "data analityx");
+
   return (
     <Tabs defaultActiveKey="akses">
       <Tabs.TabPane tab="Akses" key="akses">
-        <TabRole dataUser={dataUser} />
+        <TabRole dataRoles={dataRoles} />
       </Tabs.TabPane>
       <Tabs.TabPane tab="Pengguna" key="pengguna">
-        <TabUser />
+        <TabUser dataUser={dataUser} />
       </Tabs.TabPane>
     </Tabs>
     // <div>
