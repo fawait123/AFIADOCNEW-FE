@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Col,
   Input,
@@ -18,12 +18,23 @@ import {
 } from "antd";
 import TabUser from "@/component/user/TabUser";
 import TabRole from "@/component/user/TabRole";
+import { getUser } from "@/API/http";
 
 const User = () => {
+  const [dataUser, setDataUser] = useState({
+    count: 0,
+    limit: 0,
+    page: 0,
+    rows: [],
+  });
+  useEffect(() => {
+    getUser((res) => setDataUser(res));
+  }, []);
+  console.log(dataUser, "user");
   return (
     <Tabs defaultActiveKey="akses">
       <Tabs.TabPane tab="Akses" key="akses">
-        <TabRole />
+        <TabRole dataUser={dataUser} />
       </Tabs.TabPane>
       <Tabs.TabPane tab="Pengguna" key="pengguna">
         <TabUser />

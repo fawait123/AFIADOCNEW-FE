@@ -16,7 +16,7 @@ import {
   Tabs,
 } from "antd";
 
-const TabRole = () => {
+const TabRole = ({ dataUser }) => {
   const { Column, ColumnGroup } = Table;
   const [open, setOpen] = useState(false);
 
@@ -171,7 +171,8 @@ const TabRole = () => {
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={data}
+        dataSource={dataUser?.rows}
+        loading={!dataUser.rows ? true : false}
         scroll={{
           x: 1500,
         }}
@@ -186,7 +187,7 @@ const TabRole = () => {
 
         <Column title="Age" dataIndex="age" key="age" />
         <Column title="Address" dataIndex="address" key="address" />
-        <Column
+        {/* <Column
           title="Tags"
           dataIndex="tags"
           key="tags"
@@ -199,13 +200,13 @@ const TabRole = () => {
               ))}
             </>
           )}
-        />
+        /> */}
         <Column
           title="Action"
           key="action"
           render={(_, record) => (
             <Space size="middle">
-              <a>Invite {record.lastName}</a>
+              {/* <a>Invite {record.lastName}</a> */}
               <a>Delete</a>
             </Space>
           )}

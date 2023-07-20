@@ -31,3 +31,14 @@ export const authenticationLogin = async ({ username, password }, next) => {
     next();
   });
 };
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+export const getUser = async (next) => {
+  const res = await API.get("/admin/user", {
+    params: {
+      page: 0,
+      limit: 10,
+    },
+  }).then((response) => next(response.data.results.data));
+};
