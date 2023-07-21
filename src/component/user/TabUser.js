@@ -19,50 +19,17 @@ import { useForm } from "antd/es/form/Form";
 import { FaTrash } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
 import { isUndefined } from "lodash";
-import { AddUser } from "@/API/http";
+import { AddUser, EditUser } from "@/API/http";
 
 const TabUser = ({ dataUser }) => {
   const { Column, ColumnGroup } = Table;
   const [open, setOpen] = useState(false);
-  const [form] = useForm();
+  const [statusModal, setStatusModal] = useState("");
+  const [formValue] = useForm();
 
-  // const data = [
-  //   {
-  //     key: "1",
-  //     firstName: "John",
-  //     lastName: "Brown",
-  //     age: 32,
-  //     address: "New York No. 1 Lake Park",
-  //     tags: ["nice", "developer"],
-  //   },
-  //   {
-  //     key: "2",
-  //     firstName: "Jim",
-  //     lastName: "Green",
-  //     age: 42,
-  //     address: "London No. 1 Lake Park",
-  //     tags: ["loser"],
-  //   },
-  //   {
-  //     key: "3",
-  //     firstName: "Joe",
-  //     lastName: "Black",
-  //     age: 32,
-  //     address: "Sydney No. 1 Lake Park",
-  //     tags: ["cool", "teacher"],
-  //   },
-  // ];
   const handleChange = (value) => {
     console.log(`selected ${value}`);
   };
-  const onFinish = () => {
-    form.validateFields();
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  // console.log(dataRoles, "dataRoles");
 
   return (
     <div>
@@ -81,23 +48,32 @@ const TabUser = ({ dataUser }) => {
         <Button
           type="primary"
           style={{ marginBottom: 10 }}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            formValue.resetFields();
+            setStatusModal("Tambah");
+          }}
         >
           Tambah Pengguna
         </Button>
         <Modal
-          title="Modal Tambah Pengguna"
+          title={`Modal ${statusModal} Pengguna`}
           centered
           open={open}
           onOk={() => {
-            form.validateFields().then((value) => {
-              // console.log(value);
-              AddUser(value, (res) => {
-                console.log(res);
-              });
+            formValue.validateFields().then((value) => {
+              if (statusModal === "Tambah") {
+                AddUser(value, (res) => {
+                  formValue.resetFields();
+                });
+                setOpen(false);
+                setStatusModal("");
+              } else if (statusModal === "Edit") {
+                EditUser(value, "id", (res) => console.log(res));
+              }
             });
           }}
-          okText="Tambah Pengguna"
+          okText={statusModal}
           cancelText="Batal"
           onCancel={() => setOpen(false)}
           width={1000}
@@ -106,9 +82,9 @@ const TabUser = ({ dataUser }) => {
             name="basic"
             // onFinish={onFinish}
             initialValues={{
-              IsActive: false,
+              is_active: false,
             }}
-            form={form}
+            form={formValue}
             autoComplete="off"
             layout="vertical"
           >
@@ -165,6 +141,7 @@ const TabUser = ({ dataUser }) => {
                   rules={[
                     {
                       required: true,
+                      min: 8,
                       message: "Password harus di isi!",
                     },
                   ]}
@@ -177,11 +154,11 @@ const TabUser = ({ dataUser }) => {
               <Col>
                 <Form.Item
                   label="IsActive"
-                  name="IsActive"
+                  name="is_active"
                   valuePropName="checked"
                   rules={[
                     {
-                      type: "IsActive",
+                      type: "is_active",
                       required: true,
                       message: "IsActive harus di isi!",
                     },
@@ -264,7 +241,20 @@ const TabUser = ({ dataUser }) => {
             return (
               <div style={{ display: "flex" }}>
                 <FaTrash color="red" />
-                <FaPencil color="blue" style={{ marginLeft: 20 }} />
+                <FaPencil
+                  color="blue"
+                  style={{ marginLeft: 20 }}
+                  onClick={() => {
+                    setOpen(true);
+                    setStatusModal("Edit");
+                    // console.log(record);
+                    formValue.setFieldValue("name", record.name);
+                    formValue.setFieldValue("password", "");
+                    formValue.setFieldValue("email", record.email);
+                    formValue.setFieldValue("username", record.username);
+                    formValue.setFieldValue("is_active", record.is_active);
+                  }}
+                />
               </div>
             );
           }}

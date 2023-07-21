@@ -47,6 +47,30 @@ export const AddUser = async (input, next) => {
     next(response);
   });
 };
+export const EditUser = async (input, id, next) => {
+  const res = await API({
+    baseURL: "/admin/user",
+    method: "put",
+    params: {
+      id,
+    },
+    data: input,
+  }).then((response) => {
+    next(response);
+  });
+};
+
+export const DeleteUser = async (id, next) => {
+  const res = await API({
+    baseURL: "/admin/user",
+    method: "delete",
+    params: {
+      id,
+    },
+  }).then((response) => {
+    next(response);
+  });
+};
 
 export const getRole = async (next) => {
   const res = await API.get("/admin/role", {
