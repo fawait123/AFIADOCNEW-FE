@@ -14,39 +14,16 @@ import {
   Table,
   Tag,
   Space,
+  Card,
 } from "antd";
 
 import { UploadOutlined } from "@ant-design/icons";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import Column from "antd/es/table/Column";
 import { getDoctor } from "@/API/doctor";
 import moment from "moment/moment";
-
-const data = [
-  {
-    key: "1",
-    firstName: "John",
-    lastName: "Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    firstName: "Jim",
-    lastName: "Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    firstName: "Joe",
-    lastName: "Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
+import { colorPallate } from "@/utils/colorpallate";
+import { BsFillTrashFill } from "react-icons/bs";
 
 const Doctors = () => {
   const [open, setOpen] = useState(false);
@@ -56,6 +33,10 @@ const Doctors = () => {
     limit: 0,
     page: 0,
     rows: [],
+  });
+  const [addingForm, setAddingForm] = useState({
+    FormPendidikan: [1],
+    FormPekerjaan: [1],
   });
 
   useEffect(() => {
@@ -119,19 +100,8 @@ const Doctors = () => {
           <Form form={form} layout="vertical" style={{ marginTop: 30 }}>
             <Row gutter={[20]}>
               <Col span={12}>
-                <Form.Item
-                  name="company"
-                  label="Instansi"
-                  rules={[{ required: false }]}
-                >
-                  <Select>
-                    <Select.Option value="demo">Demo</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="nip" label="NIP" rules={[{ required: false }]}>
-                  <Input placeholder="NIP" />
+                <Form.Item name="str" label="STR" rules={[{ required: false }]}>
+                  <Input placeholder="STR" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -146,24 +116,6 @@ const Doctors = () => {
                   rules={[{ required: false }]}
                 >
                   <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="initialDegree"
-                  label="Gelar Depan"
-                  rules={[{ required: false }]}
-                >
-                  <Input placeholder="Gelar Depan" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="finalDegree"
-                  label="Gelar Belakang"
-                  rules={[{ required: false }]}
-                >
-                  <Input placeholder="Gelar Belakang" />
                 </Form.Item>
               </Col>
 
@@ -228,6 +180,180 @@ const Doctors = () => {
                     </Button>
                   </Upload>
                 </Form.Item>
+              </Col>
+
+              <Col span={24}>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    // backgroundColor: "red",
+                  }}
+                >
+                  <p style={{ fontWeight: 500 }}>Riwayat Pendidikan</p>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: colorPallate.blue,
+                    }}
+                    onClick={() =>
+                      setAddingForm({
+                        ...addingForm,
+                        FormPendidikan: [
+                          ...addingForm.FormPendidikan,
+                          addingForm.FormPendidikan + 1,
+                        ],
+                      })
+                    }
+                    // style={{ width: "40%" }}
+                  >
+                    <AiOutlinePlusCircle />
+                    <p>Tambah</p>
+                  </div>
+                </div>
+                {addingForm.FormPendidikan.map((form, index) => {
+                  return (
+                    <Card
+                      style={{
+                        marginBottom: 10,
+                      }}
+                    >
+                      <BsFillTrashFill
+                        color="red"
+                        style={{ position: "absolute", right: 20 }}
+                      />
+
+                      <Row gutter={[10, 10]} style={{ width: "100%" }}>
+                        <Col span={12}>
+                          <Form.Item
+                            // style={{ width: "100%" }}
+                            name={`masuk_univ_${index + 1}`}
+                            label={`Nama`}
+                            rules={[{ required: false }]}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                          <Form.Item
+                            // style={{ width: "100%" }}
+                            name={`lulus_univ_${index + 1}`}
+                            label={`Gelar `}
+                            rules={[{ required: false }]}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                      <Row gutter={[10, 10]} style={{ width: "100%" }}>
+                        <Col span={12}>
+                          <Form.Item
+                            // style={{ width: "100%" }}
+                            name={`masuk_univ_${index + 1}`}
+                            label={`Masuk `}
+                            rules={[{ required: false }]}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                          <Form.Item
+                            // style={{ width: "100%" }}
+                            name={`lulus_univ_${index + 1}`}
+                            label={`Lulus `}
+                            rules={[{ required: false }]}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    </Card>
+                  );
+                })}
+              </Col>
+              <Col span={24}>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    // backgroundColor: "red",
+                  }}
+                >
+                  <p style={{ fontWeight: 500 }}>Riwayat Pekerjaan</p>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: colorPallate.blue,
+                    }}
+                    onClick={() =>
+                      setAddingForm({
+                        ...addingForm,
+                        FormPekerjaan: [
+                          ...addingForm.FormPekerjaan,
+                          addingForm.FormPekerjaan + 1,
+                        ],
+                      })
+                    }
+                    // style={{ width: "40%" }}
+                  >
+                    <AiOutlinePlusCircle />
+                    <p>Tambah</p>
+                  </div>
+                </div>
+                {addingForm.FormPekerjaan.map((form, index) => {
+                  return (
+                    <Card
+                      style={{
+                        marginBottom: 10,
+                      }}
+                    >
+                      {/* <p>{index + 1}</p> */}
+                      <BsFillTrashFill
+                        color="red"
+                        style={{ position: "absolute", right: 20 }}
+                      />
+
+                      <Row gutter={[10, 10]} style={{ width: "100%" }}>
+                        <Col span={24}>
+                          <Form.Item
+                            // style={{ width: "100%" }}
+                            name={`name ${index + 1}`}
+                            label={`Nama`}
+                            rules={[{ required: false }]}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                      <Row gutter={[10, 10]} style={{ width: "100%" }}>
+                        <Col span={12}>
+                          <Form.Item
+                            // style={{ width: "100%" }}
+                            name={`masuk_univ_${index + 1}`}
+                            label={`Masuk`}
+                            rules={[{ required: false }]}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                          <Form.Item
+                            // style={{ width: "100%" }}
+                            name={`lulus_univ_${index + 1}`}
+                            label={`Keluar `}
+                            rules={[{ required: false }]}
+                          >
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    </Card>
+                  );
+                })}
               </Col>
             </Row>
           </Form>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Button, Col, Image, Row, Modal } from "antd";
 import { colorPallate } from "@/utils/colorpallate";
 import { Input } from "antd";
-import { publicDashboardDoctor } from "@/API/http";
+import { getSpecialist, publicDashboardDoctor } from "@/API/http";
 import { BASE_URL } from "@/utils/base_url";
 import { AiOutlineCloseCircle, AiFillLike } from "react-icons/ai";
 import { IoBagSharp } from "react-icons/io5";
@@ -11,6 +11,7 @@ import { IoBagSharp } from "react-icons/io5";
 const { Search } = Input;
 const TanyaDokter = () => {
   const [DoctorData, setDoctorData] = useState([]);
+  const [SpecialistData, setSpecialistData] = useState([]);
   const [selectDoctor, setSelectDoctor] = useState(null);
   const [isModalChat, setIsModalChat] = useState(false);
 
@@ -18,9 +19,11 @@ const TanyaDokter = () => {
     publicDashboardDoctor((res) => {
       setDoctorData(res);
     });
+
+    getSpecialist((res) => setSpecialistData(res.rows));
   }, []);
 
-  // console.log(DoctorData);
+  console.log(SpecialistData);
   const showModal = () => {
     setIsModalChat(true);
   };
@@ -212,7 +215,7 @@ const TanyaDokter = () => {
                 })}
               </Row>
               <p style={{ marginTop: 20, fontWeight: 600, fontSize: 20 }}>
-                Dokter Specialist
+                Specialist
               </p>
               <Row
                 gutter={[10, 10]}
@@ -220,17 +223,13 @@ const TanyaDokter = () => {
                 style={{ marginTop: 10 }}
                 wrap={true}
               >
-                {DoctorData.map((doc) => {
+                {SpecialistData.map((spec) => {
                   return (
                     <Col span={12} style={{ cursor: "pointer" }}>
                       <div
                         // name="parent"
                         id="parent1"
-                        key={doc.id}
-                        onClick={() => {
-                          // console.log(e);
-                          setSelectDoctor(doc);
-                        }}
+                        key={spec.id}
                         style={{
                           padding: 10,
                           boxShadow: "0.1px 1px 3px gray",
@@ -245,62 +244,17 @@ const TanyaDokter = () => {
                           style={{
                             objectFit: "cover",
                             objectPosition: "top",
-                            // borderRadius: "100%",
                           }}
                           alt="afia-docs"
-                          src={`${BASE_URL}/public/uploads/${doc.photos}`}
+                          src={`${BASE_URL}/public/uploads/${spec.picture}`}
                           width={70}
                           preview={false}
-                          height={100}
+                          height={70}
                         />
                         <div style={{ flex: 1, marginLeft: 10 }}>
                           <p style={{ marginTop: 10, fontWeight: 500 }}>
-                            {doc.name}, {doc.initialDegree}., {doc.finalDegree}
+                            {spec.name}
                           </p>
-                          <p>Dokter Umum</p>
-                          <div
-                            style={{
-                              display: "flex",
-                              // justifyContent: "space-around",
-                              margin: "10px 0px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignContent: "center",
-                              }}
-                            >
-                              <IoBagSharp />
-                              <p style={{ color: "gray", marginLeft: 5 }}>
-                                4 tahun
-                              </p>
-                            </div>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignContent: "center",
-                                marginLeft: 10,
-                              }}
-                            >
-                              <AiFillLike />
-                              <p style={{ color: "gray", marginLeft: 5 }}>
-                                100
-                              </p>
-                            </div>
-                          </div>
-                          <Button
-                            style={{ marginLeft: 10 }}
-                            type="primary"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              showModal();
-                              // setIsModalChat(false);
-                              // e.preventDefault();
-                            }}
-                          >
-                            Chat
-                          </Button>
                         </div>
                       </div>
                     </Col>
