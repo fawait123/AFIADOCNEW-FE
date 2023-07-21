@@ -12,3 +12,9 @@ export const getDoctor = async (next) => {
     next(response.data.results.data);
   });
 };
+
+export const getRegional = async (type, next) => {
+  await API.get("/admin/regionals", {
+    params: { ...type },
+  }).then((res) => next(res));
+};
