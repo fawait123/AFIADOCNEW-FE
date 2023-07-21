@@ -20,13 +20,30 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Column from "antd/es/table/Column";
-import { getDoctor } from "@/API/doctor";
+import { getDoctor, getRegional } from "@/API/doctor";
 import moment from "moment/moment";
 import { colorPallate } from "@/utils/colorpallate";
 import { BsFillTrashFill } from "react-icons/bs";
+import { isNull } from "lodash";
 
 const Doctors = () => {
   const [open, setOpen] = useState(false);
+  const [dataProvince, setDataProvince] = useState({
+    ProvSelect: null,
+    data: [],
+  });
+  const [dataDistrict, setDataDistrict] = useState({
+    DistSelect: null,
+    data: [],
+  });
+  const [dataSubDistrict, setDataSubDistrict] = useState({
+    SubDistSelect: null,
+    data: [],
+  });
+  const [datavillage, setDataVillage] = useState({
+    VillageSelect: null,
+    data: [],
+  });
   const [form] = Form.useForm();
   const [dataDoctor, setDataDoctor] = useState({
     count: 0,
@@ -58,6 +75,7 @@ const Doctors = () => {
     },
   };
 
+  console.log(dataProvince);
   return (
     <div>
       <div
@@ -90,6 +108,25 @@ const Doctors = () => {
             // console.log(form.getFieldValue());
             form.validateFields().then(() => {
               console.log(form.getFieldValue());
+
+              //   {
+              //     name,
+              //     gender,
+              //     religion,
+              //     email,
+              //     phone,
+              //     birthdate,
+              //     placebirth,
+              //     provinceID,
+              //     districtID,
+              //     subdistrictID,
+              //     villageID,
+              //     rtrw,
+              //     NIK,
+              //     NRP,
+              //     photos,
+              //     price,
+              // }
             });
 
             // console.log(form);
@@ -155,16 +192,30 @@ const Doctors = () => {
                   label="Telepon"
                   rules={[
                     {
-                      required: false,
-                      type: "number",
+                      required: true,
                       message: "Phone isn't valid",
                     },
                   ]}
                 >
-                  <Input placeholder="Telepon" />
+                  <Input type="number" placeholder="Telepon" />
                 </Form.Item>
               </Col>
               <Col span={12}>
+                <Form.Item
+                  name="price"
+                  label="Harga"
+                  rules={[
+                    {
+                      required: false,
+
+                      message: "price isn't valid",
+                    },
+                  ]}
+                >
+                  <Input type="number" placeholder="harga" />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
                 <Form.Item
                   name="photos"
                   label="Gambar"
@@ -181,179 +232,354 @@ const Doctors = () => {
                   </Upload>
                 </Form.Item>
               </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Provinsi"
+                  name={"provinceID"}
+                  rules={[{ required: false }]}
+                >
+                  <Select
+                    onFocus={() => {
+                      setDataProvince({ ...dataProvince, ProvSelect: null });
+                      // setDataDistrict
+                      getRegional({ type: "province" }, (data) =>
+                        setDataProvince({
+                          ...dataProvince,
+                          data: data.data.results.data,
+                        })
+                      );
+                    }}
+                  >
+                    {dataProvince.data.map((prov) => {
+                      return (
+                        <Select.Option key={prov.id} value={prov.id}>
+                          <p
+                            onClick={() =>
+                              setDataProvince({
+                                ...dataProvince,
+                                ProvSelect: prov.code,
+                              })
+                            }
+                            style={{ width: "100%" }}
+                          >
+                            {prov.name}
+                          </p>
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Kabupaten"
+                  name={"districtID"}
+                  rules={[{ required: false }]}
+                  // onFocus={()=>}
+                >
+                  <Select
+                    disabled={isNull(dataProvince.ProvSelect)}
+                    onFocus={() =>
+                      getRegional(
+                        { parentID: dataProvince.ProvSelect },
+                        (data) =>
+                          // console.log(data)
+                          setDataDistrict({
+                            ...dataDistrict,
+                            data: data.data.results.data,
+                          })
+                      )
+                    }
+                  >
+                    {dataDistrict.data.map((dist) => {
+                      return (
+                        <Select.Option value={dist.id}>
+                          <p
+                            onClick={() =>
+                              setDataDistrict({
+                                ...dataDistrict,
+                                DistSelect: dist.code,
+                              })
+                            }
+                            style={{ width: "100%" }}
+                          >
+                            {dist.name}
+                          </p>
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Kecamatan"
+                  disabled={isNull(dataDistrict.DistSelect)}
+                  onFocus={() => {
+                    getRegional(
+                      { parentID: dataDistrict.DistSelect },
+                      (Sub) => {
+                        setDataSubDistrict({
+                          ...dataSubDistrict,
+                          data: Sub.data.results.data,
+                        });
+                      }
+                    );
+                  }}
+                  name={"subdistrictID"}
+                  rules={[{ required: false }]}
+                >
+                  <Select>
+                    {dataSubDistrict.data.map((subs) => {
+                      return (
+                        <Select.Option key={subs.id} value={subs.id}>
+                          {/* {subs.name} */}
+                          <p
+                            onClick={() =>
+                              setDataSubDistrict({
+                                ...dataSubDistrict,
+                                SubDistSelect: subs.code,
+                              })
+                            }
+                            style={{ width: "100%" }}
+                          >
+                            {subs.name}
+                          </p>
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={12}>
+                <Form.Item
+                  label="Desa"
+                  disabled={isNull(dataSubDistrict.SubDistSelect)}
+                  onFocus={() => {
+                    getRegional(
+                      { parentID: dataSubDistrict.SubDistSelect },
+                      (village) => {
+                        setDataVillage({
+                          ...datavillage,
+                          data: village.data.results.data,
+                        });
+                      }
+                    );
+                  }}
+                  name={"villageID"}
+                  rules={[{ required: false }]}
+                >
+                  <Select>
+                    {datavillage.data.map((vill) => {
+                      return (
+                        <Select.Option key={vill.id} value={vill.id}>
+                          {vill.name}
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={12}>
+                <Form.Item
+                  name="rt"
+                  label="RT"
+                  rules={[
+                    {
+                      required: true,
+                      message: "rt isn't valid",
+                    },
+                  ]}
+                >
+                  <Input type="number" placeholder="RT" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="rw"
+                  label="RW"
+                  rules={[
+                    {
+                      required: true,
+                      message: "rw isn't valid",
+                    },
+                  ]}
+                >
+                  <Input type="number" placeholder="RW" />
+                </Form.Item>
+              </Col>
 
               <Col span={24}>
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    // backgroundColor: "red",
-                  }}
-                >
-                  <p style={{ fontWeight: 500 }}>Riwayat Pendidikan</p>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      color: colorPallate.blue,
-                    }}
-                    onClick={() =>
-                      setAddingForm({
-                        ...addingForm,
-                        FormPendidikan: [
-                          ...addingForm.FormPendidikan,
-                          addingForm.FormPendidikan + 1,
-                        ],
-                      })
-                    }
-                    // style={{ width: "40%" }}
-                  >
-                    <AiOutlinePlusCircle />
-                    <p>Tambah</p>
-                  </div>
-                </div>
-                {addingForm.FormPendidikan.map((form, index) => {
-                  return (
-                    <Card
-                      style={{
-                        marginBottom: 10,
-                      }}
-                    >
-                      <BsFillTrashFill
-                        color="red"
-                        style={{ position: "absolute", right: 20 }}
-                      />
+                <Form.List name={"academics"}>
+                  {(academics, { add, remove }) => {
+                    return (
+                      <>
+                        <Col
+                          span={24}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <p style={{ fontWeight: 500 }}>Riwayat Pendidikan</p>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              color: colorPallate.blue,
+                            }}
+                            onClick={() => add()}
+                            // style={{ width: "40%" }}
+                          >
+                            <AiOutlinePlusCircle />
+                            <p>Tambah</p>
+                          </div>
+                        </Col>
+                        {academics.map((field, index) => (
+                          <Card
+                            key={field.key}
+                            style={{
+                              marginBottom: 10,
+                            }}
+                          >
+                            <BsFillTrashFill
+                              color="red"
+                              style={{ position: "absolute", right: 20 }}
+                              onClick={() => remove(field.name)}
+                            />
 
-                      <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                        <Col span={12}>
-                          <Form.Item
-                            // style={{ width: "100%" }}
-                            name={`masuk_univ_${index + 1}`}
-                            label={`Nama`}
-                            rules={[{ required: false }]}
-                          >
-                            <Input />
-                          </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                          <Form.Item
-                            // style={{ width: "100%" }}
-                            name={`lulus_univ_${index + 1}`}
-                            label={`Gelar `}
-                            rules={[{ required: false }]}
-                          >
-                            <Input />
-                          </Form.Item>
-                        </Col>
-                      </Row>
-                      <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                        <Col span={12}>
-                          <Form.Item
-                            // style={{ width: "100%" }}
-                            name={`masuk_univ_${index + 1}`}
-                            label={`Masuk `}
-                            rules={[{ required: false }]}
-                          >
-                            <Input />
-                          </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                          <Form.Item
-                            // style={{ width: "100%" }}
-                            name={`lulus_univ_${index + 1}`}
-                            label={`Lulus `}
-                            rules={[{ required: false }]}
-                          >
-                            <Input />
-                          </Form.Item>
-                        </Col>
-                      </Row>
-                    </Card>
-                  );
-                })}
+                            <Row gutter={[10, 10]} style={{ width: "100%" }}>
+                              <Col span={12}>
+                                <Form.Item
+                                  // style={{ width: "100%" }}
+                                  name={[index, "name"]}
+                                  label={`Nama`}
+                                  rules={[{ required: false }]}
+                                >
+                                  <Input />
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Form.Item
+                                  // style={{ width: "100%" }}
+                                  name={[index, "degree"]}
+                                  label={`Gelar `}
+                                  rules={[{ required: false }]}
+                                >
+                                  <Input />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                            <Row gutter={[10, 10]} style={{ width: "100%" }}>
+                              <Col span={12}>
+                                <Form.Item
+                                  // style={{ width: "100%" }}
+                                  name={[index, "year_entry"]}
+                                  label={`Masuk `}
+                                  rules={[{ required: false }]}
+                                >
+                                  <Input />
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Form.Item
+                                  // style={{ width: "100%" }}
+                                  name={[index, "year_out"]}
+                                  label={`Lulus `}
+                                  rules={[{ required: false }]}
+                                >
+                                  <Input />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                          </Card>
+                        ))}
+                      </>
+                    );
+                  }}
+                </Form.List>
               </Col>
               <Col span={24}>
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    // backgroundColor: "red",
-                  }}
-                >
-                  <p style={{ fontWeight: 500 }}>Riwayat Pekerjaan</p>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      color: colorPallate.blue,
-                    }}
-                    onClick={() =>
-                      setAddingForm({
-                        ...addingForm,
-                        FormPekerjaan: [
-                          ...addingForm.FormPekerjaan,
-                          addingForm.FormPekerjaan + 1,
-                        ],
-                      })
-                    }
-                    // style={{ width: "40%" }}
-                  >
-                    <AiOutlinePlusCircle />
-                    <p>Tambah</p>
-                  </div>
-                </div>
-                {addingForm.FormPekerjaan.map((form, index) => {
-                  return (
-                    <Card
-                      style={{
-                        marginBottom: 10,
-                      }}
-                    >
-                      {/* <p>{index + 1}</p> */}
-                      <BsFillTrashFill
-                        color="red"
-                        style={{ position: "absolute", right: 20 }}
-                      />
+                <Form.List name={"works"}>
+                  {(works, { add, remove }) => {
+                    return (
+                      <>
+                        <Col
+                          span={24}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <p style={{ fontWeight: 500 }}>Riwayat Pekerjaan</p>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              color: colorPallate.blue,
+                            }}
+                            onClick={() => add()}
+                            // style={{ width: "40%" }}
+                          >
+                            <AiOutlinePlusCircle />
+                            <p>Tambah</p>
+                          </div>
+                        </Col>
+                        {works.map((field, index) => (
+                          <Card
+                            key={field.key}
+                            style={{
+                              marginBottom: 10,
+                            }}
+                          >
+                            <BsFillTrashFill
+                              color="red"
+                              style={{ position: "absolute", right: 20 }}
+                              onClick={() => remove(field.name)}
+                            />
 
-                      <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                        <Col span={24}>
-                          <Form.Item
-                            // style={{ width: "100%" }}
-                            name={`name ${index + 1}`}
-                            label={`Nama`}
-                            rules={[{ required: false }]}
-                          >
-                            <Input />
-                          </Form.Item>
-                        </Col>
-                      </Row>
-                      <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                        <Col span={12}>
-                          <Form.Item
-                            // style={{ width: "100%" }}
-                            name={`masuk_univ_${index + 1}`}
-                            label={`Masuk`}
-                            rules={[{ required: false }]}
-                          >
-                            <Input />
-                          </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                          <Form.Item
-                            // style={{ width: "100%" }}
-                            name={`lulus_univ_${index + 1}`}
-                            label={`Keluar `}
-                            rules={[{ required: false }]}
-                          >
-                            <Input />
-                          </Form.Item>
-                        </Col>
-                      </Row>
-                    </Card>
-                  );
-                })}
+                            <Row gutter={[10, 10]} style={{ width: "100%" }}>
+                              <Col span={24}>
+                                <Form.Item
+                                  // style={{ width: "100%" }}
+                                  name={[index, "name"]}
+                                  label={`Nama`}
+                                  rules={[{ required: false }]}
+                                >
+                                  <Input />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                            <Row gutter={[10, 10]} style={{ width: "100%" }}>
+                              <Col span={12}>
+                                <Form.Item
+                                  // style={{ width: "100%" }}
+                                  name={[index, "year_entry"]}
+                                  label={`Masuk `}
+                                  rules={[{ required: false }]}
+                                >
+                                  <Input />
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Form.Item
+                                  // style={{ width: "100%" }}
+                                  name={[index, "year_out"]}
+                                  label={`Lulus `}
+                                  rules={[{ required: false }]}
+                                >
+                                  <Input />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                          </Card>
+                        ))}
+                      </>
+                    );
+                  }}
+                </Form.List>
               </Col>
             </Row>
           </Form>
