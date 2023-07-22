@@ -20,13 +20,17 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Column from "antd/es/table/Column";
-import { getDoctor, getRegional } from "@/API/doctor";
+import { getDoctor, getRegional, storeDoctor } from "@/API/doctor";
 import moment from "moment/moment";
 import { colorPallate } from "@/utils/colorpallate";
 import { BsFillTrashFill } from "react-icons/bs";
 import { isNull } from "lodash";
+import { getSpecialist } from "@/API/http";
+import { FaPencil, FaTrash } from "react-icons/fa6";
 
 const Doctors = () => {
+  const { confirm } = Modal;
+  const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false);
   const [dataProvince, setDataProvince] = useState({
     ProvSelect: null,
@@ -44,6 +48,7 @@ const Doctors = () => {
     VillageSelect: null,
     data: [],
   });
+  const [dataSpecialist, setDataSpecialist] = useState([]);
   const [form] = Form.useForm();
   const [dataDoctor, setDataDoctor] = useState({
     count: 0,
@@ -64,11 +69,17 @@ const Doctors = () => {
 
   const props = {
     beforeUpload: (file) => {
-      const isPNG = file.type === "image/png";
-      if (!isPNG) {
-        message.error(`${file.name} is not a png file`);
+      const extension = ["image/png", "image/jpg", "image/jpeg", "image/svg"];
+      if (extension.filter((item) => item == file.type).length == 0) {
+        message.error(`${file.name} is not a png|jpg|jpeg|svg file`);
       }
-      return isPNG || Upload.LIST_IGNORE;
+
+      return true;
+      // const isPNG = file.type === "image/png";
+      // if (!isPNG) {
+      //   message.error(`${file.name} is not a png file`);
+      // }
+      // return isPNG || Upload.LIST_IGNORE;
     },
     onChange: (info) => {
       console.log(info.fileList);
@@ -93,40 +104,48 @@ const Doctors = () => {
         </Breadcrumb>
         <Button
           style={{ marginBottom: 10 }}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            setEdit(false);
+            form.resetFields();
+          }}
           type="primary"
         >
           Tambah Dokter
         </Button>
         <Modal
-          title="Tambah Dokter"
+          title={`${edit ? "Ubah" : "Tambah"} Dokter`}
           centered
           open={open}
-          okText="Tambah Dokter"
+          okText={`${edit ? "Ubah" : "Tambah"} Dokter`}
           cancelText="Batal"
           onOk={() => {
             // console.log(form.getFieldValue());
             form.validateFields().then(() => {
-              console.log(form.getFieldValue());
+              const formData = new FormData();
+              let formValues = form.getFieldValue();
+              let keys = Object.keys(form.getFieldValue());
+              keys.map((item, index) => {
+                console.log(item, typeof formValues[item]);
+                if (item == "photos") {
+                  formData.append(
+                    "photos",
+                    formValues[item].file.originFileObj
+                  );
+                } else if (item == "academics" || item == "works") {
+                  formData.append(item, JSON.stringify(formValues[item]));
+                } else {
+                  formData.append(item, formValues[item]);
+                }
+              });
 
-              //   {
-              //     name,
-              //     gender,
-              //     religion,
-              //     email,
-              //     phone,
-              //     birthdate,
-              //     placebirth,
-              //     provinceID,
-              //     districtID,
-              //     subdistrictID,
-              //     villageID,
-              //     rtrw,
-              //     NIK,
-              //     NRP,
-              //     photos,
-              //     price,
-              // }
+              storeDoctor(formData, (res) => {
+                setOpen(false);
+                getDoctor((res) => {
+                  setDataDoctor(res);
+                });
+                form.resetFields();
+              });
             });
 
             // console.log(form);
@@ -137,12 +156,12 @@ const Doctors = () => {
           <Form form={form} layout="vertical" style={{ marginTop: 30 }}>
             <Row gutter={[20]}>
               <Col span={12}>
-                <Form.Item name="str" label="STR" rules={[{ required: false }]}>
+                <Form.Item name="str" label="STR" rules={[{ required: true }]}>
                   <Input placeholder="STR" />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="nik" label="NIK" rules={[{ required: false }]}>
+                <Form.Item name="nik" label="NIK" rules={[{ required: true }]}>
                   <Input placeholder="NIK" />
                 </Form.Item>
               </Col>
@@ -150,7 +169,7 @@ const Doctors = () => {
                 <Form.Item
                   name="name"
                   label="Nama"
-                  rules={[{ required: false }]}
+                  rules={[{ required: true }]}
                 >
                   <Input />
                 </Form.Item>
@@ -158,30 +177,55 @@ const Doctors = () => {
 
               <Col span={12}>
                 <Form.Item
-                  label="Gender"
-                  name={"Jenis Kelamin"}
-                  rules={[{ required: false }]}
+                  label="Jenis Kelamin"
+                  name={"gender"}
+                  rules={[{ required: true }]}
                 >
                   <Select>
-                    <Select.Option value="Laki-laki">Laki-Laki</Select.Option>
-                    <Select.Option value="Perempuan">Perempuan</Select.Option>
+                    <Select.Option value="L">Laki-Laki</Select.Option>
+                    <Select.Option value="P">Perempuan</Select.Option>
                   </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="placebirth"
+                  label="Tempat Lahir"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="Tempat Lahir" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="birthdate"
+                  label="Tanggal Lahir"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="Tanggal Lahir" type="date" />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   name="religion"
                   label="Agama"
-                  rules={[{ required: false }]}
+                  rules={[{ required: true }]}
                 >
-                  <Input placeholder="Agama" />
+                  <Select>
+                    <Select.Option value="Islam">Islam</Select.Option>
+                    <Select.Option value="Kristen">Kristen</Select.Option>
+                    <Select.Option value="Hindu">Hindu</Select.Option>
+                    <Select.Option value="Buddha">Buddha</Select.Option>
+                    <Select.Option value="Konghucu">Konghucu</Select.Option>
+                    <Select.Option value="Katholik">Katholik</Select.Option>
+                  </Select>
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   name="email"
                   label="Email"
-                  rules={[{ required: false, type: "email" }]}
+                  rules={[{ required: true, type: "email" }]}
                 >
                   <Input placeholder="Email" />
                 </Form.Item>
@@ -206,7 +250,7 @@ const Doctors = () => {
                   label="Harga"
                   rules={[
                     {
-                      required: false,
+                      required: true,
 
                       message: "price isn't valid",
                     },
@@ -215,13 +259,36 @@ const Doctors = () => {
                   <Input type="number" placeholder="harga" />
                 </Form.Item>
               </Col>
-              <Col span={24}>
+              <Col span={12}>
+                <Form.Item
+                  name="specialistID"
+                  label="Spesialis"
+                  rules={[{ required: true }]}
+                >
+                  <Select
+                    onFocus={() => {
+                      getSpecialist((res) => {
+                        setDataSpecialist(res.rows);
+                      });
+                    }}
+                  >
+                    {dataSpecialist.map((item) => {
+                      return (
+                        <Select.Option value={item.id}>
+                          {item.name}
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
                 <Form.Item
                   name="photos"
                   label="Gambar"
                   rules={[
                     {
-                      required: false,
+                      required: true,
                     },
                   ]}
                 >
@@ -236,7 +303,7 @@ const Doctors = () => {
                 <Form.Item
                   label="Provinsi"
                   name={"provinceID"}
-                  rules={[{ required: false }]}
+                  rules={[{ required: true }]}
                 >
                   <Select
                     onFocus={() => {
@@ -274,7 +341,7 @@ const Doctors = () => {
                 <Form.Item
                   label="Kabupaten"
                   name={"districtID"}
-                  rules={[{ required: false }]}
+                  rules={[{ required: true }]}
                   // onFocus={()=>}
                 >
                   <Select
@@ -327,7 +394,7 @@ const Doctors = () => {
                     );
                   }}
                   name={"subdistrictID"}
-                  rules={[{ required: false }]}
+                  rules={[{ required: true }]}
                 >
                   <Select>
                     {dataSubDistrict.data.map((subs) => {
@@ -368,7 +435,7 @@ const Doctors = () => {
                     );
                   }}
                   name={"villageID"}
-                  rules={[{ required: false }]}
+                  rules={[{ required: true }]}
                 >
                   <Select>
                     {datavillage.data.map((vill) => {
@@ -456,7 +523,7 @@ const Doctors = () => {
                                   // style={{ width: "100%" }}
                                   name={[index, "name"]}
                                   label={`Nama`}
-                                  rules={[{ required: false }]}
+                                  rules={[{ required: true }]}
                                 >
                                   <Input />
                                 </Form.Item>
@@ -466,7 +533,7 @@ const Doctors = () => {
                                   // style={{ width: "100%" }}
                                   name={[index, "degree"]}
                                   label={`Gelar `}
-                                  rules={[{ required: false }]}
+                                  rules={[{ required: true }]}
                                 >
                                   <Input />
                                 </Form.Item>
@@ -478,7 +545,7 @@ const Doctors = () => {
                                   // style={{ width: "100%" }}
                                   name={[index, "year_entry"]}
                                   label={`Masuk `}
-                                  rules={[{ required: false }]}
+                                  rules={[{ required: true }]}
                                 >
                                   <Input />
                                 </Form.Item>
@@ -488,7 +555,7 @@ const Doctors = () => {
                                   // style={{ width: "100%" }}
                                   name={[index, "year_out"]}
                                   label={`Lulus `}
-                                  rules={[{ required: false }]}
+                                  rules={[{ required: true }]}
                                 >
                                   <Input />
                                 </Form.Item>
@@ -546,7 +613,7 @@ const Doctors = () => {
                                   // style={{ width: "100%" }}
                                   name={[index, "name"]}
                                   label={`Nama`}
-                                  rules={[{ required: false }]}
+                                  rules={[{ required: true }]}
                                 >
                                   <Input />
                                 </Form.Item>
@@ -558,7 +625,7 @@ const Doctors = () => {
                                   // style={{ width: "100%" }}
                                   name={[index, "year_entry"]}
                                   label={`Masuk `}
-                                  rules={[{ required: false }]}
+                                  rules={[{ required: true }]}
                                 >
                                   <Input />
                                 </Form.Item>
@@ -568,7 +635,7 @@ const Doctors = () => {
                                   // style={{ width: "100%" }}
                                   name={[index, "year_out"]}
                                   label={`Lulus `}
-                                  rules={[{ required: false }]}
+                                  rules={[{ required: true }]}
                                 >
                                   <Input />
                                 </Form.Item>
@@ -632,11 +699,11 @@ const Doctors = () => {
         }}
       >
         <Column
-          title="NIK/NIP"
+          title="NIK/STR"
           fixed="left"
           key="NIK"
           render={(_, record) => {
-            return <span>{record.NIK + "/" + record.NIP}</span>;
+            return <span>{record.NIK + "/" + record.STR}</span>;
           }}
         />
         <Column title="Nama" dataIndex="name" key="name" />
@@ -689,10 +756,39 @@ const Doctors = () => {
           title="Action"
           key="action"
           render={(_, record) => (
-            <Space size="middle">
-              <a>Invite {record.lastName}</a>
-              <a>Delete</a>
-            </Space>
+            <Row gutter={[10]}>
+              <Col>
+                <FaPencil
+                  color={colorPallate.blue}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    form.setFieldsValue(record);
+                    setEdit(true);
+                    setOpen(true);
+                  }}
+                />
+              </Col>
+              <Col>
+                <FaTrash
+                  color={colorPallate.red}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    confirm({
+                      title: "Apakah anda yakin ingin menghapus data ?",
+                      content: "Hapus data",
+                      onOk() {
+                        console.log("oke");
+                      },
+                      okText: "Hapus data",
+                      onCancel() {
+                        console.log("Cancel");
+                      },
+                      cancelText: "Batal",
+                    });
+                  }}
+                />
+              </Col>
+            </Row>
           )}
         />
       </Table>
