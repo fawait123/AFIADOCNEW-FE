@@ -43,7 +43,7 @@ API.interceptors.response.use(
     return response;
   },
   function (error) {
-    handleNotification("error", "Error", error.response.data.message);
+    handleNotification("error", "Error", "terjadi kesalahan");
     // console.log(error.response.data.message, "err");
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
