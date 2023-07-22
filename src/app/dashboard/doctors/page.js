@@ -20,7 +20,13 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Column from "antd/es/table/Column";
-import { getDoctor, getRegional, storeDoctor } from "@/API/doctor";
+import {
+  deleteDoctor,
+  editDoctor,
+  getDoctor,
+  getRegional,
+  storeDoctor,
+} from "@/API/doctor";
 import moment from "moment/moment";
 import { colorPallate } from "@/utils/colorpallate";
 import { BsFillTrashFill } from "react-icons/bs";
@@ -31,6 +37,7 @@ import { FaPencil, FaTrash } from "react-icons/fa6";
 const Doctors = () => {
   const { confirm } = Modal;
   const [edit, setEdit] = useState(false);
+  const [id, setID] = useState(null);
   const [open, setOpen] = useState(false);
   const [dataProvince, setDataProvince] = useState({
     ProvSelect: null,
@@ -86,7 +93,7 @@ const Doctors = () => {
     },
   };
 
-  console.log(dataProvince);
+  // console.log(dataDoctor, "form");
   return (
     <div>
       <div
@@ -119,41 +126,75 @@ const Doctors = () => {
           open={open}
           okText={`${edit ? "Ubah" : "Tambah"} Dokter`}
           cancelText="Batal"
-          onOk={() => {
+          onOk={async () => {
             // console.log(form.getFieldValue());
-            form.validateFields().then(() => {
-              const formData = new FormData();
-              let formValues = form.getFieldValue();
-              let keys = Object.keys(form.getFieldValue());
-              keys.map((item, index) => {
-                console.log(item, typeof formValues[item]);
-                if (item == "photos") {
-                  formData.append(
-                    "photos",
-                    formValues[item].file.originFileObj
-                  );
-                } else if (item == "academics" || item == "works") {
-                  formData.append(item, JSON.stringify(formValues[item]));
-                } else {
-                  formData.append(item, formValues[item]);
-                }
-              });
-
-              storeDoctor(formData, (res) => {
-                setOpen(false);
-                getDoctor((res) => {
-                  setDataDoctor(res);
+            // await form.validateFields().then((res) => console.log(res));
+            if (edit) {
+              form.validateFields().then(() => {
+                const formData = new FormData();
+                let formValues = form.getFieldValue();
+                let keys = Object.keys(form.getFieldValue());
+                keys.map((item, index) => {
+                  console.log(item, typeof formValues[item]);
+                  if (item == "photos") {
+                    formData.append(
+                      "photos",
+                      formValues[item].file.originFileObj
+                    );
+                  } else if (item == "academics" || item == "works") {
+                    formData.append(item, JSON.stringify(formValues[item]));
+                  } else {
+                    formData.append(item, formValues[item]);
+                  }
                 });
-                form.resetFields();
+                editDoctor(id, formData, (res) => {
+                  setOpen(false);
+                  getDoctor((res) => {
+                    setDataDoctor(res);
+                  });
+                  form.resetFields();
+                });
               });
-            });
+            } else {
+              form.validateFields().then(() => {
+                const formData = new FormData();
+                let formValues = form.getFieldValue();
+                let keys = Object.keys(form.getFieldValue());
+                keys.map((item, index) => {
+                  console.log(item, typeof formValues[item]);
+                  if (item == "photos") {
+                    formData.append(
+                      "photos",
+                      formValues[item].file.originFileObj
+                    );
+                  } else if (item == "academics" || item == "works") {
+                    formData.append(item, JSON.stringify(formValues[item]));
+                  } else {
+                    formData.append(item, formValues[item]);
+                  }
+                });
+
+                storeDoctor(formData, (res) => {
+                  setOpen(false);
+                  getDoctor((res) => {
+                    setDataDoctor(res);
+                  });
+                  form.resetFields();
+                });
+              });
+            }
 
             // console.log(form);
           }}
           onCancel={() => setOpen(false)}
           width={1000}
         >
-          <Form form={form} layout="vertical" style={{ marginTop: 30 }}>
+          <Form
+            form={form}
+            layout="vertical"
+            // initialValues={{ provinceID: form.getFieldValue("nik") }}
+            style={{ marginTop: 30 }}
+          >
             <Row gutter={[20]}>
               <Col span={12}>
                 <Form.Item name="str" label="STR" rules={[{ required: true }]}>
@@ -511,6 +552,7 @@ const Doctors = () => {
                               marginBottom: 10,
                             }}
                           >
+                            {/* {JSON.stringify(field)} */}
                             <BsFillTrashFill
                               color="red"
                               style={{ position: "absolute", right: 20 }}
@@ -762,8 +804,18 @@ const Doctors = () => {
                   color={colorPallate.blue}
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    form.setFieldsValue(record);
+                    console.log(record, "record");
+                    const keys = Object.keys(record);
+                    const convertedObj = {};
+
+                    keys.forEach((key) => {
+                      const lowerCaseKey = key.toLowerCase();
+                      convertedObj[lowerCaseKey] = record[key];
+                    });
+
+                    form.setFieldsValue(convertedObj);
                     setEdit(true);
+                    setID(record.id);
                     setOpen(true);
                   }}
                 />
@@ -773,15 +825,19 @@ const Doctors = () => {
                   color={colorPallate.red}
                   style={{ cursor: "pointer" }}
                   onClick={() => {
+                    // setID(record.id)
                     confirm({
                       title: "Apakah anda yakin ingin menghapus data ?",
                       content: "Hapus data",
                       onOk() {
-                        console.log("oke");
+                        deleteDoctor(record.id);
+                        getDoctor((res) => {
+                          setDataDoctor(res);
+                        });
                       },
                       okText: "Hapus data",
                       onCancel() {
-                        console.log("Cancel");
+                        // console.log("Cancel");
                       },
                       cancelText: "Batal",
                     });
