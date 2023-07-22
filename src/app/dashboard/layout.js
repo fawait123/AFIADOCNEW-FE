@@ -158,12 +158,12 @@ const DashboardLayout = ({ children }) => {
               label: "Spesialis",
               onClick: (e) => navigation.push(e.key),
             },
-            {
-              key: "/dashboard/hospital",
-              icon: <FaHospital />,
-              label: "Rumah Sakit",
-              onClick: (e) => navigation.push(e.key),
-            },
+            // {
+            //   key: "/dashboard/hospital",
+            //   icon: <FaHospital />,
+            //   label: "Rumah Sakit",
+            //   onClick: (e) => navigation.push(e.key),
+            // },
           ]}
         />
       </Sider>
