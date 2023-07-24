@@ -101,6 +101,7 @@ const Doctors = () => {
     },
   };
 
+<<<<<<< HEAD
   const tambahDoctor = () => {
     form.validateFields().then(() => {
       const formData = new FormData();
@@ -153,6 +154,10 @@ const Doctors = () => {
       });
     });
   };
+=======
+  // console.log(, "foeld falue");
+
+>>>>>>> 6e905936334dce792e2ba05013cddea82d0f52c3
   return (
     <div>
       <div
@@ -189,7 +194,16 @@ const Doctors = () => {
           onCancel={() => setOpen(false)}
           width={1000}
         >
+<<<<<<< HEAD
           <Form form={form} layout="vertical" style={{ marginTop: 30 }}>
+=======
+          <Form
+            form={form}
+            layout="vertical"
+            // initialValues={{ photos: form.getFieldValue("photos") }}
+            style={{ marginTop: 30 }}
+          >
+>>>>>>> 6e905936334dce792e2ba05013cddea82d0f52c3
             <Row gutter={[20]}>
               <Col span={12}>
                 <Form.Item name="str" label="STR" rules={[{ required: true }]}>
@@ -828,6 +842,12 @@ const Doctors = () => {
                           ? record.addresses[0].villageID
                           : null,
                     });
+<<<<<<< HEAD
+=======
+
+                    form.setFieldsValue(convertedObj);
+
+>>>>>>> 6e905936334dce792e2ba05013cddea82d0f52c3
                     setEdit(true);
                     setOpen(true);
                   }}
