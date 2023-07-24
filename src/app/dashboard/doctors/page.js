@@ -93,7 +93,8 @@ const Doctors = () => {
     },
   };
 
-  // console.log(dataDoctor, "form");
+  // console.log(, "foeld falue");
+
   return (
     <div>
       <div
@@ -192,7 +193,7 @@ const Doctors = () => {
           <Form
             form={form}
             layout="vertical"
-            // initialValues={{ provinceID: form.getFieldValue("nik") }}
+            // initialValues={{ photos: form.getFieldValue("photos") }}
             style={{ marginTop: 30 }}
           >
             <Row gutter={[20]}>
@@ -814,6 +815,7 @@ const Doctors = () => {
                     });
 
                     form.setFieldsValue(convertedObj);
+
                     setEdit(true);
                     setID(record.id);
                     setOpen(true);

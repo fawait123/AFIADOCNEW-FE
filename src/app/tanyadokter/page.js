@@ -7,6 +7,7 @@ import { getSpecialist, publicDashboardDoctor } from "@/API/http";
 import { BASE_URL } from "@/utils/base_url";
 import { AiOutlineCloseCircle, AiFillLike } from "react-icons/ai";
 import { IoBagSharp } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 const { Search } = Input;
 const TanyaDokter = () => {
@@ -14,6 +15,8 @@ const TanyaDokter = () => {
   const [SpecialistData, setSpecialistData] = useState([]);
   const [selectDoctor, setSelectDoctor] = useState(null);
   const [isModalChat, setIsModalChat] = useState(false);
+  const [chatDokter, setChatDokter] = useState(null);
+  const navigation = useRouter();
 
   useEffect(() => {
     publicDashboardDoctor((res) => {
@@ -29,6 +32,7 @@ const TanyaDokter = () => {
   };
   const handleOk = () => {
     setIsModalChat(false);
+    navigation.push(`/chat/${chatDokter?.name}`);
   };
   const handleCancel = () => {
     setIsModalChat(false);
@@ -202,6 +206,7 @@ const TanyaDokter = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               showModal();
+                              setChatDokter(doc);
                               // setIsModalChat(false);
                               // e.preventDefault();
                             }}
@@ -322,8 +327,9 @@ const TanyaDokter = () => {
         style={{
           top: 250,
         }}
-        title="Basic Modal"
+        title={`Chat dengan ${chatDokter?.name}`}
         open={isModalChat}
+        okText={"Mulai"}
         onOk={handleOk}
         onCancel={handleCancel}
       >
