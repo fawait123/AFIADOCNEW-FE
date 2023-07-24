@@ -20,7 +20,12 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Column from "antd/es/table/Column";
-import { getDoctor, getRegional, storeDoctor } from "@/API/doctor";
+import {
+  getDoctor,
+  getRegional,
+  storeDoctor,
+  updateDoctor,
+} from "@/API/doctor";
 import moment from "moment/moment";
 import { colorPallate } from "@/utils/colorpallate";
 import { BsFillTrashFill } from "react-icons/bs";
@@ -90,18 +95,13 @@ const Doctors = () => {
       }
 
       return true;
-      // const isPNG = file.type === "image/png";
-      // if (!isPNG) {
-      //   message.error(`${file.name} is not a png file`);
-      // }
-      // return isPNG || Upload.LIST_IGNORE;
     },
     onChange: (info) => {
       console.log(info.fileList);
     },
   };
 
-  const storeDoctor = () => {
+  const tambahDoctor = () => {
     form.validateFields().then(() => {
       const formData = new FormData();
       let formValues = form.getFieldValue();
@@ -128,7 +128,30 @@ const Doctors = () => {
   };
 
   const editDoctor = () => {
-    console.log("edit doctor");
+    form.validateFields().then(() => {
+      const formData = new FormData();
+      let formValues = form.getFieldValue();
+      let keys = Object.keys(form.getFieldValue());
+      keys.map((item, index) => {
+        if (item == "photos") {
+          if (formValues[item].file) {
+            formData.append("photos", formValues[item].file.originFileObj);
+          }
+        } else if (item == "academics" || item == "works") {
+          formData.append(item, JSON.stringify(formValues[item]));
+        } else {
+          formData.append(item, formValues[item]);
+        }
+      });
+
+      updateDoctor(formValues.id, formData, (res) => {
+        setOpen(false);
+        getDoctor((res) => {
+          setDataDoctor(res);
+        });
+        form.resetFields();
+      });
+    });
   };
   return (
     <div>
@@ -162,7 +185,7 @@ const Doctors = () => {
           open={open}
           okText={`${edit ? "Ubah" : "Tambah"} Dokter`}
           cancelText="Batal"
-          onOk={() => (edit ? editDoctor() : storeDoctor())}
+          onOk={() => (edit ? editDoctor() : tambahDoctor())}
           onCancel={() => setOpen(false)}
           width={1000}
         >

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Col, Image, Row, Modal } from "antd";
+import { Breadcrumb, Button, Col, Image, Row, Modal, Badge } from "antd";
 import { colorPallate } from "@/utils/colorpallate";
 import { Input } from "antd";
 import { getSpecialist, publicDashboardDoctor } from "@/API/http";
@@ -162,9 +162,13 @@ const TanyaDokter = () => {
                         />
                         <div style={{ flex: 1, marginLeft: 10 }}>
                           <p style={{ marginTop: 10, fontWeight: 500 }}>
-                            {doc.name}, {doc.initialDegree}., {doc.finalDegree}
+                            {doc.name}, {doc.academics.map((aca) => aca.degree)}
                           </p>
                           <p>Dokter Umum</p>
+                          <Badge
+                            text={doc.price.toLocaleString("id", "ID")}
+                            color={colorPallate.red}
+                          />
                           <div
                             style={{
                               display: "flex",
