@@ -9,12 +9,13 @@ const ChatPage = ({ params }) => {
   return (
     <div
       style={{
-        width: "100%",
+        // width: "100%",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
         overflow: "hidden",
+        padding: "0px 180px",
       }}
     >
       <div
@@ -104,7 +105,6 @@ const ChatPage = ({ params }) => {
         gutter={10}
         style={{ padding: "10px", backgroundColor: colorPallate.gray }}
       >
-        <Col span={3}>a</Col>
         <Col flex={1}>
           {" "}
           <Input placeholder="Messages" />

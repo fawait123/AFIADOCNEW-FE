@@ -314,12 +314,150 @@ const TanyaDokter = () => {
                     preview={false}
                     height={200}
                   />
-                  <p style={{ marginTop: 15, fontWeight: 500, fontSize: 14 }}>
-                    {selectDoctor.name}, {selectDoctor.initialDegree}.,{" "}
-                    {selectDoctor.finalDegree}
-                  </p>
-                  <p>{selectDoctor.email}</p>
-                  <p>{selectDoctor.placebirth}</p>
+                  <div>
+                    <p style={{ marginTop: 15, fontWeight: 600, fontSize: 16 }}>
+                      {selectDoctor.name},
+                    </p>
+                    <p style={{ margin: "13px 0px" }}>Dokter Umum</p>
+                    <div
+                      style={{
+                        display: "flex",
+                        // justifyContent: "space-around",
+                        margin: "10px 0px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignContent: "center",
+                        }}
+                      >
+                        <IoBagSharp />
+                        <p style={{ color: "gray", marginLeft: 5 }}>4 tahun</p>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignContent: "center",
+                          marginLeft: 10,
+                        }}
+                      >
+                        <AiFillLike />
+                        <p style={{ color: "gray", marginLeft: 5 }}>100</p>
+                      </div>
+                    </div>
+                    <Row>
+                      <Col span={24}>
+                        <Row>
+                          <Col span={24}>
+                            <Row gutter={[10, 10]}>
+                              <Col span={24}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "start",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Image
+                                    src="/assets/academic.svg"
+                                    width={40}
+                                    height={40}
+                                    alt="academic"
+                                  />
+                                  <div style={{ marginLeft: 10 }}>
+                                    <p
+                                      style={{
+                                        fontSize: 16,
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      PENDIDIKAN
+                                    </p>
+                                    {selectDoctor.academics.map((aca) => (
+                                      <>
+                                        <p style={{ marginTop: 5 }}>
+                                          {aca.name},
+                                        </p>
+                                        <p>
+                                          {aca.year_entry} - {aca.year_out}
+                                        </p>
+                                      </>
+                                    ))}
+                                  </div>
+                                </div>
+                              </Col>
+                              <Col span={24}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "start",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Image
+                                    src="/assets/work.svg"
+                                    width={40}
+                                    height={40}
+                                    alt="academic"
+                                  />
+                                  <div style={{ marginLeft: 10 }}>
+                                    <p
+                                      style={{
+                                        fontSize: 16,
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      PEKERJAAN
+                                    </p>
+                                    {selectDoctor.works.map((work) => (
+                                      <>
+                                        <p style={{ marginTop: 5 }}>
+                                          {work.name},
+                                        </p>
+                                        <p>
+                                          {work.year_entry} - {work.year_out}
+                                        </p>
+                                      </>
+                                    ))}
+                                  </div>
+                                </div>
+                              </Col>
+                              <Col span={24}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "start",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Image
+                                    src="/assets/money.svg"
+                                    width={40}
+                                    height={40}
+                                    alt="academic"
+                                  />
+                                  <div style={{ marginLeft: 10 }}>
+                                    <p
+                                      style={{
+                                        fontSize: 16,
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      NOMOR STR
+                                    </p>
+                                    <p style={{ marginTop: 5 }}>
+                                      {selectDoctor.STR}
+                                    </p>
+                                  </div>
+                                </div>
+                              </Col>
+                            </Row>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </div>
                   {/* {console.log(selectDoctor)} */}
                 </div>
               </Col>
@@ -337,9 +475,14 @@ const TanyaDokter = () => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <p>
+          Chatt dengan dokter {chatDokter?.name} seharga{" "}
+          <Badge
+            text={chatDokter?.price.toLocaleString("id", "ID")}
+            color={colorPallate.red}
+          />
+          , pastikan saldo anda cukup
+        </p>
       </Modal>
     </div>
   );
