@@ -6,7 +6,7 @@ export const getDoctor = async (next) => {
       page: 0,
       limit: 10,
       association:
-        "specialist,company,addresses.province.district.subdistrict.village",
+        "specialist,company,addresses.province.district.subdistrict.village,academics,works",
     },
   }).then((response) => {
     next(response.data.results.data);

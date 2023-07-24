@@ -48,6 +48,21 @@ const Doctors = () => {
     VillageSelect: null,
     data: [],
   });
+  const [dataAcademic, setDataAcademic] = useState([
+    {
+      name: null,
+      year_entry: null,
+      year_out: null,
+      degree: null,
+    },
+  ]);
+  const [dataWork, setDataWork] = useState([
+    {
+      name: null,
+      year_entry: null,
+      year_out: null,
+    },
+  ]);
   const [dataSpecialist, setDataSpecialist] = useState([]);
   const [form] = Form.useForm();
   const [dataDoctor, setDataDoctor] = useState({
@@ -86,7 +101,35 @@ const Doctors = () => {
     },
   };
 
-  console.log(dataProvince);
+  const storeDoctor = () => {
+    form.validateFields().then(() => {
+      const formData = new FormData();
+      let formValues = form.getFieldValue();
+      let keys = Object.keys(form.getFieldValue());
+      keys.map((item, index) => {
+        console.log(item, typeof formValues[item]);
+        if (item == "photos") {
+          formData.append("photos", formValues[item].file.originFileObj);
+        } else if (item == "academics" || item == "works") {
+          formData.append(item, JSON.stringify(formValues[item]));
+        } else {
+          formData.append(item, formValues[item]);
+        }
+      });
+
+      storeDoctor(formData, (res) => {
+        setOpen(false);
+        getDoctor((res) => {
+          setDataDoctor(res);
+        });
+        form.resetFields();
+      });
+    });
+  };
+
+  const editDoctor = () => {
+    console.log("edit doctor");
+  };
   return (
     <div>
       <div
@@ -119,37 +162,7 @@ const Doctors = () => {
           open={open}
           okText={`${edit ? "Ubah" : "Tambah"} Dokter`}
           cancelText="Batal"
-          onOk={() => {
-            // console.log(form.getFieldValue());
-            form.validateFields().then(() => {
-              const formData = new FormData();
-              let formValues = form.getFieldValue();
-              let keys = Object.keys(form.getFieldValue());
-              keys.map((item, index) => {
-                console.log(item, typeof formValues[item]);
-                if (item == "photos") {
-                  formData.append(
-                    "photos",
-                    formValues[item].file.originFileObj
-                  );
-                } else if (item == "academics" || item == "works") {
-                  formData.append(item, JSON.stringify(formValues[item]));
-                } else {
-                  formData.append(item, formValues[item]);
-                }
-              });
-
-              storeDoctor(formData, (res) => {
-                setOpen(false);
-                getDoctor((res) => {
-                  setDataDoctor(res);
-                });
-                form.resetFields();
-              });
-            });
-
-            // console.log(form);
-          }}
+          onOk={() => (edit ? editDoctor() : storeDoctor())}
           onCancel={() => setOpen(false)}
           width={1000}
         >
@@ -479,7 +492,7 @@ const Doctors = () => {
               </Col>
 
               <Col span={24}>
-                <Form.List name={"academics"}>
+                <Form.List name={"academics"} initialValue={dataAcademic}>
                   {(academics, { add, remove }) => {
                     return (
                       <>
@@ -569,7 +582,7 @@ const Doctors = () => {
                 </Form.List>
               </Col>
               <Col span={24}>
-                <Form.List name={"works"}>
+                <Form.List name={"works"} initialValue={dataWork}>
                   {(works, { add, remove }) => {
                     return (
                       <>
@@ -762,7 +775,36 @@ const Doctors = () => {
                   color={colorPallate.blue}
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    form.setFieldsValue(record);
+                    console.log(record);
+                    setDataAcademic(record.academics);
+                    setDataWork(record.works);
+                    form.setFieldsValue({
+                      ...record,
+                      nik: record.NIK,
+                      str: record.STR,
+                      rt: record.addresses.length
+                        ? record.addresses[0].rtrw.split("/")[0]
+                        : null,
+                      rw: record.addresses.length
+                        ? record.addresses[0].rtrw.split("/")[1]
+                        : null,
+                      provinceID:
+                        record.addresses.length > 0
+                          ? record.addresses[0].provinceID
+                          : null,
+                      districtID:
+                        record.addresses.length > 0
+                          ? record.addresses[0].districtID
+                          : null,
+                      subdistrictID:
+                        record.addresses.length > 0
+                          ? record.addresses[0].subdistrictID
+                          : null,
+                      villageID:
+                        record.addresses.length > 0
+                          ? record.addresses[0].villageID
+                          : null,
+                    });
                     setEdit(true);
                     setOpen(true);
                   }}
