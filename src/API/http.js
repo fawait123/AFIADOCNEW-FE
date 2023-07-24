@@ -15,6 +15,8 @@ export const publicDashboardDoctor = async (next) => {
     params: {
       page: 0,
       limit: 10,
+      association:
+        "specialist,company,addresses.province.district.subdistrict.village,academics,works",
     },
   }).then((response) => {
     next(response.data.results.data.rows);

@@ -21,11 +21,10 @@ import { UploadOutlined } from "@ant-design/icons";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Column from "antd/es/table/Column";
 import {
-  deleteDoctor,
-  editDoctor,
   getDoctor,
   getRegional,
   storeDoctor,
+  updateDoctor,
 } from "@/API/doctor";
 import moment from "moment/moment";
 import { colorPallate } from "@/utils/colorpallate";
@@ -37,7 +36,6 @@ import { FaPencil, FaTrash } from "react-icons/fa6";
 const Doctors = () => {
   const { confirm } = Modal;
   const [edit, setEdit] = useState(false);
-  const [id, setID] = useState(null);
   const [open, setOpen] = useState(false);
   const [dataProvince, setDataProvince] = useState({
     ProvSelect: null,
@@ -55,6 +53,21 @@ const Doctors = () => {
     VillageSelect: null,
     data: [],
   });
+  const [dataAcademic, setDataAcademic] = useState([
+    {
+      name: null,
+      year_entry: null,
+      year_out: null,
+      degree: null,
+    },
+  ]);
+  const [dataWork, setDataWork] = useState([
+    {
+      name: null,
+      year_entry: null,
+      year_out: null,
+    },
+  ]);
   const [dataSpecialist, setDataSpecialist] = useState([]);
   const [form] = Form.useForm();
   const [dataDoctor, setDataDoctor] = useState({
@@ -82,19 +95,69 @@ const Doctors = () => {
       }
 
       return true;
-      // const isPNG = file.type === "image/png";
-      // if (!isPNG) {
-      //   message.error(`${file.name} is not a png file`);
-      // }
-      // return isPNG || Upload.LIST_IGNORE;
     },
     onChange: (info) => {
       console.log(info.fileList);
     },
   };
 
+<<<<<<< HEAD
+  const tambahDoctor = () => {
+    form.validateFields().then(() => {
+      const formData = new FormData();
+      let formValues = form.getFieldValue();
+      let keys = Object.keys(form.getFieldValue());
+      keys.map((item, index) => {
+        console.log(item, typeof formValues[item]);
+        if (item == "photos") {
+          formData.append("photos", formValues[item].file.originFileObj);
+        } else if (item == "academics" || item == "works") {
+          formData.append(item, JSON.stringify(formValues[item]));
+        } else {
+          formData.append(item, formValues[item]);
+        }
+      });
+
+      storeDoctor(formData, (res) => {
+        setOpen(false);
+        getDoctor((res) => {
+          setDataDoctor(res);
+        });
+        form.resetFields();
+      });
+    });
+  };
+
+  const editDoctor = () => {
+    form.validateFields().then(() => {
+      const formData = new FormData();
+      let formValues = form.getFieldValue();
+      let keys = Object.keys(form.getFieldValue());
+      keys.map((item, index) => {
+        if (item == "photos") {
+          if (formValues[item].file) {
+            formData.append("photos", formValues[item].file.originFileObj);
+          }
+        } else if (item == "academics" || item == "works") {
+          formData.append(item, JSON.stringify(formValues[item]));
+        } else {
+          formData.append(item, formValues[item]);
+        }
+      });
+
+      updateDoctor(formValues.id, formData, (res) => {
+        setOpen(false);
+        getDoctor((res) => {
+          setDataDoctor(res);
+        });
+        form.resetFields();
+      });
+    });
+  };
+=======
   // console.log(, "foeld falue");
 
+>>>>>>> 6e905936334dce792e2ba05013cddea82d0f52c3
   return (
     <div>
       <div
@@ -127,75 +190,20 @@ const Doctors = () => {
           open={open}
           okText={`${edit ? "Ubah" : "Tambah"} Dokter`}
           cancelText="Batal"
-          onOk={async () => {
-            // console.log(form.getFieldValue());
-            // await form.validateFields().then((res) => console.log(res));
-            if (edit) {
-              form.validateFields().then(() => {
-                const formData = new FormData();
-                let formValues = form.getFieldValue();
-                let keys = Object.keys(form.getFieldValue());
-                keys.map((item, index) => {
-                  console.log(item, typeof formValues[item]);
-                  if (item == "photos") {
-                    formData.append(
-                      "photos",
-                      formValues[item].file.originFileObj
-                    );
-                  } else if (item == "academics" || item == "works") {
-                    formData.append(item, JSON.stringify(formValues[item]));
-                  } else {
-                    formData.append(item, formValues[item]);
-                  }
-                });
-                editDoctor(id, formData, (res) => {
-                  setOpen(false);
-                  getDoctor((res) => {
-                    setDataDoctor(res);
-                  });
-                  form.resetFields();
-                });
-              });
-            } else {
-              form.validateFields().then(() => {
-                const formData = new FormData();
-                let formValues = form.getFieldValue();
-                let keys = Object.keys(form.getFieldValue());
-                keys.map((item, index) => {
-                  console.log(item, typeof formValues[item]);
-                  if (item == "photos") {
-                    formData.append(
-                      "photos",
-                      formValues[item].file.originFileObj
-                    );
-                  } else if (item == "academics" || item == "works") {
-                    formData.append(item, JSON.stringify(formValues[item]));
-                  } else {
-                    formData.append(item, formValues[item]);
-                  }
-                });
-
-                storeDoctor(formData, (res) => {
-                  setOpen(false);
-                  getDoctor((res) => {
-                    setDataDoctor(res);
-                  });
-                  form.resetFields();
-                });
-              });
-            }
-
-            // console.log(form);
-          }}
+          onOk={() => (edit ? editDoctor() : tambahDoctor())}
           onCancel={() => setOpen(false)}
           width={1000}
         >
+<<<<<<< HEAD
+          <Form form={form} layout="vertical" style={{ marginTop: 30 }}>
+=======
           <Form
             form={form}
             layout="vertical"
             // initialValues={{ photos: form.getFieldValue("photos") }}
             style={{ marginTop: 30 }}
           >
+>>>>>>> 6e905936334dce792e2ba05013cddea82d0f52c3
             <Row gutter={[20]}>
               <Col span={12}>
                 <Form.Item name="str" label="STR" rules={[{ required: true }]}>
@@ -521,7 +529,7 @@ const Doctors = () => {
               </Col>
 
               <Col span={24}>
-                <Form.List name={"academics"}>
+                <Form.List name={"academics"} initialValue={dataAcademic}>
                   {(academics, { add, remove }) => {
                     return (
                       <>
@@ -553,7 +561,6 @@ const Doctors = () => {
                               marginBottom: 10,
                             }}
                           >
-                            {/* {JSON.stringify(field)} */}
                             <BsFillTrashFill
                               color="red"
                               style={{ position: "absolute", right: 20 }}
@@ -612,7 +619,7 @@ const Doctors = () => {
                 </Form.List>
               </Col>
               <Col span={24}>
-                <Form.List name={"works"}>
+                <Form.List name={"works"} initialValue={dataWork}>
                   {(works, { add, remove }) => {
                     return (
                       <>
@@ -805,19 +812,43 @@ const Doctors = () => {
                   color={colorPallate.blue}
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    console.log(record, "record");
-                    const keys = Object.keys(record);
-                    const convertedObj = {};
-
-                    keys.forEach((key) => {
-                      const lowerCaseKey = key.toLowerCase();
-                      convertedObj[lowerCaseKey] = record[key];
+                    console.log(record);
+                    setDataAcademic(record.academics);
+                    setDataWork(record.works);
+                    form.setFieldsValue({
+                      ...record,
+                      nik: record.NIK,
+                      str: record.STR,
+                      rt: record.addresses.length
+                        ? record.addresses[0].rtrw.split("/")[0]
+                        : null,
+                      rw: record.addresses.length
+                        ? record.addresses[0].rtrw.split("/")[1]
+                        : null,
+                      provinceID:
+                        record.addresses.length > 0
+                          ? record.addresses[0].provinceID
+                          : null,
+                      districtID:
+                        record.addresses.length > 0
+                          ? record.addresses[0].districtID
+                          : null,
+                      subdistrictID:
+                        record.addresses.length > 0
+                          ? record.addresses[0].subdistrictID
+                          : null,
+                      villageID:
+                        record.addresses.length > 0
+                          ? record.addresses[0].villageID
+                          : null,
                     });
+<<<<<<< HEAD
+=======
 
                     form.setFieldsValue(convertedObj);
 
+>>>>>>> 6e905936334dce792e2ba05013cddea82d0f52c3
                     setEdit(true);
-                    setID(record.id);
                     setOpen(true);
                   }}
                 />
@@ -827,19 +858,15 @@ const Doctors = () => {
                   color={colorPallate.red}
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    // setID(record.id)
                     confirm({
                       title: "Apakah anda yakin ingin menghapus data ?",
                       content: "Hapus data",
                       onOk() {
-                        deleteDoctor(record.id);
-                        getDoctor((res) => {
-                          setDataDoctor(res);
-                        });
+                        console.log("oke");
                       },
                       okText: "Hapus data",
                       onCancel() {
-                        // console.log("Cancel");
+                        console.log("Cancel");
                       },
                       cancelText: "Batal",
                     });

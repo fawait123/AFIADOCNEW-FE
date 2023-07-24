@@ -6,7 +6,7 @@ export const getDoctor = async (next) => {
       page: 0,
       limit: 10,
       association:
-        "specialist,company,addresses.province.district.subdistrict.village",
+        "specialist,company,addresses.province.district.subdistrict.village,academics,works",
     },
   }).then((response) => {
     next(response.data.results.data);
@@ -30,7 +30,7 @@ export const storeDoctor = async (data, next) => {
     data: data,
   }).then((response) => next(response.data));
 };
-export const editDoctor = async (id, data, next) => {
+export const updateDoctor = async (id, data, next) => {
   await API({
     url: "/admin/doctor",
     method: "put",
