@@ -1,6 +1,7 @@
 import axios from "axios";
 import { notification } from "antd";
 import { BASE_URL } from "@/utils/base_url";
+import { useRouter } from "next/navigation";
 
 const handleNotification = (type, title, text) => {
   notification[type]({
@@ -16,13 +17,9 @@ const API = axios.create({
 
 API.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
-    // handleNotification("success", "Success2", "succes3");
     return config;
   },
   function (error) {
-    // Do something with request error
-    // handleNotification("error", "error2", "error3");
     return Promise.reject(error);
   }
 );
@@ -33,20 +30,18 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// Add a response interceptor
 API.interceptors.response.use(
   function (response) {
     handleNotification("success", "Success", "");
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-
     return response;
   },
   function (error) {
     handleNotification("error", "Error", "terjadi kesalahan");
-    // console.log(error.response.data.message, "err");
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
+    if (error.data.response.status === 401) {
+      window.localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+
     return Promise.reject(error);
   }
 );
