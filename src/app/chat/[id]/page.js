@@ -1,9 +1,11 @@
 "use client";
-import { Button, Col, Input, Row } from "antd";
+import { Badge, Button, Card, Col, Input, Row } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Space } from "antd";
 import React from "react";
 import { colorPallate } from "@/utils/colorpallate";
+import { AiOutlineVideoCamera } from "react-icons/ai";
+import { BsFillTelephoneFill } from "react-icons/bs";
 
 const ChatPage = ({ params }) => {
   return (
@@ -25,9 +27,32 @@ const ChatPage = ({ params }) => {
           backgroundColor: colorPallate.gray,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar size={40} icon={<UserOutlined />} />
-          <p style={{ marginLeft: 10 }}>{params.id}</p>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
+            <Avatar size={40} icon={<UserOutlined />} />
+            <p style={{ marginLeft: 10 }}>
+              <Badge text={"Devin Raymond Faisal"} color={colorPallate.blue} />
+            </p>
+          </div>
+          <div
+            style={{ display: "flex", alignItems: "center", marginRight: 20 }}
+          >
+            <BsFillTelephoneFill
+              style={{ color: colorPallate.blue, marginRight: 20 }}
+              size={14}
+            />
+            <AiOutlineVideoCamera
+              style={{ color: colorPallate.blue }}
+              size={18}
+            />
+          </div>
         </div>
       </div>
       <Row
@@ -47,16 +72,8 @@ const ChatPage = ({ params }) => {
                   padding: "10px 10px",
                 }}
               >
-                <div
-                  style={{
-                    border: "1px solid green",
-                    padding: "5px 10px",
-                    borderRadius: "10px 10px 10px 3px",
-                    color: "green",
-                    maxWidth: "45%",
-                  }}
-                >
-                  <p>
+                <Card style={{ width: "50%" }}>
+                  <p style={{ textAlign: "justify" }}>
                     Duis velit anim laborum incididunt magna. Amet proident
                     deserunt officia deserunt consectetur aute aliqua aute
                     exercitation ad exercitation. Enim ut et ea et ea. Quis
@@ -67,7 +84,7 @@ const ChatPage = ({ params }) => {
                     ipsum minim voluptate culpa. Officia eiusmod proident et
                     voluptate in ea sit.
                   </p>
-                </div>
+                </Card>
               </div>
             );
           })}
@@ -82,20 +99,12 @@ const ChatPage = ({ params }) => {
                   padding: "10px 10px",
                 }}
               >
-                <div
-                  style={{
-                    border: "1px solid gray",
-                    padding: "5px 10px",
-                    borderRadius: "10px 10px 3px 10px",
-                    color: "gray",
-                    maxWidth: "45%",
-                  }}
-                >
-                  <p>
+                <Card style={{ width: "50%", background: colorPallate.blue }}>
+                  <p style={{ textAlign: "justify", color: "white" }}>
                     Veniam labore sunt sunt dolore reprehenderit duis quis dolor
                     aute.
                   </p>
-                </div>
+                </Card>
               </div>
             );
           })}
@@ -103,11 +112,11 @@ const ChatPage = ({ params }) => {
       </Row>
       <Row
         gutter={10}
-        style={{ padding: "10px", backgroundColor: colorPallate.gray }}
+        style={{ padding: "20px", backgroundColor: colorPallate.gray }}
       >
         <Col flex={1}>
           {" "}
-          <Input placeholder="Messages" />
+          <Input placeholder="Kirim Pesan" />
         </Col>
         <Col span={2}>
           <Button style={{ width: "100%" }} type="primary">

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Button, Checkbox, Form, Input, theme } from "antd";
 import Card from "antd/es/card/Card";
 import Image from "next/image";
@@ -12,6 +12,18 @@ const Login = () => {
   const { useToken } = theme;
   const navigation = useRouter();
   const [formValue] = useForm();
+  const [loading, setLoading] = useState(false);
+
+  const loginAction = () => {
+    setLoading(true);
+    formValue.validateFields().then(() => {
+      const { username, password } = formValue.getFieldValue();
+      authenticationLogin({ username, password }, () => {
+        setLoading(false);
+        navigation.push("/dashboard");
+      });
+    });
+  };
 
   return (
     <div
@@ -67,19 +79,12 @@ const Login = () => {
             <Input.Password placeholder="Password" />
           </Form.Item>
           <Button
-            onClick={() => {
-              formValue.validateFields().then(() => {
-                const { username, password } = formValue.getFieldValue();
-                authenticationLogin({ username, password }, () => {
-                  navigation.push("/dashboard");
-                  // console.log("login");
-                });
-              });
-            }}
+            loading={loading}
+            onClick={() => loginAction()}
             type="primary"
             htmlType="submit"
           >
-            Submit
+            Login
           </Button>
         </Form>
       </Card>
