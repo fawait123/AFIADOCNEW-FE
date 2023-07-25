@@ -12,13 +12,17 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { FaUserDoctor, FaHospital } from "react-icons/fa6";
-import { BiSolidLeftArrow, BiSolidRightArrow } from "react-icons/bi";
+import { BiSolidLeftArrow, BiSolidRightArrow, BiWallet } from "react-icons/bi";
+import { HiOutlineReceiptTax } from "react-icons/hi";
 
 import { Layout, Menu, Button, theme, Row, Col } from "antd";
 import { Dropdown, message, Space, Tooltip } from "antd";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { colorPallate } from "@/utils/colorpallate";
+import { AiOutlinePoweroff } from "react-icons/ai";
+import { FaUsers } from "react-icons/fa";
+import { MdOutlineManageAccounts } from "react-icons/md";
 
 const { Header, Sider, Content } = Layout;
 const DashboardLayout = ({ children }) => {
@@ -39,28 +43,44 @@ const DashboardLayout = ({ children }) => {
     {
       key: "1",
       label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.antgroup.com"
-        >
-          Profile
-        </a>
+        <div style={{ width: 200 }}>
+          <p>Your Balance</p>
+          <div
+            style={{
+              display: "flex",
+              justifyItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <p style={{ color: "green", fontWeight: 700 }}>Rp18.000</p>
+            <BiWallet size={20} />
+          </div>
+        </div>
       ),
-      icon: <SmileOutlined />,
+      // icon: <SmileOutlined />,
     },
     {
       key: "2",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
-        >
-          Logout
-        </a>
-      ),
-      icon: <SmileOutlined />,
+      label: <div>Account Details</div>,
+      icon: <MdOutlineManageAccounts />,
+      disabled: false,
+    },
+    {
+      key: "2",
+      label: <div>Tax Information</div>,
+      icon: <HiOutlineReceiptTax />,
+      disabled: false,
+    },
+    {
+      key: "2",
+      label: <div>User Management</div>,
+      icon: <FaUsers />,
+      disabled: false,
+    },
+    {
+      key: "2",
+      label: <div>Logout</div>,
+      icon: <AiOutlinePoweroff />,
       disabled: false,
     },
   ];
