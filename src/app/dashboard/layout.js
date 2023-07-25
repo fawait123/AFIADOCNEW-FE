@@ -158,6 +158,18 @@ const DashboardLayout = ({ children }) => {
               label: "Spesialis",
               onClick: (e) => navigation.push(e.key),
             },
+            {
+              key: "/dashboard/booking",
+              icon: <SubnodeOutlined />,
+              label: "Booking",
+              onClick: (e) => navigation.push(e.key),
+            },
+            {
+              key: "/dashboard/chat",
+              icon: <SubnodeOutlined />,
+              label: "Chat",
+              onClick: (e) => navigation.push(e.key),
+            },
             // {
             //   key: "/dashboard/hospital",
             //   icon: <FaHospital />,
