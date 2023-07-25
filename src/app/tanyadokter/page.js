@@ -1,9 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Col, Image, Row, Modal, Badge } from "antd";
+import { Breadcrumb, Button, Col, Image, Row, Modal, Badge, Spin } from "antd";
 import { colorPallate } from "@/utils/colorpallate";
 import { Input } from "antd";
-import { getSpecialist, publicDashboardDoctor } from "@/API/http";
+import {
+  getSpecialist,
+  publicDashboard,
+  publicDashboardDoctor,
+} from "@/API/http";
 import { BASE_URL } from "@/utils/base_url";
 import { AiOutlineCloseCircle, AiFillLike } from "react-icons/ai";
 import { IoBagSharp } from "react-icons/io5";
@@ -16,23 +20,37 @@ const TanyaDokter = () => {
   const [selectDoctor, setSelectDoctor] = useState(null);
   const [isModalChat, setIsModalChat] = useState(false);
   const [chatDokter, setChatDokter] = useState(null);
+  const [loadingDoctor, setLoadingDoctor] = useState(false);
+  const [loadingSpecialist, setLoadingSpecialist] = useState(false);
   const navigation = useRouter();
 
-  useEffect(() => {
+  const getDataDoctor = () => {
+    setLoadingDoctor(true);
     publicDashboardDoctor((res) => {
       setDoctorData(res);
+      setLoadingDoctor(false);
     });
+  };
 
-    getSpecialist((res) => setSpecialistData(res.rows));
+  const getDataSpecialist = () => {
+    setLoadingSpecialist(true);
+    publicDashboard((res) => {
+      setSpecialistData(res);
+      setLoadingSpecialist(false);
+    });
+  };
+
+  useEffect(() => {
+    getDataDoctor();
+    getDataSpecialist();
   }, []);
 
-  console.log(SpecialistData);
   const showModal = () => {
     setIsModalChat(true);
   };
   const handleOk = () => {
     setIsModalChat(false);
-    navigation.push(`/chat/${chatDokter?.name}`);
+    navigation.push(`/chat/${chatDokter?.id}`);
   };
   const handleCancel = () => {
     setIsModalChat(false);
@@ -125,106 +143,8 @@ const TanyaDokter = () => {
               <p style={{ marginTop: 20, fontWeight: 600, fontSize: 20 }}>
                 Rekomendasi Dokter
               </p>
-              <Row
-                gutter={[10, 10]}
-                justify={"start"}
-                style={{ marginTop: 10 }}
-                wrap={true}
-              >
-                {DoctorData.map((doc) => {
-                  return (
-                    <Col span={12} style={{ cursor: "pointer" }}>
-                      <div
-                        // name="parent"
-                        id="parent1"
-                        key={doc.id}
-                        onClick={() => {
-                          // console.log(e);
-                          setSelectDoctor(doc);
-                        }}
-                        style={{
-                          padding: 10,
-                          boxShadow: "0.1px 1px 3px gray",
-                          fontSize: 12,
-                          borderRadius: 10,
-                          display: "flex",
-                          // justifyContent: "space-evenly",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Image
-                          style={{
-                            objectFit: "cover",
-                            objectPosition: "top",
-                            // borderRadius: "100%",
-                          }}
-                          alt="afia-docs"
-                          src={`${BASE_URL}/public/uploads/${doc.photos}`}
-                          width={70}
-                          preview={false}
-                          height={100}
-                        />
-                        <div style={{ flex: 1, marginLeft: 10 }}>
-                          <p style={{ marginTop: 10, fontWeight: 500 }}>
-                            {doc.name}, {doc.academics.map((aca) => aca.degree)}
-                          </p>
-                          <p>Dokter Umum</p>
-                          <Badge
-                            text={doc.price.toLocaleString("id", "ID")}
-                            color={colorPallate.red}
-                          />
-                          <div
-                            style={{
-                              display: "flex",
-                              // justifyContent: "space-around",
-                              margin: "10px 0px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignContent: "center",
-                              }}
-                            >
-                              <IoBagSharp />
-                              <p style={{ color: "gray", marginLeft: 5 }}>
-                                4 tahun
-                              </p>
-                            </div>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignContent: "center",
-                                marginLeft: 10,
-                              }}
-                            >
-                              <AiFillLike />
-                              <p style={{ color: "gray", marginLeft: 5 }}>
-                                100
-                              </p>
-                            </div>
-                          </div>
-                          <Button
-                            style={{ marginLeft: 10 }}
-                            type="primary"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              showModal();
-                              setChatDokter(doc);
-                              // setIsModalChat(false);
-                              // e.preventDefault();
-                            }}
-                          >
-                            Chat
-                          </Button>
-                        </div>
-                      </div>
-                    </Col>
-                  );
-                })}
-              </Row>
-              <p style={{ marginTop: 20, fontWeight: 600, fontSize: 20 }}>
-                Specialist
+              <p style={{ margin: "7px 0px 40px 0px" }}>
+                Pilih dokter untuk konsultasi kesehatan anda
               </p>
               <Row
                 gutter={[10, 10]}
@@ -232,43 +152,172 @@ const TanyaDokter = () => {
                 style={{ marginTop: 10 }}
                 wrap={true}
               >
-                {SpecialistData.map((spec) => {
-                  return (
-                    <Col span={12} style={{ cursor: "pointer" }}>
-                      <div
-                        // name="parent"
-                        id="parent1"
-                        key={spec.id}
-                        style={{
-                          padding: 10,
-                          boxShadow: "0.1px 1px 3px gray",
-                          fontSize: 12,
-                          borderRadius: 10,
-                          display: "flex",
-                          // justifyContent: "space-evenly",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Image
-                          style={{
-                            objectFit: "cover",
-                            objectPosition: "top",
+                {loadingDoctor ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <Spin />
+                  </div>
+                ) : (
+                  DoctorData.map((doc) => {
+                    return (
+                      <Col span={12} style={{ cursor: "pointer" }}>
+                        <div
+                          // name="parent"
+                          id="parent1"
+                          key={doc.id}
+                          onClick={() => {
+                            // console.log(e);
+                            setSelectDoctor(doc);
                           }}
-                          alt="afia-docs"
-                          src={`${BASE_URL}/public/uploads/${spec.picture}`}
-                          width={70}
-                          preview={false}
-                          height={70}
-                        />
-                        <div style={{ flex: 1, marginLeft: 10 }}>
-                          <p style={{ marginTop: 10, fontWeight: 500 }}>
-                            {spec.name}
-                          </p>
+                          style={{
+                            padding: 10,
+                            boxShadow: "0.1px 1px 3px gray",
+                            fontSize: 12,
+                            borderRadius: 10,
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Image
+                            style={{
+                              objectFit: "cover",
+                              objectPosition: "top",
+                            }}
+                            alt="afia-docs"
+                            src={`${BASE_URL}/public/uploads/${doc.photos}`}
+                            width={70}
+                            preview={false}
+                            height={100}
+                          />
+                          <div style={{ flex: 1, marginLeft: 10 }}>
+                            <p style={{ marginTop: 10, fontWeight: 500 }}>
+                              {doc.name},{" "}
+                              {doc.academics.map((aca) => aca.degree)}
+                            </p>
+                            <p>Dokter Umum</p>
+                            <Badge
+                              text={doc.price.toLocaleString("id", "ID")}
+                              color={colorPallate.red}
+                            />
+                            <div
+                              style={{
+                                display: "flex",
+                                // justifyContent: "space-around",
+                                margin: "10px 0px",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignContent: "center",
+                                }}
+                              >
+                                <IoBagSharp />
+                                <p style={{ color: "gray", marginLeft: 5 }}>
+                                  4 tahun
+                                </p>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignContent: "center",
+                                  marginLeft: 10,
+                                }}
+                              >
+                                <AiFillLike />
+                                <p style={{ color: "gray", marginLeft: 5 }}>
+                                  100
+                                </p>
+                              </div>
+                            </div>
+                            <Button
+                              style={{ marginLeft: 10 }}
+                              type="primary"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                showModal();
+                                setChatDokter(doc);
+                                // setIsModalChat(false);
+                                // e.preventDefault();
+                              }}
+                            >
+                              Chat
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </Col>
-                  );
-                })}
+                      </Col>
+                    );
+                  })
+                )}
+              </Row>
+              <p style={{ marginTop: 20, fontWeight: 600, fontSize: 20 }}>
+                Specialist
+              </p>
+              <p style={{ margin: "7px 0px 40px 0px" }}>
+                Pilih kategori dokter sesuai dengan kebutuhan anda
+              </p>
+              <Row
+                gutter={[10, 10]}
+                justify={"start"}
+                style={{ marginTop: 10 }}
+                wrap={true}
+              >
+                {loadingSpecialist ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <Spin />
+                  </div>
+                ) : (
+                  SpecialistData.map((spec) => {
+                    return (
+                      <Col span={12} style={{ cursor: "pointer" }}>
+                        <div
+                          // name="parent"
+                          id="parent1"
+                          key={spec.id}
+                          style={{
+                            padding: 10,
+                            boxShadow: "0.1px 1px 3px gray",
+                            fontSize: 12,
+                            borderRadius: 10,
+                            display: "flex",
+                            // justifyContent: "space-evenly",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Image
+                            style={{
+                              objectFit: "cover",
+                              objectPosition: "top",
+                            }}
+                            alt="afia-docs"
+                            src={`${BASE_URL}/public/uploads/${spec.picture}`}
+                            width={70}
+                            preview={false}
+                            height={70}
+                          />
+                          <div style={{ flex: 1, marginLeft: 10 }}>
+                            <p style={{ marginTop: 10, fontWeight: 500 }}>
+                              {spec.name}
+                            </p>
+                          </div>
+                        </div>
+                      </Col>
+                    );
+                  })
+                )}
               </Row>
             </Col>
           ) : (
@@ -316,7 +365,8 @@ const TanyaDokter = () => {
                   />
                   <div>
                     <p style={{ marginTop: 15, fontWeight: 600, fontSize: 16 }}>
-                      {selectDoctor.name},
+                      {selectDoctor.name},{" "}
+                      {selectDoctor.academics.map((aca) => aca.degree)}
                     </p>
                     <p style={{ margin: "13px 0px" }}>Dokter Umum</p>
                     <div
