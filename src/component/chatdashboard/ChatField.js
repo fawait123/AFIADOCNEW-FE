@@ -1,5 +1,5 @@
 "use client";
-import { Button, Col, Input, Row } from "antd";
+import { Badge, Button, Card, Col, Input, Row } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Space } from "antd";
 import React from "react";
@@ -24,8 +24,23 @@ const ChatField = () => {
         }}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar size={40} icon={<UserOutlined />} />
-          <p style={{ marginLeft: 10 }}>Achmad Fawait</p>
+          <Avatar
+            size={40}
+            style={{
+              color: "white",
+              backgroundColor: "gray",
+            }}
+            icon={<UserOutlined />}
+          />
+
+          <p style={{ marginLeft: 10, color: "black" }}>
+            {" "}
+            <Badge
+              color={colorPallate.blue}
+              style={{ marginRight: "10px" }}
+            />{" "}
+            Achmad Fawait
+          </p>
         </div>
       </div>
       <Row
@@ -45,16 +60,17 @@ const ChatField = () => {
                   padding: "10px 10px",
                 }}
               >
-                <div
+                <Card
                   style={{
-                    border: "1px solid green",
+                    // border: "1px solid green",
+
                     padding: "5px 10px",
                     borderRadius: "10px 10px 10px 3px",
                     color: "green",
                     maxWidth: "45%",
                   }}
                 >
-                  <p>
+                  <p style={{ textAlign: "justify", color: "black" }}>
                     Duis velit anim laborum incididunt magna. Amet proident
                     deserunt officia deserunt consectetur aute aliqua aute
                     exercitation ad exercitation. Enim ut et ea et ea. Quis
@@ -65,7 +81,7 @@ const ChatField = () => {
                     ipsum minim voluptate culpa. Officia eiusmod proident et
                     voluptate in ea sit.
                   </p>
-                </div>
+                </Card>
               </div>
             );
           })}
@@ -80,20 +96,21 @@ const ChatField = () => {
                   padding: "10px 10px",
                 }}
               >
-                <div
+                <Card
                   style={{
-                    border: "1px solid gray",
+                    // border: "1px solid gray",
                     padding: "5px 10px",
                     borderRadius: "10px 10px 3px 10px",
-                    color: "gray",
+                    backgroundColor: colorPallate.blue,
+
                     maxWidth: "45%",
                   }}
                 >
-                  <p>
+                  <p style={{ textAlign: "justify", color: "white" }}>
                     Veniam labore sunt sunt dolore reprehenderit duis quis dolor
                     aute.
                   </p>
-                </div>
+                </Card>
               </div>
             );
           })}
@@ -101,16 +118,17 @@ const ChatField = () => {
       </Row>
       <Row
         gutter={10}
-        style={{ padding: "10px", backgroundColor: colorPallate.gray }}
+        style={{ padding: "10px 80px", backgroundColor: colorPallate.gray }}
       >
         <Col flex={1}>
           {" "}
-          <Input placeholder="Messages" />
+          <Input
+            style={{ color: colorPallate.blue }}
+            placeholder="Kirim Pesan"
+          />
         </Col>
         <Col span={2}>
-          <Button style={{ width: "100%" }} type="primary">
-            Send
-          </Button>
+          <Button type="primary">Send</Button>
         </Col>
       </Row>
     </div>
