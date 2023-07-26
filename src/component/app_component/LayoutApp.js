@@ -1,16 +1,86 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row, Image } from "antd";
+import { Button, Col, Row, Image, Dropdown } from "antd";
 import { colorPallate } from "@/utils/colorpallate";
-import "../page.css";
 import { useRouter } from "next/navigation";
 import { publicDashboard, publicDashboardDoctor } from "@/API/http";
 import { BASE_URL } from "@/utils/base_url";
+import { IoBagSharp } from "react-icons/io5";
+import {
+  AiFillLike,
+  AiOutlineCloseCircle,
+  AiOutlinePoweroff,
+} from "react-icons/ai";
+import { BiWallet } from "react-icons/bi";
+import { MdOutlineManageAccounts } from "react-icons/md";
+import { HiOutlineReceiptTax } from "react-icons/hi";
+import { FaUsers } from "react-icons/fa";
 
-const LayoutTanyaDokter = ({ children }) => {
+const LayoutApp = ({ children }) => {
+  const [isLogin, setIsLogin] = useState(false);
   const navigation = useRouter();
+  useEffect(() => {
+    if (window) {
+      if (window.localStorage.getItem("token")) {
+        setIsLogin(true);
+      }
+    } else {
+      if (localStorage.getItem("token")) {
+        setIsLogin(true);
+      }
+    }
+  }, []);
 
   // console.log(specialistData);
+  const items = [
+    {
+      key: "1",
+
+      label: (
+        <div
+          style={{ width: 200 }}
+          onClick={() => navigation.push("/account_balance")}
+        >
+          <p>Your Balance</p>
+          <div
+            style={{
+              display: "flex",
+              justifyItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <p style={{ color: "green", fontWeight: 700 }}>Rp18.000</p>
+            <BiWallet size={20} />
+          </div>
+        </div>
+      ),
+      // icon: <SmileOutlined />,
+    },
+    {
+      key: "2",
+      label: <div>Account Details</div>,
+      icon: <MdOutlineManageAccounts />,
+      disabled: false,
+    },
+    {
+      key: "2",
+      label: <div>Tax Information</div>,
+      icon: <HiOutlineReceiptTax />,
+      disabled: false,
+    },
+    {
+      key: "2",
+      label: <div>User Management</div>,
+      icon: <FaUsers />,
+      disabled: false,
+    },
+    {
+      key: "2",
+      label: <div>Logout</div>,
+      icon: <AiOutlinePoweroff />,
+      disabled: false,
+    },
+  ];
   return (
     <div>
       {/* Header */}
@@ -43,19 +113,51 @@ const LayoutTanyaDokter = ({ children }) => {
             })}
           </Row>
         </Col>
-        <Col xs={{ span: 0 }} md={{ span: 1 }} xl={{ span: 1 }}>
-          <Button
-            onClick={() => {
-              navigation.push("/login");
-            }}
-            type="primary"
-          >
-            Login
-          </Button>
+        <Col xs={{ span: 0 }} md={{ span: 2 }} xl={{ span: 2 }}>
+          {isLogin ? (
+            <Dropdown
+              menu={{
+                items,
+              }}
+            >
+              <a
+                onClick={(e) => e.preventDefault()}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: 20,
+                }}
+              >
+                <img
+                  alt=""
+                  src={
+                    "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                  }
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "100%",
+                    marginRight: 10,
+                    border: `2px solid ${colorPallate.blue}`,
+                  }}
+                />
+                <p>Achmad Fawait</p>
+              </a>
+            </Dropdown>
+          ) : (
+            <Button
+              onClick={() => {
+                navigation.push("/login");
+              }}
+              type="primary"
+            >
+              Login
+            </Button>
+          )}
         </Col>
       </Row>
-      {/* CONTENT */}
-      <>{children}</>
+      {/* CONTENT*/}
+      {children}
       {/* FOOTER */}
       <div
         style={{
@@ -181,4 +283,4 @@ const LayoutTanyaDokter = ({ children }) => {
   );
 };
 
-export default LayoutTanyaDokter;
+export default LayoutApp;
