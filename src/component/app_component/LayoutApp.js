@@ -11,7 +11,7 @@ import {
   AiOutlineCloseCircle,
   AiOutlinePoweroff,
 } from "react-icons/ai";
-import { BiWallet } from "react-icons/bi";
+import { BiBookAdd, BiWallet } from "react-icons/bi";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { HiOutlineReceiptTax } from "react-icons/hi";
 import { FaUsers } from "react-icons/fa";
@@ -63,19 +63,25 @@ const LayoutApp = ({ children }) => {
       disabled: false,
     },
     {
-      key: "2",
+      key: "3",
+      label: <div onClick={() => navigation.push("/booking")}>Booking</div>,
+      icon: <BiBookAdd />,
+      disabled: false,
+    },
+    {
+      key: "4",
       label: <div>Tax Information</div>,
       icon: <HiOutlineReceiptTax />,
       disabled: false,
     },
     {
-      key: "2",
+      key: "5",
       label: <div>User Management</div>,
       icon: <FaUsers />,
       disabled: false,
     },
     {
-      key: "2",
+      key: "6",
       label: <div>Logout</div>,
       icon: <AiOutlinePoweroff />,
       disabled: false,
