@@ -1,6 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row, Image, Modal, Badge, Spin, Dropdown } from "antd";
+import {
+  Button,
+  Col,
+  Row,
+  Image,
+  Modal,
+  Badge,
+  Spin,
+  Dropdown,
+  Input,
+} from "antd";
 import { colorPallate } from "@/utils/colorpallate";
 import "./page.css";
 import { useRouter } from "next/navigation";
@@ -23,6 +33,7 @@ const Home = () => {
   const [specialistData, setSpecialistData] = useState([]);
   const [DoctorData, setDoctorData] = useState([]);
   const [isModalChat, setIsModalChat] = useState(false);
+  const [isModalBooking, setIsModalBooking] = useState(false);
   const [loadingSpecialist, setLoadingSpecialist] = useState(false);
   const [loadingDoctor, setLoadingDoctor] = useState(false);
   const [selectDoctor, setSelectDoctor] = useState(null);
@@ -630,6 +641,18 @@ const Home = () => {
                             >
                               Chat
                             </Button>
+                            <Button
+                              style={{ marginLeft: 10 }}
+                              type="primary"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsModalBooking(true);
+                                setSelectDoctor(doc);
+                                // e.preventDefault();
+                              }}
+                            >
+                              Booking
+                            </Button>
                             <Modal
                               style={{
                                 top: 250,
@@ -667,6 +690,24 @@ const Home = () => {
           </Row>
         </div>
       </LayoutApp>
+      <Modal
+        style={{
+          top: 250,
+        }}
+        title={`Booking Dokter ${selectDoctor?.name}`}
+        okText="Book"
+        cancelText="Batal"
+        open={isModalBooking}
+        onOk={() => {
+          setIsModalBooking(false);
+        }}
+        onCancel={() => {
+          setSelectDoctor(null);
+          setIsModalBooking(false);
+        }}
+      >
+        <Input type="date"></Input>
+      </Modal>
       {/* FOOTER */}
       {/* <div
         style={{
