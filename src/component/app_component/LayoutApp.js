@@ -41,7 +41,7 @@ const LayoutApp = ({ children }) => {
           style={{ width: 200 }}
           onClick={() => navigation.push("/account_balance")}
         >
-          <p>Your Balance</p>
+          <p>AFIA WALLET</p>
           <div
             style={{
               display: "flex",
