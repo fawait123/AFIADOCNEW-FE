@@ -15,11 +15,21 @@ import { BiBookAdd, BiWallet } from "react-icons/bi";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { HiOutlineReceiptTax } from "react-icons/hi";
 import { FaUsers } from "react-icons/fa";
+import { getWallet } from "@/API/wallet";
 
 const LayoutApp = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
+  const [wallet, setWallet] = useState(0);
   const navigation = useRouter();
+
+  const getDataWallet = () => {
+    getWallet((res) => {
+      setWallet(res.amount);
+    });
+  };
+
   useEffect(() => {
+    getDataWallet();
     if (window) {
       if (window.localStorage.getItem("token")) {
         setIsLogin(true);
@@ -49,7 +59,9 @@ const LayoutApp = ({ children }) => {
               justifyContent: "space-between",
             }}
           >
-            <p style={{ color: "green", fontWeight: 700 }}>Rp18.000</p>
+            <p style={{ color: "green", fontWeight: 700 }}>
+              Rp {wallet.toLocaleString("id", "ID")}
+            </p>
             <BiWallet size={20} />
           </div>
         </div>

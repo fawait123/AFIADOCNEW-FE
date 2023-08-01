@@ -21,6 +21,7 @@ const AccountBalancePage = () => {
     amount: null,
   });
   const [history, setHistory] = useState([]);
+  const [loadingModal, setLoadingModal] = useState(false);
 
   const getDataWallet = () => {
     getWallet((res) => {
@@ -36,12 +37,16 @@ const AccountBalancePage = () => {
   };
 
   const checkTopup = async (data) => {
-    const res = await API({
+    await API({
       url: "/admin/cashless/topup/check",
       method: "get",
       params: {
         midtransID: data.id,
       },
+    }).then((response) => {
+      console.log("res", response);
+      getDataHistory();
+      getDataWallet();
     });
   };
 
@@ -170,7 +175,11 @@ const AccountBalancePage = () => {
                           <FaWallet size={30} />
                         </div>
                         <div style={{ marginLeft: 20 }}>
-                          <p>{`Topup transfer bank ${detail.va_numbers[0].bank.toUpperCase()}`}</p>
+                          <p>{`Topup transfer bank ${
+                            detail.va_numbers
+                              ? detail.va_numbers[0].bank.toUpperCase()
+                              : "Mandiri"
+                          }`}</p>
                           <p style={{ fontSize: 11, color: "gray" }}>
                             {detail.transaction_status}
                           </p>
@@ -181,7 +190,10 @@ const AccountBalancePage = () => {
                               fontWeight: "bold",
                             }}
                           >
-                            VA : {detail.va_numbers[0].va_number}
+                            VA :{" "}
+                            {detail.va_numbers
+                              ? detail.va_numbers[0].va_number
+                              : detail.permata_va_number}
                           </p>
                           <p style={{ fontSize: 11, color: "gray" }}>
                             {detail.expiry_time}
@@ -191,7 +203,8 @@ const AccountBalancePage = () => {
                       <div onClick={() => console.log("oke")}>
                         <h4
                           style={{
-                            color: val.status === "success" ? "green" : "red",
+                            color:
+                              val.status === "settlement" ? "green" : "#FD8D14",
                           }}
                         >
                           + {detail.gross_amount.toLocaleString("id", "ID")}
@@ -281,12 +294,21 @@ const AccountBalancePage = () => {
         <Modal
           title={payload?.bank}
           open={payload.bank === null ? false : true}
+          confirmLoading={loadingModal}
           onOk={() => {
             // setPayload({ ...payload, bank: null });
+            setLoadingModal(true);
             topUp(payload, (next) => {
               // console.log(next);
-              setOpen({ status: false, title: "" });
+              setLoadingModal(false);
+              setPayload({
+                bank: null,
+                amount: null,
+              });
+              // setOpen({ status: false, title: "" });
               getDataHistory();
+            }).catch((err) => {
+              setLoadingModal(false);
             });
           }}
           onCancel={() => {
