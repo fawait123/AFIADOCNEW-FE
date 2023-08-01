@@ -1,17 +1,46 @@
 "use client";
 import LayoutApp from "@/component/app_component/LayoutApp";
 import { colorPallate } from "@/utils/colorpallate";
-import { Card, Col, Collapse, Modal, Row } from "antd";
-import React, { useState } from "react";
+import { Card, Col, Collapse, Form, Input, Modal, Row } from "antd";
+import React, { useEffect, useState } from "react";
 import "./account_balance.css";
 import { AiFillBank } from "react-icons/ai";
-import { FaHistory, FaMoneyBillAlt, FaWallet } from "react-icons/fa";
+import { FaHistory, FaMoneyBillAlt, FaWallet, FaSync } from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { HiQrcode } from "react-icons/hi";
 import { MdAccountBalanceWallet, MdPayments } from "react-icons/md";
+import { getHistory, getWallet, topUp } from "@/API/wallet";
 const { Panel } = Collapse;
 const AccountBalancePage = () => {
   const [open, setOpen] = useState({ status: false, title: "" });
+  const [wallet, setWallet] = useState(0);
+  const [payload, setPayload] = useState({
+    bank: null,
+    amount: null,
+  });
+  const [history, setHistory] = useState([]);
+
+  const getDataWallet = () => {
+    getWallet((res) => {
+      setWallet(res.amount);
+    });
+  };
+
+  const getDataHistory = () => {
+    getHistory((res) => {
+      console.log("res", res);
+      setHistory(res);
+    });
+  };
+
+  const checkTopup = (data) => {
+    console.log("data", data);
+  };
+
+  useEffect(() => {
+    getDataWallet();
+    getDataHistory();
+  }, []);
 
   return (
     <LayoutApp>
@@ -27,8 +56,8 @@ const AccountBalancePage = () => {
             >
               <MdAccountBalanceWallet size={30} style={{ marginRight: 10 }} />
               <div>
-                <h3>Your Balance</h3>
-                <h4>Rp 18.000</h4>
+                <h3>AFIA WALLET</h3>
+                <h4>Rp {wallet?.toLocaleString("id", "ID")}</h4>
               </div>
             </div>
           </Card>
@@ -109,26 +138,11 @@ const AccountBalancePage = () => {
               padding: "10px 10px",
             }}
           >
-            {[
-              {
-                name: "Isi Saldo",
-                icon: <FaWallet size={30} />,
-                metode: "Bank",
-                amount: 48000,
-                createdAt: "15 Juli 2023",
-                sign: "+",
-              },
-              {
-                name: "Pembayaran",
-                icon: <MdPayments size={30} />,
-                metode: "AFIA PAY",
-                amount: 30000,
-                createdAt: "25 Juli 2023",
-                sign: "-",
-              },
-            ].map((val) => {
+            {history.map((val) => {
+              let detail = JSON.parse(val.detail);
+              console.log(detail);
               return (
-                <Col key={val.name} span={24}>
+                <Col key={val.id} span={24}>
                   <Card>
                     <div
                       style={{
@@ -144,20 +158,50 @@ const AccountBalancePage = () => {
                           color: colorPallate.blue,
                         }}
                       >
-                        <div>{val.icon}</div>
+                        <div>
+                          <FaWallet size={30} />
+                        </div>
                         <div style={{ marginLeft: 20 }}>
-                          <p>{val.name}</p>
+                          <p>{`Topup transfer bank ${detail.va_numbers[0].bank.toUpperCase()}`}</p>
                           <p style={{ fontSize: 11, color: "gray" }}>
-                            {val.metode}
+                            {detail.transaction_status}
+                          </p>
+                          <p
+                            style={{
+                              fontSize: 11,
+                              color: "gray",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            VA : {detail.va_numbers[0].va_number}
                           </p>
                           <p style={{ fontSize: 11, color: "gray" }}>
-                            {val.createdAt}
+                            {detail.expiry_time}
                           </p>
                         </div>
                       </div>
-                      <h4 style={{ color: val.sign === "+" ? "green" : "red" }}>
-                        {val.sign} Rp {val.amount.toLocaleString()}
-                      </h4>
+                      <div onClick={() => console.log("oke")}>
+                        <h4
+                          style={{
+                            color: val.status === "success" ? "green" : "red",
+                          }}
+                        >
+                          + {detail.gross_amount.toLocaleString("id", "ID")}
+                        </h4>
+                        {val.status == "settlement" ? null : (
+                          <div
+                            style={{
+                              cursor: "pointer",
+                              width: 100,
+                              height: 100,
+                              background: "blue",
+                            }}
+                            onClick={() => checkTopup(val)}
+                          >
+                            <FaSync />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </Card>
                 </Col>
@@ -170,12 +214,18 @@ const AccountBalancePage = () => {
         title={open.title}
         centered
         open={open.status}
-        onOk={() => setOpen({ status: false, title: "" })}
+        onOk={() => {
+          topUp(payload, (next) => {
+            console.log(next);
+            setOpen({ status: false, title: "" });
+            getDataHistory();
+          });
+        }}
         onCancel={() => setOpen({ status: false, title: "" })}
         width={1000}
       >
         <Collapse>
-          <Panel header="Transfer Bank" key="1" showArrow={false}>
+          <Panel header="Transfer Bank" key="1" showArrow={true}>
             <Row gutter={10}>
               {[
                 { name: "BCA", icon: <FaWallet /> },
@@ -185,7 +235,14 @@ const AccountBalancePage = () => {
               ].map((bank) => {
                 return (
                   <Col span={4}>
-                    <Card className="cards">
+                    <Card
+                      className={`cards ${
+                        payload.bank == bank.name ? "cards-select" : ""
+                      }`}
+                      onClick={() =>
+                        setPayload({ ...payload, bank: bank.name })
+                      }
+                    >
                       <div
                         style={{
                           display: "flex",
@@ -197,12 +254,21 @@ const AccountBalancePage = () => {
                         <p style={{ marginLeft: 10 }}>{bank.name}</p>
                       </div>
                     </Card>
+                    {payload.bank == bank.name ? (
+                      <Input
+                        placeholder="jumlah"
+                        onChange={(event) =>
+                          setPayload({ ...payload, amount: event.target.value })
+                        }
+                        style={{ marginTop: 20 }}
+                      />
+                    ) : null}
                   </Col>
                 );
               })}
             </Row>
           </Panel>
-          <Panel header="Virtual Account" key="2" showArrow={false}>
+          <Panel header="Virtual Account" key="2" showArrow={true}>
             <p>a</p>
           </Panel>
         </Collapse>
