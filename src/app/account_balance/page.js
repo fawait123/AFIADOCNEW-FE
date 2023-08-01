@@ -10,9 +10,11 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { HiQrcode } from "react-icons/hi";
 import { MdAccountBalanceWallet, MdPayments } from "react-icons/md";
 import { getHistory, getWallet, topUp } from "@/API/wallet";
+import API from "@/API";
 const { Panel } = Collapse;
 const AccountBalancePage = () => {
   const [open, setOpen] = useState({ status: false, title: "" });
+  // const [openBank,setOpenBank]= useState()
   const [wallet, setWallet] = useState(0);
   const [payload, setPayload] = useState({
     bank: null,
@@ -33,8 +35,14 @@ const AccountBalancePage = () => {
     });
   };
 
-  const checkTopup = (data) => {
-    console.log("data", data);
+  const checkTopup = async (data) => {
+    const res = await API({
+      url: "/admin/cashless/topup/check",
+      method: "get",
+      params: {
+        midtransID: data.id,
+      },
+    });
   };
 
   useEffect(() => {
@@ -190,12 +198,12 @@ const AccountBalancePage = () => {
                         </h4>
                         {val.status == "settlement" ? null : (
                           <div
-                            style={{
-                              cursor: "pointer",
-                              width: 100,
-                              height: 100,
-                              background: "blue",
-                            }}
+                            // style={{
+                            //   cursor: "pointer",
+                            //   width: 100,
+                            //   height: 100,
+                            //   background: "blue",
+                            // }}
                             onClick={() => checkTopup(val)}
                           >
                             <FaSync />
@@ -214,13 +222,11 @@ const AccountBalancePage = () => {
         title={open.title}
         centered
         open={open.status}
-        onOk={() => {
-          topUp(payload, (next) => {
-            console.log(next);
-            setOpen({ status: false, title: "" });
-            getDataHistory();
-          });
-        }}
+        footer={null}
+        // onOk={() => {
+
+        // }}
+
         onCancel={() => setOpen({ status: false, title: "" })}
         width={1000}
       >
@@ -254,7 +260,7 @@ const AccountBalancePage = () => {
                         <p style={{ marginLeft: 10 }}>{bank.name}</p>
                       </div>
                     </Card>
-                    {payload.bank == bank.name ? (
+                    {/* {payload.bank == bank.name ? (
                       <Input
                         placeholder="jumlah"
                         onChange={(event) =>
@@ -262,16 +268,44 @@ const AccountBalancePage = () => {
                         }
                         style={{ marginTop: 20 }}
                       />
-                    ) : null}
+                    ) : null} */}
                   </Col>
                 );
               })}
             </Row>
           </Panel>
-          <Panel header="Virtual Account" key="2" showArrow={true}>
+          {/* <Panel header="Virtual Account" key="2" showArrow={true}>
             <p>a</p>
-          </Panel>
+          </Panel> */}
         </Collapse>
+        <Modal
+          title={payload?.bank}
+          open={payload.bank === null ? false : true}
+          onOk={() => {
+            // setPayload({ ...payload, bank: null });
+            topUp(payload, (next) => {
+              // console.log(next);
+              setOpen({ status: false, title: "" });
+              getDataHistory();
+            });
+          }}
+          onCancel={() => {
+            setPayload({
+              bank: null,
+              amount: null,
+            });
+          }}
+        >
+          <Input
+            style={{ marginTop: 20 }}
+            placeholder="Amount"
+            type="number"
+            onChange={(e) => {
+              let { value } = e.target;
+              setPayload({ ...payload, amount: value });
+            }}
+          ></Input>
+        </Modal>
       </Modal>
     </LayoutApp>
   );
