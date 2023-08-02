@@ -87,6 +87,22 @@ const Login = () => {
             Login
           </Button>
         </Form>
+        <div
+          style={{
+            marginTop: 15,
+            textAlign: "center",
+          }}
+        >
+          <p style={{ fontSize: "10pt" }}>
+            Belum punya account?{" "}
+            <span
+              onClick={() => navigation.push("/register")}
+              style={{ color: colorPallate.blue, cursor: "pointer" }}
+            >
+              Register
+            </span>
+          </p>
+        </div>
       </Card>
     </div>
   );
