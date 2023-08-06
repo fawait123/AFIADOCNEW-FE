@@ -18,9 +18,15 @@ const Login = () => {
     setLoading(true);
     formValue.validateFields().then(() => {
       const { username, password } = formValue.getFieldValue();
-      authenticationLogin({ username, password }, () => {
+      authenticationLogin({ username, password }, (user) => {
         setLoading(false);
-        navigation.push("/dashboard");
+        if (user.role.name === "pengguna") {
+          window.location.href = "/";
+        } else {
+          window.location.href = "/dashboard";
+        }
+      }).catch((err) => {
+        setLoading(false);
       });
     });
   };

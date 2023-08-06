@@ -5,7 +5,7 @@ import Card from "antd/es/card/Card";
 import Image from "next/image";
 import { colorPallate } from "@/utils/colorpallate";
 import { useForm } from "antd/es/form/Form";
-import { authenticationLogin } from "@/API/http";
+import { registerUser } from "@/API/http";
 import { useRouter } from "next/navigation";
 
 const Register = () => {
@@ -13,6 +13,15 @@ const Register = () => {
   const navigation = useRouter();
   const [formValue] = useForm();
   const [loading, setLoading] = useState(false);
+
+  const registerAction = () => {
+    formValue.validateFields().then(() => {
+      const field = formValue.getFieldsValue();
+      registerUser(field, (res) => {
+        window.location.href = "/login";
+      });
+    });
+  };
 
   return (
     <div
@@ -47,7 +56,7 @@ const Register = () => {
           initialValues={{
             is_active: false,
           }}
-          // form={formValue}
+          form={formValue}
           autoComplete="off"
           layout="vertical"
         >
@@ -113,27 +122,9 @@ const Register = () => {
               </Form.Item>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <Form.Item
-                label="IsActive"
-                name="is_active"
-                valuePropName="checked"
-                rules={[
-                  {
-                    type: "is_active",
-                    required: true,
-                    message: "IsActive harus di isi!",
-                  },
-                ]}
-              >
-                <Checkbox>AKTIF</Checkbox>
-              </Form.Item>
-            </Col>
-          </Row>
           <Button
             // loading={loading}
-            // onClick={() => loginAction()}
+            onClick={() => registerAction()}
             type="primary"
             htmlType="submit"
           >

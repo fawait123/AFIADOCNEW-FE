@@ -29,8 +29,16 @@ export const authenticationLogin = async ({ username, password }, next) => {
     password,
   }).then((res) => {
     let token = res.data.results.data.token;
+    let user = res.data.results.data.user;
     localStorage.setItem("token", token);
-    next();
+    localStorage.setItem("user", JSON.stringify(user));
+    next(user);
+  });
+};
+
+export const registerUser = async (fields, next) => {
+  await API.post("/auth/register", fields).then((response) => {
+    next(response);
   });
 };
 

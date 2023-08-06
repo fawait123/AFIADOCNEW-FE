@@ -19,6 +19,7 @@ import { getWallet } from "@/API/wallet";
 
 const LayoutApp = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
+  const [user, setUser] = useState(null);
   const [wallet, setWallet] = useState(0);
   const navigation = useRouter();
 
@@ -28,10 +29,16 @@ const LayoutApp = ({ children }) => {
     });
   };
 
-  useEffect(() => {
-    getDataWallet();
+  const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
+  const getLogin = () => {
     if (window) {
       if (window.localStorage.getItem("token")) {
+        setUser(JSON.parse(window.localStorage.getItem("user")));
         setIsLogin(true);
       }
     } else {
@@ -39,6 +46,13 @@ const LayoutApp = ({ children }) => {
         setIsLogin(true);
       }
     }
+  };
+
+  useEffect(() => {
+    if (user) {
+      getDataWallet();
+    }
+    getLogin();
   }, []);
 
   // console.log(specialistData);
@@ -94,7 +108,7 @@ const LayoutApp = ({ children }) => {
     },
     {
       key: "6",
-      label: <div>Logout</div>,
+      label: <div onClick={() => logout()}>Logout</div>,
       icon: <AiOutlinePoweroff />,
       disabled: false,
     },
@@ -159,7 +173,7 @@ const LayoutApp = ({ children }) => {
                     border: `2px solid ${colorPallate.blue}`,
                   }}
                 />
-                <p>Achmad Fawait</p>
+                <p>{user.name}</p>
               </a>
             </Dropdown>
           ) : (
@@ -268,21 +282,26 @@ const LayoutApp = ({ children }) => {
                       <Image width={100} src="/assets/playstore.png" />
                     </Col>
                   </Row>
-                  <p
-                    style={{
-                      fontSize: 20,
-                      fontWeight: "500",
-                      margin: " 5px 0px",
-                    }}
-                  >
-                    Apakah kamu Dokter?
-                  </p>
-                  <Button
-                    style={{ borderRadius: 2 }}
-                    onClick={() => navigation.push("/doctor_register")}
-                  >
-                    Daftar
-                  </Button>
+                  {user ? null : (
+                    <>
+                      {" "}
+                      <p
+                        style={{
+                          fontSize: 20,
+                          fontWeight: "500",
+                          margin: " 5px 0px",
+                        }}
+                      >
+                        Apakah kamu Dokter?
+                      </p>
+                      <Button
+                        style={{ borderRadius: 2 }}
+                        onClick={() => navigation.push("/doctor_register")}
+                      >
+                        Daftar
+                      </Button>
+                    </>
+                  )}
                 </Col>
               </Row>
             </div>

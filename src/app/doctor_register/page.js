@@ -606,7 +606,7 @@ const RegisterDoctor = () => {
             </Row>
           </Form>
 
-          <div
+          {/* <div
             style={{
               marginTop: 15,
               textAlign: "center",
@@ -621,7 +621,7 @@ const RegisterDoctor = () => {
                 Register
               </span>
             </p>
-          </div>
+          </div> */}
         </Card>
       </Col>
     </div>
