@@ -21,7 +21,8 @@ import { useRouter } from "next/navigation";
 import { UploadOutlined } from "@ant-design/icons";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { isNull } from "lodash";
-import { getRegional } from "@/API/doctor";
+import { getRegional, registerDoctor } from "@/API/doctor";
+import { getPublicSpecialist } from "@/API/http";
 
 const RegisterDoctor = () => {
   const { useToken } = theme;
@@ -76,6 +77,29 @@ const RegisterDoctor = () => {
     onChange: (info) => {
       console.log(info.fileList);
     },
+  };
+
+  const registerAction = () => {
+    form.validateFields().then(() => {
+      const formData = new FormData();
+      let formValues = form.getFieldValue();
+      let keys = Object.keys(form.getFieldValue());
+      keys.map((item, index) => {
+        console.log(item, typeof formValues[item]);
+        if (item == "photos") {
+          formData.append("photos", formValues[item].file.originFileObj);
+        } else if (item == "academics" || item == "works") {
+          formData.append(item, JSON.stringify(formValues[item]));
+        } else {
+          formData.append(item, formValues[item]);
+        }
+      });
+
+      registerDoctor(formData, (res) => {
+        form.resetFields();
+        window.location.href = "/login";
+      });
+    });
   };
 
   return (
@@ -218,7 +242,7 @@ const RegisterDoctor = () => {
                 >
                   <Select
                     onFocus={() => {
-                      getSpecialist((res) => {
+                      getPublicSpecialist((res) => {
                         setDataSpecialist(res.rows);
                       });
                     }}
@@ -599,7 +623,11 @@ const RegisterDoctor = () => {
                 </Form.List>
               </Col>
               <Col span={24}>
-                <Button type="primary" style={{ width: "100%" }}>
+                <Button
+                  type="primary"
+                  style={{ width: "100%" }}
+                  onClick={() => registerAction()}
+                >
                   Register
                 </Button>
               </Col>
