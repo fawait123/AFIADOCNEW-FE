@@ -102,6 +102,15 @@ export const getSpecialist = async (next) => {
   }).then((response) => next(response.data.results.data));
 };
 
+export const getPublicSpecialist = async (next) => {
+  const res = await API.get("/public/specialist", {
+    params: {
+      page: 0,
+      limit: 10,
+    },
+  }).then((response) => next(response.data.results.data));
+};
+
 export const storeSpecialist = async (data, next) => {
   const res = await API({
     url: "/admin/specialist",

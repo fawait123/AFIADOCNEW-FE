@@ -30,6 +30,18 @@ export const storeDoctor = async (data, next) => {
     data: data,
   }).then((response) => next(response.data));
 };
+
+export const registerDoctor = async (data, next) => {
+  await API({
+    url: "/auth/register/doctor",
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    data: data,
+  }).then((response) => next(response.data));
+};
+
 export const updateDoctor = async (id, data, next) => {
   await API({
     url: "/admin/doctor",
