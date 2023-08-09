@@ -595,7 +595,7 @@ const Home = () => {
                             </p>
                             <p>{doc?.specialist?.name || "not set"}</p>
                             <Badge
-                              text={doc.price.toLocaleString("id", "ID")}
+                              text={doc?.price?.toLocaleString("id", "ID")}
                               color={colorPallate.red}
                             />
                             <div
