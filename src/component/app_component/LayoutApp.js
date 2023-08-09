@@ -32,7 +32,8 @@ const LayoutApp = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    // window.location.href = "/login";
+    navigation.push("/login");
   };
 
   const getLogin = () => {

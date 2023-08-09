@@ -5,7 +5,7 @@ import {
   SubnodeOutlined,
 } from "@ant-design/icons";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -31,6 +31,9 @@ const DashboardLayout = ({ children }) => {
     collapse: false,
     collapseWidth: 100,
   });
+
+  const [menu, setMenu] = useState([]);
+
   const navigation = useRouter();
   const path = usePathname();
 
@@ -61,29 +64,122 @@ const DashboardLayout = ({ children }) => {
     },
     {
       key: "2",
-      label: <div>Account Details</div>,
-      icon: <MdOutlineManageAccounts />,
+      label: (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <MdOutlineManageAccounts />
+          <div style={{ marginLeft: 10 }}>Account Details</div>
+        </div>
+      ),
       disabled: false,
     },
     {
       key: "2",
-      label: <div>Tax Information</div>,
-      icon: <HiOutlineReceiptTax />,
+      label: (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <HiOutlineReceiptTax />
+          <div style={{ marginLeft: 10 }}>Tax Information</div>
+        </div>
+      ),
+
       disabled: false,
     },
     {
       key: "2",
-      label: <div>User Management</div>,
-      icon: <FaUsers />,
+      label: (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <FaUsers />
+          <div style={{ marginLeft: 10 }}>User Management</div>
+        </div>
+      ),
+
       disabled: false,
     },
     {
       key: "2",
-      label: <div>Logout</div>,
-      icon: <AiOutlinePoweroff />,
+      label: (
+        <div
+          style={{ display: "flex", alignItems: "center" }}
+          onClick={() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            navigation.push("/login");
+          }}
+        >
+          <AiOutlinePoweroff />
+          <div style={{ marginLeft: 10 }}>Logout</div>
+        </div>
+      ),
+
       disabled: false,
     },
   ];
+
+  useEffect(() => {
+    const roleManagement = JSON.parse(window.localStorage.getItem("user"));
+    if (roleManagement?.role?.name === "pengguna") {
+      navigation.push("/");
+    }
+
+    let TemplateMenu = [
+      {
+        key: "/dashboard",
+        icon: <HomeOutlined />,
+        label: "Dashboard",
+        prefix: "all",
+        onClick: (e) => navigation.push(e.key),
+      },
+      {
+        key: "/dashboard/user",
+        icon: <UserOutlined />,
+        label: "Pengguna",
+        prefix: "admin",
+        onClick: (e) => navigation.push(e.key),
+      },
+      {
+        key: "/dashboard/doctors",
+        icon: <FaUserDoctor />,
+        label: "Dokter",
+        prefix: "admin",
+        onClick: (e) => navigation.push(e.key),
+      },
+      {
+        key: "/dashboard/specialist",
+        icon: <SubnodeOutlined />,
+        label: "Spesialis",
+        prefix: "admin",
+        onClick: (e) => navigation.push(e.key),
+      },
+      {
+        key: "/dashboard/booking",
+        icon: <SubnodeOutlined />,
+        label: "Booking",
+        prefix: "dokter",
+        onClick: (e) => navigation.push(e.key),
+      },
+      {
+        key: "/dashboard/chat",
+        icon: <SubnodeOutlined />,
+        label: "Chat",
+        prefix: "dokter",
+        onClick: (e) => navigation.push(e.key),
+      },
+      // {
+      //   key: "/dashboard/hospital",
+      //   icon: <FaHospital />,
+      //   label: "Rumah Sakit",
+      //   onClick: (e) => navigation.push(e.key),
+      // },
+    ];
+
+    let menusManagement = TemplateMenu.filter((items) => {
+      return (
+        items.prefix === roleManagement?.role?.name || items.prefix === "all"
+      );
+    });
+
+    // console.log(menusManagement);
+    setMenu(menusManagement);
+  }, []);
 
   return (
     <Layout>
@@ -148,55 +244,7 @@ const DashboardLayout = ({ children }) => {
           // defaultSelectedKeys={[path]}
           selectedKeys={[path]}
           // stya
-          items={[
-            // {
-            //   key: "1",
-            //   icon: <Image width={20} height={20} src={"/assets/logo.png"} />,
-            //   // label: "nav 1",
-            // },
-            {
-              key: "/dashboard",
-              icon: <HomeOutlined />,
-              label: "Dashboard",
-              onClick: (e) => navigation.push(e.key),
-            },
-            {
-              key: "/dashboard/user",
-              icon: <UserOutlined />,
-              label: "Pengguna",
-              onClick: (e) => navigation.push(e.key),
-            },
-            {
-              key: "/dashboard/doctors",
-              icon: <FaUserDoctor />,
-              label: "Dokter",
-              onClick: (e) => navigation.push(e.key),
-            },
-            {
-              key: "/dashboard/specialist",
-              icon: <SubnodeOutlined />,
-              label: "Spesialis",
-              onClick: (e) => navigation.push(e.key),
-            },
-            {
-              key: "/dashboard/booking",
-              icon: <SubnodeOutlined />,
-              label: "Booking",
-              onClick: (e) => navigation.push(e.key),
-            },
-            {
-              key: "/dashboard/chat",
-              icon: <SubnodeOutlined />,
-              label: "Chat",
-              onClick: (e) => navigation.push(e.key),
-            },
-            // {
-            //   key: "/dashboard/hospital",
-            //   icon: <FaHospital />,
-            //   label: "Rumah Sakit",
-            //   onClick: (e) => navigation.push(e.key),
-            // },
-          ]}
+          items={menu}
         />
       </Sider>
       <Layout>
