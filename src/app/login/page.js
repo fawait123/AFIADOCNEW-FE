@@ -19,11 +19,14 @@ const Login = () => {
     formValue.validateFields().then(() => {
       const { username, password } = formValue.getFieldValue();
       authenticationLogin({ username, password }, (user) => {
+        console.log(user);
         setLoading(false);
         if (user.role.name === "pengguna") {
-          window.location.href = "/";
+          // window.location.href = "/";
+          navigation.push("/");
         } else {
-          window.location.href = "/dashboard";
+          navigation.push("/dashboard");
+          // window.location.href = "/dashboard";
         }
       }).catch((err) => {
         setLoading(false);
