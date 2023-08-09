@@ -88,7 +88,7 @@ const Doctors = () => {
   });
 
   useEffect(() => {
-    getDoctor((res) => {
+    getDoctor({ page: 0, limit: 10, isActive: 1 }, (res) => {
       setDataDoctor(res);
     });
   }, []);
@@ -112,7 +112,6 @@ const Doctors = () => {
     // form.validateFields().then(() => {
     const formData = new FormData();
     let formValues = form.getFieldsValue();
-    console.log(formValues, "jsjsj");
     let keys = Object.keys(form.getFieldsValue());
     keys.map((item, index) => {
       // console.log(item, typeof formValues[item]);
@@ -125,13 +124,26 @@ const Doctors = () => {
       }
     });
 
-    // storeDoctor(formData, (res) => {
-    //   setOpen(false);
-    //   getDoctor((res) => {
-    //     setDataDoctor(res);
-    //   });
-    //   form.resetFields();
-    // });
+    let prices = [
+      {
+        type: "chatt",
+        price: formValues.chatt,
+      },
+      {
+        type: "booking",
+        price: formValues.booking,
+      },
+    ];
+
+    formData.append("prices", JSON.stringify(prices));
+
+    storeDoctor(formData, (res) => {
+      setOpen(false);
+      getDoctor((res) => {
+        setDataDoctor(res);
+      });
+      form.resetFields();
+    });
     // });
   };
 
@@ -151,6 +163,19 @@ const Doctors = () => {
           formData.append(item, formValues[item]);
         }
       });
+
+      let prices = [
+        {
+          type: "chatt",
+          price: formValues.chatt,
+        },
+        {
+          type: "booking",
+          price: formValues.booking,
+        },
+      ];
+
+      formData.append("prices", JSON.stringify(prices));
 
       updateDoctor(formValues.id, formData, (res) => {
         setOpen(false);
@@ -521,12 +546,16 @@ const Doctors = () => {
                   <Input type="number" placeholder="RW" />
                 </Form.Item>
               </Col>
-              <Col span={24}>
+
+              <Col span={24} style={{ marginBottom: 10 }}>
+                <Col span={24}>
+                  <p style={{ fontWeight: 500 }}>Harga</p>
+                </Col>
                 <Card>
-                  {/* <Row gutter={[15, 15]}>
+                  <Row gutter={[15, 15]}>
                     <Col span={12}>
                       <Form.Item
-                        name="chat"
+                        name="chatt"
                         label="Chat"
                         rules={[
                           {
@@ -550,75 +579,7 @@ const Doctors = () => {
                         <Input type="number" placeholder="harga" />
                       </Form.Item>
                     </Col>
-                  </Row> */}
-                  <Form.List name={"prices"} initialValue={prices}>
-                    {(prices, { add, remove }) => {
-                      return (
-                        <>
-                          <Col
-                            span={24}
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <p style={{ fontWeight: 500 }}>Riwayat Pekerjaan</p>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                color: colorPallate.blue,
-                              }}
-                              onClick={() => add()}
-                              // style={{ width: "40%" }}
-                            >
-                              <AiOutlinePlusCircle />
-                              <p>Tambah</p>
-                            </div>
-                          </Col>
-                          {prices.map((field, index) => (
-                            <Card
-                              key={field.key}
-                              style={{
-                                marginBottom: 10,
-                              }}
-                            >
-                              <BsFillTrashFill
-                                color="red"
-                                style={{ position: "absolute", right: 20 }}
-                                onClick={() => remove(field.name)}
-                              />
-
-                              <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                                <Col span={24}>
-                                  <Form.Item
-                                    // style={{ width: "100%" }}
-                                    name={[index, "booking"]}
-                                    label={`Booking`}
-                                    rules={[{ required: true }]}
-                                  >
-                                    <Input />
-                                  </Form.Item>
-                                </Col>
-                              </Row>
-                              <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                                <Col span={24}>
-                                  <Form.Item
-                                    // style={{ width: "100%" }}
-                                    name={[index, "price"]}
-                                    label={`Harga`}
-                                    rules={[{ required: true }]}
-                                  >
-                                    <Input />
-                                  </Form.Item>
-                                </Col>
-                              </Row>
-                            </Card>
-                          ))}
-                        </>
-                      );
-                    }}
-                  </Form.List>
+                  </Row>
                 </Card>
               </Col>
 
