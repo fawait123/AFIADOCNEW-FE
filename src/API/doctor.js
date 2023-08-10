@@ -1,13 +1,8 @@
 import API from ".";
 
-export const getDoctor = async (next) => {
+export const getDoctor = async (params, next) => {
   await API.get("/admin/doctor", {
-    params: {
-      page: 0,
-      limit: 10,
-      association:
-        "specialist,company,addresses.province.district.subdistrict.village,academics,works",
-    },
+    params: params,
   }).then((response) => {
     next(response.data.results.data);
   });
