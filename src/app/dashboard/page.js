@@ -2,7 +2,7 @@
 import CardDashboardComponent from "@/component/CardDashboardComponent";
 import { Card, Col, Row } from "antd";
 import React from "react";
-import { FaUserFriends, FaHospital } from "react-icons/fa";
+import { FaUserFriends, FaHospital, FaMoneyBill } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 import { BiGlassesAlt } from "react-icons/bi";
 
@@ -129,9 +129,9 @@ const Dashboard = () => {
         </Col>
         <Col flex={1}>
           <CardDashboardComponent
-            title="Total Rumah Sakit"
-            count={110}
-            icon={<FaHospital style={{ fontSize: 50 }} />}
+            title="Total Pemasukan"
+            count={dataDashboard?.card?.income.toLocaleString("id", "ID") || 0}
+            icon={<FaMoneyBill style={{ fontSize: 50 }} />}
           />
         </Col>
       </Row>
