@@ -82,7 +82,8 @@ const Home = () => {
       };
       console.log(payload);
       insertBooking(payload, (response) => {
-        console.log(response);
+        setIsModalBooking(false);
+        navigation.push("/booking");
       });
     });
   };
