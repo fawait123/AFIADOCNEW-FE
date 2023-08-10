@@ -32,7 +32,11 @@ API.interceptors.request.use((config) => {
 
 API.interceptors.response.use(
   function (response) {
-    handleNotification("success", "Success", "");
+    if (response.config.method !== "get") {
+      if (response.data.message) {
+        handleNotification("success", "Success", response.data.message);
+      }
+    }
     return response;
   },
   function (error) {
