@@ -22,11 +22,12 @@ const position2 = {
 };
 
 const center = {
-  lat: 0,
-  lng: -180,
+  lat: -7.614529,
+  lng: 110.712246,
 };
 
-const Maps = () => {
+const Maps = ({ datas = [] }) => {
+  console.log(datas, "datas");
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyDzNyMoghl7ZW8jIQimrvx2QayXcLP8z7I",
@@ -47,18 +48,17 @@ const Maps = () => {
     }
   }
 
-  return isLoaded ? (
+  return isLoaded && datas.length > 0 ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={position}
+      center={center}
       zoom={11}
       onLoad={onLoad}
       //   onUnmount={onUnmount}
     >
-      {/* Child components, such as markers, info windows, etc. */}
-      <Marker onLoad={onLoad} position={position} />
-
-      {/* <Marker onLoad={onLoad} position={position2} /> */}
+      {datas.map((item) => {
+        return <Marker onLoad={onLoad} position={item} />;
+      })}
     </GoogleMap>
   ) : (
     <></>

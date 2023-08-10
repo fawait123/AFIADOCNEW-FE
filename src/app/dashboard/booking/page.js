@@ -1,65 +1,83 @@
 "use client";
-import React from "react";
-import { Space, Table, Tag } from "antd";
+import React, { useEffect, useState } from "react";
+import { Badge, Breadcrumb, Space, Table, Tag } from "antd";
+import { getBooking } from "@/API/booking";
+import { FaEye } from "react-icons/fa";
+import moment from "moment";
 const { Column, ColumnGroup } = Table;
-const data = [
-  {
-    key: "1",
-    firstName: "John",
-    lastName: "Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    firstName: "Jim",
-    lastName: "Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    firstName: "Joe",
-    lastName: "Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
-const Booking = () => (
-  <Table dataSource={data}>
-    <ColumnGroup title="Name">
-      <Column title="First Name" dataIndex="firstName" key="firstName" />
-      <Column title="Last Name" dataIndex="lastName" key="lastName" />
-    </ColumnGroup>
-    <Column title="Age" dataIndex="age" key="age" />
-    <Column title="Address" dataIndex="address" key="address" />
-    <Column
-      title="Tags"
-      dataIndex="tags"
-      key="tags"
-      render={(tags) => (
-        <>
-          {tags.map((tag) => (
-            <Tag color="blue" key={tag}>
-              {tag}
-            </Tag>
-          ))}
-        </>
-      )}
-    />
-    <Column
-      title="Action"
-      key="action"
-      render={(_, record) => (
-        <Space size="middle">
-          <a>Invite {record.lastName}</a>
-          <a>Delete</a>
-        </Space>
-      )}
-    />
-  </Table>
-);
+const Booking = () => {
+  const [data, setData] = useState([]);
+
+  const getData = () => {
+    let user = JSON.parse(window.localStorage.getItem("user"));
+    let params = {
+      doctorID: user.prefixID,
+    };
+    getBooking(params, (response) => {
+      setData(response);
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+  return (
+    <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 20,
+        }}
+      >
+        <Breadcrumb>
+          <Breadcrumb.Item>Halaman</Breadcrumb.Item>
+          <Breadcrumb.Item>Booking</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
+      <Table dataSource={data}>
+        <Column
+          title="Pasien"
+          dataIndex="userID"
+          key="userID"
+          render={(_, record) => {
+            return <p>{record.user.name}</p>;
+          }}
+        />
+        <Column
+          title="Tanggal"
+          dataIndex="date"
+          key="date"
+          render={(_, record) => {
+            return moment(record.date).format("dddd MMMM YYYY");
+          }}
+        />
+        <Column
+          title="Status"
+          dataIndex="status"
+          key="status"
+          render={(_, record) => {
+            return (
+              <>
+                <Tag color={record.status == "proccess" ? "yellow" : "blue"}>
+                  {record.status}
+                </Tag>
+              </>
+            );
+          }}
+        />
+        <Column
+          title="Action"
+          key="action"
+          render={(_, record) => (
+            <Space size="middle">
+              <FaEye style={{ cursor: "pointer" }} />
+            </Space>
+          )}
+        />
+      </Table>
+    </div>
+  );
+};
 export default Booking;

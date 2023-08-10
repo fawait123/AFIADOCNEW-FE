@@ -21,8 +21,22 @@ import {
 import { Doughnut, Line } from "react-chartjs-2";
 import Maps from "@/component/dashboard/Maps";
 import { colorPallate } from "@/utils/colorpallate";
+import { useState } from "react";
+import { getDashboard } from "@/API/dashboard";
+import { useEffect } from "react";
 
 const Dashboard = () => {
+  const [dataDashboard, setDataDashboard] = useState({});
+
+  const getData = () => {
+    getDashboard((response) => {
+      setDataDashboard(response);
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
   ChartJS.register(
     ArcElement,
     Tooltip,
@@ -95,21 +109,21 @@ const Dashboard = () => {
         <Col flex={1}>
           <CardDashboardComponent
             title="Total Pengguna"
-            count={110}
+            count={dataDashboard?.card?.user || 0}
             icon={<FaUserFriends style={{ fontSize: 50 }} />}
           />
         </Col>
         <Col flex={1}>
           <CardDashboardComponent
             title="Total Dokter"
-            count={1237}
+            count={dataDashboard?.card?.doctor || 0}
             icon={<FaUserDoctor style={{ fontSize: 50 }} />}
           />
         </Col>
         <Col flex={1}>
           <CardDashboardComponent
             title="Total Spesialis"
-            count={726}
+            count={dataDashboard?.card?.specialist || 0}
             icon={<BiGlassesAlt style={{ fontSize: 50 }} />}
           />
         </Col>
@@ -177,7 +191,7 @@ const Dashboard = () => {
         </Col>
         <Col flex={1}>
           <div>
-            <Maps />
+            <Maps datas={dataDashboard.maps} />
           </div>
         </Col>
       </Row>

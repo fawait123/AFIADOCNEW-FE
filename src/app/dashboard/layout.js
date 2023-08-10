@@ -24,6 +24,7 @@ import { AiOutlinePoweroff } from "react-icons/ai";
 import { FaUsers } from "react-icons/fa";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { BsKey, BsKeyFill } from "react-icons/bs";
+import { getWallet } from "@/API/wallet";
 
 const { Header, Sider, Content } = Layout;
 const DashboardLayout = ({ children }) => {
@@ -34,9 +35,16 @@ const DashboardLayout = ({ children }) => {
   });
 
   const [menu, setMenu] = useState([]);
+  const [wallet, setWallet] = useState(0);
 
   const navigation = useRouter();
   const path = usePathname();
+
+  const getDataWallet = () => {
+    getWallet((res) => {
+      setWallet(res.amount);
+    });
+  };
 
   // console.log(path);
   const {
@@ -48,7 +56,7 @@ const DashboardLayout = ({ children }) => {
       key: "1",
       label: (
         <div style={{ width: 200 }}>
-          <p>Your Balance</p>
+          <p>AFIA WALLET</p>
           <div
             style={{
               display: "flex",
@@ -56,7 +64,9 @@ const DashboardLayout = ({ children }) => {
               justifyContent: "space-between",
             }}
           >
-            <p style={{ color: "green", fontWeight: 700 }}>Rp18.000</p>
+            <p style={{ color: "green", fontWeight: 700 }}>
+              Rp {wallet.toLocaleString("id", "ID")}
+            </p>
             <BiWallet size={20} />
           </div>
         </div>
@@ -68,35 +78,35 @@ const DashboardLayout = ({ children }) => {
       label: (
         <div style={{ display: "flex", alignItems: "center" }}>
           <MdOutlineManageAccounts />
-          <div style={{ marginLeft: 10 }}>Account Details</div>
+          <div style={{ marginLeft: 10 }}>Notifikasi</div>
         </div>
       ),
       disabled: false,
     },
     {
-      key: "2",
+      key: "3",
       label: (
         <div style={{ display: "flex", alignItems: "center" }}>
           <HiOutlineReceiptTax />
-          <div style={{ marginLeft: 10 }}>Tax Information</div>
+          <div style={{ marginLeft: 10 }}>Booking</div>
         </div>
       ),
 
       disabled: false,
     },
     {
-      key: "2",
+      key: "4",
       label: (
         <div style={{ display: "flex", alignItems: "center" }}>
           <FaUsers />
-          <div style={{ marginLeft: 10 }}>User Management</div>
+          <div style={{ marginLeft: 10 }}>Profil</div>
         </div>
       ),
 
       disabled: false,
     },
     {
-      key: "2",
+      key: "5",
       label: (
         <div
           style={{ display: "flex", alignItems: "center" }}
@@ -120,6 +130,8 @@ const DashboardLayout = ({ children }) => {
     if (roleManagement?.role?.name === "pengguna") {
       navigation.push("/");
     }
+
+    getDataWallet();
 
     let TemplateMenu = [
       {
