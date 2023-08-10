@@ -23,6 +23,8 @@ import { colorPallate } from "@/utils/colorpallate";
 import { AiOutlinePoweroff } from "react-icons/ai";
 import { FaUsers } from "react-icons/fa";
 import { MdOutlineManageAccounts } from "react-icons/md";
+
+import { BsKey, BsKeyFill } from "react-icons/bs";
 import { getWallet } from "@/API/wallet";
 
 const { Header, Sider, Content } = Layout;
@@ -158,6 +160,13 @@ const DashboardLayout = ({ children }) => {
         key: "/dashboard/specialist",
         icon: <SubnodeOutlined />,
         label: "Spesialis",
+        prefix: "admin",
+        onClick: (e) => navigation.push(e.key),
+      },
+      {
+        key: "/dashboard/validation",
+        icon: <BsKeyFill />,
+        label: "Validation",
         prefix: "admin",
         onClick: (e) => navigation.push(e.key),
       },

@@ -485,7 +485,7 @@ const Home = () => {
                           />
                           <div style={{ flex: 1, marginLeft: 10 }}>
                             <p style={{ marginTop: 10, fontWeight: 500 }}>
-                              {doc.name},{" "}
+                              {doc.name},
                               {doc.academics.map((aca) => aca.degree)}
                             </p>
                             <p>{doc?.specialist?.name || "not set"}</p>
