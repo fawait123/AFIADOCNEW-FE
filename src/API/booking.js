@@ -7,3 +7,9 @@ export const getBooking = async (params, next) => {
     next(response.data.results.data);
   });
 };
+
+export const insertBooking = async (payload, next) => {
+  await API.post("/admin/booking", payload).then((response) => {
+    next(response.data);
+  });
+};

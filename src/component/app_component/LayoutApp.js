@@ -148,35 +148,46 @@ const LayoutApp = ({ children }) => {
         </Col>
         <Col xs={{ span: 0 }} md={{ span: 2 }} xl={{ span: 2 }}>
           {isLogin ? (
-            <Dropdown
-              menu={{
-                items,
-              }}
-            >
-              <a
-                onClick={(e) => e.preventDefault()}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: 20,
+            user.role.name !== "pengguna" ? (
+              <Button
+                onClick={() => {
+                  navigation.push("/dashboard");
+                }}
+                type="primary"
+              >
+                Dashboard
+              </Button>
+            ) : (
+              <Dropdown
+                menu={{
+                  items,
                 }}
               >
-                <img
-                  alt=""
-                  src={
-                    "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                  }
+                <a
+                  onClick={(e) => e.preventDefault()}
                   style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "100%",
-                    marginRight: 10,
-                    border: `2px solid ${colorPallate.blue}`,
+                    display: "flex",
+                    alignItems: "center",
+                    marginRight: 20,
                   }}
-                />
-                <p>{user.name}</p>
-              </a>
-            </Dropdown>
+                >
+                  <img
+                    alt=""
+                    src={
+                      "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                    }
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "100%",
+                      marginRight: 10,
+                      border: `2px solid ${colorPallate.blue}`,
+                    }}
+                  />
+                  <p>{user.name}</p>
+                </a>
+              </Dropdown>
+            )
           ) : (
             <Button
               onClick={() => {
