@@ -590,14 +590,28 @@ const Home = () => {
                           />
                           <div style={{ flex: 1, marginLeft: 10 }}>
                             <p style={{ marginTop: 10, fontWeight: 500 }}>
-                              {doc.name},{" "}
+                              {doc.name},
                               {doc.academics.map((aca) => aca.degree)}
                             </p>
                             <p>{doc?.specialist?.name || "not set"}</p>
-                            <Badge
+                            {doc?.prices?.map((v) => {
+                              console.log(v);
+                              return (
+                                <div style={{ fontSize: 10 }}>
+                                  <Badge
+                                    text={`${v.type} ${v.price.toLocaleString(
+                                      "id",
+                                      "ID"
+                                    )}`}
+                                    color={colorPallate.red}
+                                  />
+                                </div>
+                              );
+                            })}
+                            {/* <Badge
                               text={doc?.price?.toLocaleString("id", "ID")}
                               color={colorPallate.red}
-                            />
+                            /> */}
                             <div
                               style={{
                                 display: "flex",
