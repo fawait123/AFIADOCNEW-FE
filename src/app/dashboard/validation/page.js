@@ -15,6 +15,7 @@ import {
   Tag,
   Space,
   Card,
+  Image,
 } from "antd";
 
 import { UploadOutlined } from "@ant-design/icons";
@@ -33,10 +34,15 @@ import { isNull } from "lodash";
 import { getSpecialist } from "@/API/http";
 import { FaPencil, FaTrash } from "react-icons/fa6";
 
-const Doctors = () => {
+const Validation = () => {
   const { confirm } = Modal;
   const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false);
+  const [detailModal, setDetailModal] = useState({
+    status: false,
+    dataDetail: null,
+  });
+
   const [dataProvince, setDataProvince] = useState({
     ProvSelect: null,
     data: [],
@@ -171,7 +177,7 @@ const Doctors = () => {
           marginBottom: 20,
         }}
       >
-        {/* <p>Doctors</p> */}
+        {/* <p>Validation</p> */}
         <Breadcrumb>
           <Breadcrumb.Item>Halaman</Breadcrumb.Item>
           <Breadcrumb.Item>Dokter</Breadcrumb.Item>
@@ -832,73 +838,273 @@ const Doctors = () => {
           title="Action"
           key="action"
           render={(_, record) => (
-            <Row gutter={[10]}>
-              <Col>
-                <FaPencil
-                  color={colorPallate.blue}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    console.log(record);
-                    setDataAcademic(record.academics);
-                    setDataWork(record.works);
-                    form.setFieldsValue({
-                      ...record,
-                      nik: record.NIK,
-                      str: record.STR,
-                      rt: record.addresses.length
-                        ? record.addresses[0].rtrw.split("/")[0]
-                        : null,
-                      rw: record.addresses.length
-                        ? record.addresses[0].rtrw.split("/")[1]
-                        : null,
-                      provinceID:
-                        record.addresses.length > 0
-                          ? record.addresses[0].provinceID
-                          : null,
-                      districtID:
-                        record.addresses.length > 0
-                          ? record.addresses[0].districtID
-                          : null,
-                      subdistrictID:
-                        record.addresses.length > 0
-                          ? record.addresses[0].subdistrictID
-                          : null,
-                      villageID:
-                        record.addresses.length > 0
-                          ? record.addresses[0].villageID
-                          : null,
-                    });
-                    setEdit(true);
-                    setOpen(true);
-                  }}
-                />
-              </Col>
-              <Col>
-                <FaTrash
-                  color={colorPallate.red}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    confirm({
-                      title: "Apakah anda yakin ingin menghapus data ?",
-                      content: "Hapus data",
-                      onOk() {
-                        console.log("oke");
-                      },
-                      okText: "Hapus data",
-                      onCancel() {
-                        console.log("Cancel");
-                      },
-                      cancelText: "Batal",
-                    });
-                  }}
-                />
-              </Col>
-            </Row>
+            // <Row gutter={[10]}>
+            //   <Col>
+            //     <FaPencil
+            //       color={colorPallate.blue}
+            //       style={{ cursor: "pointer" }}
+            //       onClick={() => {
+            //         console.log(record);
+            //         setDataAcademic(record.academics);
+            //         setDataWork(record.works);
+            //         form.setFieldsValue({
+            //           ...record,
+            //           nik: record.NIK,
+            //           str: record.STR,
+            //           rt: record.addresses.length
+            //             ? record.addresses[0].rtrw.split("/")[0]
+            //             : null,
+            //           rw: record.addresses.length
+            //             ? record.addresses[0].rtrw.split("/")[1]
+            //             : null,
+            //           provinceID:
+            //             record.addresses.length > 0
+            //               ? record.addresses[0].provinceID
+            //               : null,
+            //           districtID:
+            //             record.addresses.length > 0
+            //               ? record.addresses[0].districtID
+            //               : null,
+            //           subdistrictID:
+            //             record.addresses.length > 0
+            //               ? record.addresses[0].subdistrictID
+            //               : null,
+            //           villageID:
+            //             record.addresses.length > 0
+            //               ? record.addresses[0].villageID
+            //               : null,
+            //         });
+            //         setEdit(true);
+            //         setOpen(true);
+            //       }}
+            //     />
+            //   </Col>
+            //   <Col>
+            //     <FaTrash
+            //       color={colorPallate.red}
+            //       style={{ cursor: "pointer" }}
+            //       onClick={() => {
+            //         confirm({
+            //           title: "Apakah anda yakin ingin menghapus data ?",
+            //           content: "Hapus data",
+            //           onOk() {
+            //             console.log("oke");
+            //           },
+            //           okText: "Hapus data",
+            //           onCancel() {
+            //             console.log("Cancel");
+            //           },
+            //           cancelText: "Batal",
+            //         });
+            //       }}
+            //     />
+            //   </Col>
+            // </Row>
+            <Button
+              type="primary"
+              onClick={() =>
+                setDetailModal({
+                  status: true,
+                  dataDetail: record,
+                })
+              }
+            >
+              Details
+            </Button>
           )}
         />
       </Table>
+      <Modal
+        open={detailModal.status}
+        onOk={() =>
+          setDetailModal({
+            ...detailModal,
+            status: false,
+          })
+        }
+        onCancel={() =>
+          setDetailModal({
+            ...detailModal,
+            status: false,
+          })
+        }
+      >
+        <Card>
+          <Row gutter={[10, 10]}>
+            <Col
+              span={24}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                objectFit: "cover",
+                padding: "20px 0px",
+              }}
+            >
+              <Image
+                src="https://www.utphysicians.com/wp-content/uploads/2022/03/Kar-Biswajit-web.jpg.webp"
+                width={100}
+                height={100}
+                style={{ borderRadius: "100%", objectFit: "cover" }}
+              />
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>NIK/STR</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>{detailModal.dataDetail?.NIK}</p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Nama</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>{detailModal.dataDetail?.name}</p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Tempat ,Tanggal Lahir</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>
+                    {detailModal.dataDetail?.placebirth}
+                    {", "}
+                    {detailModal.dataDetail?.birthdate}
+                  </p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Jenis Kelamin</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>{detailModal.dataDetail?.gender}</p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Agama</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>{detailModal.dataDetail?.religion}</p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Email</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>{detailModal.dataDetail?.email}</p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Telfon</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>{detailModal.dataDetail?.phone}</p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Alamat</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  {console.log(detailModal.dataDetail?.addresses)}
+                  <p>
+                    {/* {detailModal.dataDetail?.NIK} */}
+
+                    {detailModal.dataDetail?.addresses[0].province.name +
+                      ", " +
+                      detailModal.dataDetail?.addresses[0].district.name +
+                      ", " +
+                      detailModal.dataDetail?.addresses[0].subdistrict?.name +
+                      ", " +
+                      detailModal.dataDetail?.addresses[0].village.name +
+                      ", " +
+                      detailModal.dataDetail?.addresses[0].rtrw}
+                  </p>
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Card>
+      </Modal>
     </div>
   );
 };
 
-export default Doctors;
+export default Validation;
