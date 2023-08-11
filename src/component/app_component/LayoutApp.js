@@ -23,8 +23,8 @@ const LayoutApp = ({ children }) => {
   const [wallet, setWallet] = useState(0);
   const navigation = useRouter();
 
-  const getDataWallet = () => {
-    getWallet((res) => {
+  const getDataWallet = async () => {
+    await getWallet((res) => {
       setWallet(res.amount);
     });
   };
