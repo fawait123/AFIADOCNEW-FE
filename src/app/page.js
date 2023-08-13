@@ -12,6 +12,7 @@ import {
   Input,
   Tag,
   Form,
+  Card,
 } from "antd";
 import { colorPallate } from "@/utils/colorpallate";
 import "./page.css";
@@ -31,6 +32,7 @@ import { FaUsers } from "react-icons/fa";
 import LayoutApp from "@/component/app_component/LayoutApp";
 import { useForm } from "antd/es/form/Form";
 import { insertBooking } from "@/API/booking";
+import { isUndefined } from "lodash";
 
 const Home = () => {
   const navigation = useRouter();
@@ -43,6 +45,7 @@ const Home = () => {
   const [selectDoctor, setSelectDoctor] = useState(null);
   const [detailDoctor, setDetailDoctor] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
+  const [nameEntitiy, setNameEntitiy] = useState("");
   const [form] = useForm();
 
   // console.log(DoctorData);
@@ -59,7 +62,7 @@ const Home = () => {
 
   const getDataSPecialist = () => {
     setLoadingSpecialist(true);
-    publicDashboard((res) => {
+    publicDashboard({ isActive: 1 }, (res) => {
       setSpecialistData(res);
       setLoadingSpecialist(false);
     });
@@ -67,7 +70,7 @@ const Home = () => {
 
   const getDataDoctor = () => {
     setLoadingDoctor(true);
-    publicDashboardDoctor((res) => {
+    publicDashboardDoctor({ isActive: 1 }, (res) => {
       setDoctorData(res);
       setLoadingDoctor(false);
     });
@@ -92,15 +95,12 @@ const Home = () => {
     getDataSPecialist();
     getDataDoctor();
 
-    if (window) {
-      if (window.localStorage.getItem("token")) {
-        setIsLogin(true);
-      }
-    } else {
-      if (localStorage.getItem("token")) {
-        setIsLogin(true);
-      }
+    if (localStorage.getItem("token")) {
+      setIsLogin(true);
     }
+    let Entitiy = JSON.parse(localStorage.getItem("user"))?.role?.name;
+    // console.log(Entitiy);
+    setNameEntitiy(isUndefined(Entitiy) ? "pengguna" : Entitiy);
   }, []);
 
   return (
@@ -176,7 +176,7 @@ const Home = () => {
                 Pilih kategori dokter sesuai dengan kebutuhan anda
               </p>
               <Row
-                justify={"start"}
+                justify={"center"}
                 gutter={[100, 20]}
                 style={{ margin: "20px 0px" }}
               >
@@ -194,32 +194,40 @@ const Home = () => {
                 ) : (
                   specialistData.map((val, i) => {
                     return (
-                      <Col
-                        flex={1}
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }}
-                        key={i}
-                      >
-                        <Image
-                          style={{ objectFit: "contain" }}
-                          alt="afia-docs"
-                          src={`${BASE_URL}/public/uploads/${val.picture}`}
-                          width={60}
-                          preview={false}
-                          height={60}
-                        />
-                        <p
-                          style={{
-                            textAlign: "center",
-                            color: colorPallate.blue,
-                            marginTop: 10,
+                      <Col span={6} key={i}>
+                        <Card
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            // console.log(val.id);
+                            navigation.push(`/specialist/${val.id}`);
                           }}
                         >
-                          {val.name}
-                        </p>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Image
+                              style={{ objectFit: "contain" }}
+                              alt="afia-docs"
+                              src={`${BASE_URL}/public/uploads/${val.picture}`}
+                              width={60}
+                              preview={false}
+                              height={60}
+                            />
+                            <p
+                              style={{
+                                textAlign: "center",
+                                color: colorPallate.blue,
+                                marginTop: 10,
+                              }}
+                            >
+                              {val.name}
+                            </p>
+                          </div>
+                        </Card>
                       </Col>
                     );
                   })
@@ -536,7 +544,10 @@ const Home = () => {
                               </div>
                             </div>
                             <Button
-                              style={{ marginLeft: 10 }}
+                              style={{
+                                marginLeft: 10,
+                                display: nameEntitiy !== "pengguna" && "none",
+                              }}
                               type="primary"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -548,7 +559,10 @@ const Home = () => {
                               Chat
                             </Button>
                             <Button
-                              style={{ marginLeft: 10 }}
+                              style={{
+                                marginLeft: 10,
+                                display: nameEntitiy !== "pengguna" && "none",
+                              }}
                               type="default"
                               color="red"
                               onClick={(e) => {

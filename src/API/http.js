@@ -1,22 +1,38 @@
 import API from ".";
 
-export const publicDashboard = async (next) => {
+export const publicDashboard = async (payload, next) => {
   const res = await API.get("/public/specialist", {
     params: {
       page: 0,
-      limit: 10,
+      limit: 6,
+      ...payload,
     },
   }).then((response) => {
     next(response.data.results.data.rows);
   });
 };
-export const publicDashboardDoctor = async (next) => {
+export const publicDashboardDoctor = async (payload, next) => {
   const res = await API.get("/public/doctor", {
     params: {
       page: 0,
-      limit: 10,
+      limit: 6,
       association:
         "specialist,company,addresses.province.district.subdistrict.village,academics,works",
+      ...payload,
+    },
+  }).then((response) => {
+    next(response.data.results.data.rows);
+  });
+};
+export const publicDashboardDoctorQuery = async (payload, query, next) => {
+  const res = await API.get("/public/doctor", {
+    params: {
+      page: 0,
+      limit: 6,
+      association:
+        "specialist,company,addresses.province.district.subdistrict.village,academics,works",
+      query,
+      ...payload,
     },
   }).then((response) => {
     next(response.data.results.data.rows);

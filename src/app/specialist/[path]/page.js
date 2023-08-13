@@ -18,7 +18,6 @@ import {
   getSpecialist,
   publicDashboard,
   publicDashboardDoctor,
-  publicDashboardDoctorQuery,
 } from "@/API/http";
 import { BASE_URL, PATH_IMAGE } from "@/utils/base_url";
 import { AiOutlineCloseCircle, AiFillLike } from "react-icons/ai";
@@ -27,10 +26,11 @@ import { useRouter } from "next/navigation";
 import LayoutApp from "@/component/app_component/LayoutApp";
 import { useForm } from "antd/es/form/Form";
 import { insertBooking } from "@/API/booking";
+import { getDoctor } from "@/API/doctor";
 import { isUndefined } from "lodash";
 
 const { Search } = Input;
-const TanyaDokter = () => {
+const SpecialistPage = ({ params }) => {
   const [DoctorData, setDoctorData] = useState([]);
   const [SpecialistData, setSpecialistData] = useState([]);
   const [selectDoctor, setSelectDoctor] = useState(null);
@@ -40,31 +40,31 @@ const TanyaDokter = () => {
   const [loadingDoctor, setLoadingDoctor] = useState(false);
   const [loadingSpecialist, setLoadingSpecialist] = useState(false);
   const [form] = useForm();
+  const { path } = params;
   const navigation = useRouter();
   const [nameEntitiy, setNameEntitiy] = useState("");
 
   const getDataDoctor = () => {
     setLoadingDoctor(true);
-    publicDashboardDoctor({ isActive: 1 }, (res) => {
-      setDoctorData(res);
-      setLoadingDoctor(false);
-    });
-  };
+    getDoctor(
+      {
+        specialistID: path,
+      },
+      (res) => {
+        setDoctorData(res.rows);
 
-  const getDataSpecialist = () => {
-    setLoadingSpecialist(true);
-    publicDashboard({ isActive: 1 }, (res) => {
-      setSpecialistData(res);
-      setLoadingSpecialist(false);
-    });
+        setLoadingDoctor(false);
+      }
+    );
+    // publicDashboardDoctor((res) => {
+
+    //   setLoadingDoctor(false);
+    // });
   };
 
   useEffect(() => {
     getDataDoctor();
-    getDataSpecialist();
-
     let Entitiy = JSON.parse(localStorage.getItem("user"))?.role?.name;
-    // console.log(Entitiy);
     setNameEntitiy(isUndefined(Entitiy) ? "pengguna" : Entitiy);
   }, []);
 
@@ -93,6 +93,8 @@ const TanyaDokter = () => {
       });
     });
   };
+
+  // console.log(DoctorData, "data");
   return (
     <LayoutApp>
       <div style={{ marginBottom: 380 }}>
@@ -104,7 +106,7 @@ const TanyaDokter = () => {
                   title: "Home",
                 },
                 {
-                  title: "Tanya Dokter",
+                  title: "Specialist",
                 },
               ]}
             />
@@ -182,18 +184,20 @@ const TanyaDokter = () => {
                   loading={false}
                   onSearch={(value) => {
                     setLoadingDoctor(true);
-                    publicDashboardDoctorQuery(
-                      { isActive: 1 },
-                      value,
+                    getDoctor(
+                      {
+                        specialistID: path,
+                        query: value,
+                      },
                       (res) => {
-                        setDoctorData(res);
+                        setDoctorData(res.rows);
                         setLoadingDoctor(false);
                       }
                     );
                   }}
                 />
                 <p style={{ marginTop: 20, fontWeight: 600, fontSize: 20 }}>
-                  Rekomendasi Dokter
+                  Rekomendasi Dokter Specialist
                 </p>
                 <p style={{ margin: "7px 0px 40px 0px" }}>
                   Pilih dokter untuk konsultasi kesehatan anda
@@ -335,72 +339,7 @@ const TanyaDokter = () => {
                         </Col>
                       );
                     })
-                  )}
-                </Row>
-                <p style={{ marginTop: 20, fontWeight: 600, fontSize: 20 }}>
-                  Specialist
-                </p>
-                <p style={{ margin: "7px 0px 40px 0px" }}>
-                  Pilih kategori dokter sesuai dengan kebutuhan anda
-                </p>
-                <Row
-                  gutter={[10, 10]}
-                  justify={"start"}
-                  style={{ marginTop: 10 }}
-                  wrap={true}
-                >
-                  {loadingSpecialist ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "100%",
-                      }}
-                    >
-                      <Spin />
-                    </div>
-                  ) : (
-                    SpecialistData.map((spec) => {
-                      return (
-                        <Col span={12} style={{ cursor: "pointer" }}>
-                          <div
-                            // name="parent"
-                            id="parent1"
-                            key={spec.id}
-                            onClick={() =>
-                              navigation.push(`/specialist/${spec.id}`)
-                            }
-                            style={{
-                              padding: 10,
-                              boxShadow: "0.1px 1px 3px gray",
-                              fontSize: 12,
-                              borderRadius: 10,
-                              display: "flex",
-                              // justifyContent: "space-evenly",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Image
-                              style={{
-                                objectFit: "cover",
-                                objectPosition: "top",
-                              }}
-                              alt="afia-docs"
-                              src={`${PATH_IMAGE}/${spec.picture}`}
-                              width={70}
-                              preview={false}
-                              height={70}
-                            />
-                            <div style={{ flex: 1, marginLeft: 10 }}>
-                              <p style={{ marginTop: 10, fontWeight: 500 }}>
-                                {spec.name}
-                              </p>
-                            </div>
-                          </div>
-                        </Col>
-                      );
-                    })
+                    // <p>jaj</p>
                   )}
                 </Row>
               </Col>
@@ -687,4 +626,4 @@ const TanyaDokter = () => {
   );
 };
 
-export default TanyaDokter;
+export default SpecialistPage;
