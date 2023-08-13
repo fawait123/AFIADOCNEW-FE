@@ -34,6 +34,7 @@ import { isNull } from "lodash";
 import { getSpecialist } from "@/API/http";
 import { FaPencil, FaTrash } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
+import { PATH_IMAGE } from "@/utils/base_url";
 
 const Validation = () => {
   const { confirm } = Modal;
@@ -190,546 +191,6 @@ const Validation = () => {
           <Breadcrumb.Item>Halaman</Breadcrumb.Item>
           <Breadcrumb.Item>Dokter</Breadcrumb.Item>
         </Breadcrumb>
-        <Modal
-          title={`${edit ? "Ubah" : "Tambah"} Dokter`}
-          centered
-          open={open}
-          okText={`${edit ? "Ubah" : "Tambah"} Dokter`}
-          cancelText="Batal"
-          onOk={() => (edit ? editDoctor() : tambahDoctor())}
-          onCancel={() => setOpen(false)}
-          width={1000}
-        >
-          <Form form={form} layout="vertical" style={{ marginTop: 30 }}>
-            <Row gutter={[20]}>
-              <Col span={12}>
-                <Form.Item name="str" label="STR" rules={[{ required: true }]}>
-                  <Input placeholder="STR" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="nik" label="NIK" rules={[{ required: true }]}>
-                  <Input placeholder="NIK" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="name"
-                  label="Nama"
-                  rules={[{ required: true }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-
-              <Col span={12}>
-                <Form.Item
-                  label="Jenis Kelamin"
-                  name={"gender"}
-                  rules={[{ required: true }]}
-                >
-                  <Select>
-                    <Select.Option value="L">Laki-Laki</Select.Option>
-                    <Select.Option value="P">Perempuan</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="placebirth"
-                  label="Tempat Lahir"
-                  rules={[{ required: true }]}
-                >
-                  <Input placeholder="Tempat Lahir" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="birthdate"
-                  label="Tanggal Lahir"
-                  rules={[{ required: true }]}
-                >
-                  <Input placeholder="Tanggal Lahir" type="date" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="religion"
-                  label="Agama"
-                  rules={[{ required: true }]}
-                >
-                  <Select>
-                    <Select.Option value="Islam">Islam</Select.Option>
-                    <Select.Option value="Kristen">Kristen</Select.Option>
-                    <Select.Option value="Hindu">Hindu</Select.Option>
-                    <Select.Option value="Buddha">Buddha</Select.Option>
-                    <Select.Option value="Konghucu">Konghucu</Select.Option>
-                    <Select.Option value="Katholik">Katholik</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="email"
-                  label="Email"
-                  rules={[{ required: true, type: "email" }]}
-                >
-                  <Input placeholder="Email" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="phone"
-                  label="Telepon"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Phone isn't valid",
-                    },
-                  ]}
-                >
-                  <Input type="number" placeholder="Telepon" />
-                </Form.Item>
-              </Col>
-              {/* <Col span={12}>
-                <Form.Item
-                  name="price"
-                  label="Harga"
-                  rules={[
-                    {
-                      required: true,
-
-                      message: "price isn't valid",
-                    },
-                  ]}
-                >
-                  <Input type="number" placeholder="harga" />
-                </Form.Item>
-              </Col> */}
-              <Col span={12}>
-                <Form.Item
-                  name="specialistID"
-                  label="Spesialis"
-                  rules={[{ required: true }]}
-                >
-                  <Select
-                    onFocus={() => {
-                      getSpecialist((res) => {
-                        setDataSpecialist(res.rows);
-                      });
-                    }}
-                  >
-                    {dataSpecialist.map((item) => {
-                      return (
-                        <Select.Option value={item.id}>
-                          {item.name}
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="photos"
-                  label="Gambar"
-                  rules={[
-                    {
-                      required: true,
-                    },
-                  ]}
-                >
-                  <Upload {...props}>
-                    <Button icon={<UploadOutlined />}>
-                      File harus png | jpg | jpeg
-                    </Button>
-                  </Upload>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Provinsi"
-                  name={"provinceID"}
-                  rules={[{ required: true }]}
-                >
-                  <Select
-                    onFocus={() => {
-                      setDataProvince({ ...dataProvince, ProvSelect: null });
-                      // setDataDistrict
-                      getRegional({ type: "province" }, (data) =>
-                        setDataProvince({
-                          ...dataProvince,
-                          data: data.data.results.data,
-                        })
-                      );
-                    }}
-                  >
-                    {dataProvince.data.map((prov) => {
-                      return (
-                        <Select.Option key={prov.id} value={prov.id}>
-                          <p
-                            onClick={() =>
-                              setDataProvince({
-                                ...dataProvince,
-                                ProvSelect: prov.code,
-                              })
-                            }
-                            style={{ width: "100%" }}
-                          >
-                            {prov.name}
-                          </p>
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Kabupaten"
-                  name={"districtID"}
-                  rules={[{ required: true }]}
-                  // onFocus={()=>}
-                >
-                  <Select
-                    disabled={isNull(dataProvince.ProvSelect)}
-                    onFocus={() =>
-                      getRegional(
-                        { parentID: dataProvince.ProvSelect },
-                        (data) =>
-                          // console.log(data)
-                          setDataDistrict({
-                            ...dataDistrict,
-                            data: data.data.results.data,
-                          })
-                      )
-                    }
-                  >
-                    {dataDistrict.data.map((dist) => {
-                      return (
-                        <Select.Option value={dist.id}>
-                          <p
-                            onClick={() =>
-                              setDataDistrict({
-                                ...dataDistrict,
-                                DistSelect: dist.code,
-                              })
-                            }
-                            style={{ width: "100%" }}
-                          >
-                            {dist.name}
-                          </p>
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Kecamatan"
-                  disabled={isNull(dataDistrict.DistSelect)}
-                  onFocus={() => {
-                    getRegional(
-                      { parentID: dataDistrict.DistSelect },
-                      (Sub) => {
-                        setDataSubDistrict({
-                          ...dataSubDistrict,
-                          data: Sub.data.results.data,
-                        });
-                      }
-                    );
-                  }}
-                  name={"subdistrictID"}
-                  rules={[{ required: true }]}
-                >
-                  <Select>
-                    {dataSubDistrict.data.map((subs) => {
-                      return (
-                        <Select.Option key={subs.id} value={subs.id}>
-                          {/* {subs.name} */}
-                          <p
-                            onClick={() =>
-                              setDataSubDistrict({
-                                ...dataSubDistrict,
-                                SubDistSelect: subs.code,
-                              })
-                            }
-                            style={{ width: "100%" }}
-                          >
-                            {subs.name}
-                          </p>
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
-                </Form.Item>
-              </Col>
-
-              <Col span={12}>
-                <Form.Item
-                  label="Desa"
-                  disabled={isNull(dataSubDistrict.SubDistSelect)}
-                  onFocus={() => {
-                    getRegional(
-                      { parentID: dataSubDistrict.SubDistSelect },
-                      (village) => {
-                        setDataVillage({
-                          ...datavillage,
-                          data: village.data.results.data,
-                        });
-                      }
-                    );
-                  }}
-                  name={"villageID"}
-                  rules={[{ required: true }]}
-                >
-                  <Select>
-                    {datavillage.data.map((vill) => {
-                      return (
-                        <Select.Option key={vill.id} value={vill.id}>
-                          {vill.name}
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
-                </Form.Item>
-              </Col>
-
-              <Col span={12}>
-                <Form.Item
-                  name="rt"
-                  label="RT"
-                  rules={[
-                    {
-                      required: true,
-                      message: "rt isn't valid",
-                    },
-                  ]}
-                >
-                  <Input type="number" placeholder="RT" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="rw"
-                  label="RW"
-                  rules={[
-                    {
-                      required: true,
-                      message: "rw isn't valid",
-                    },
-                  ]}
-                >
-                  <Input type="number" placeholder="RW" />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Card>
-                  <Row gutter={[15, 15]}>
-                    <Col span={12}>
-                      <Form.Item
-                        name="chat"
-                        label="Chat"
-                        rules={[
-                          {
-                            required: true,
-                          },
-                        ]}
-                      >
-                        <Input type="number" placeholder="harga" />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        name="booking"
-                        label="Booking"
-                        rules={[
-                          {
-                            required: true,
-                          },
-                        ]}
-                      >
-                        <Input type="number" placeholder="harga" />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-
-              <Col span={24}>
-                <Form.List name={"academics"} initialValue={dataAcademic}>
-                  {(academics, { add, remove }) => {
-                    return (
-                      <>
-                        <Col
-                          span={24}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <p style={{ fontWeight: 500 }}>Riwayat Pendidikan</p>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              color: colorPallate.blue,
-                            }}
-                            onClick={() => add()}
-                            // style={{ width: "40%" }}
-                          >
-                            <AiOutlinePlusCircle />
-                            <p>Tambah</p>
-                          </div>
-                        </Col>
-                        {academics.map((field, index) => (
-                          <Card
-                            key={field.key}
-                            style={{
-                              marginBottom: 10,
-                            }}
-                          >
-                            <BsFillTrashFill
-                              color="red"
-                              style={{ position: "absolute", right: 20 }}
-                              onClick={() => remove(field.name)}
-                            />
-
-                            <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                              <Col span={12}>
-                                <Form.Item
-                                  // style={{ width: "100%" }}
-                                  name={[index, "name"]}
-                                  label={`Nama`}
-                                  rules={[{ required: true }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                              <Col span={12}>
-                                <Form.Item
-                                  // style={{ width: "100%" }}
-                                  name={[index, "degree"]}
-                                  label={`Gelar `}
-                                  rules={[{ required: true }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                            </Row>
-                            <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                              <Col span={12}>
-                                <Form.Item
-                                  // style={{ width: "100%" }}
-                                  name={[index, "year_entry"]}
-                                  label={`Masuk `}
-                                  rules={[{ required: true }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                              <Col span={12}>
-                                <Form.Item
-                                  // style={{ width: "100%" }}
-                                  name={[index, "year_out"]}
-                                  label={`Lulus `}
-                                  rules={[{ required: true }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                            </Row>
-                          </Card>
-                        ))}
-                      </>
-                    );
-                  }}
-                </Form.List>
-              </Col>
-              <Col span={24}>
-                <Form.List name={"works"} initialValue={dataWork}>
-                  {(works, { add, remove }) => {
-                    return (
-                      <>
-                        <Col
-                          span={24}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <p style={{ fontWeight: 500 }}>Riwayat Pekerjaan</p>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              color: colorPallate.blue,
-                            }}
-                            onClick={() => add()}
-                            // style={{ width: "40%" }}
-                          >
-                            <AiOutlinePlusCircle />
-                            <p>Tambah</p>
-                          </div>
-                        </Col>
-                        {works.map((field, index) => (
-                          <Card
-                            key={field.key}
-                            style={{
-                              marginBottom: 10,
-                            }}
-                          >
-                            <BsFillTrashFill
-                              color="red"
-                              style={{ position: "absolute", right: 20 }}
-                              onClick={() => remove(field.name)}
-                            />
-
-                            <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                              <Col span={24}>
-                                <Form.Item
-                                  // style={{ width: "100%" }}
-                                  name={[index, "name"]}
-                                  label={`Nama`}
-                                  rules={[{ required: true }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                            </Row>
-                            <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                              <Col span={12}>
-                                <Form.Item
-                                  // style={{ width: "100%" }}
-                                  name={[index, "year_entry"]}
-                                  label={`Masuk `}
-                                  rules={[{ required: true }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                              <Col span={12}>
-                                <Form.Item
-                                  // style={{ width: "100%" }}
-                                  name={[index, "year_out"]}
-                                  label={`Lulus `}
-                                  rules={[{ required: true }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                            </Row>
-                          </Card>
-                        ))}
-                      </>
-                    );
-                  }}
-                </Form.List>
-              </Col>
-            </Row>
-          </Form>
-        </Modal>
       </div>
       <Row
         style={{
@@ -835,68 +296,6 @@ const Validation = () => {
           title="Action"
           key="action"
           render={(_, record) => (
-            // <Row gutter={[10]}>
-            //   <Col>
-            //     <FaPencil
-            //       color={colorPallate.blue}
-            //       style={{ cursor: "pointer" }}
-            //       onClick={() => {
-            //         console.log(record);
-            //         setDataAcademic(record.academics);
-            //         setDataWork(record.works);
-            //         form.setFieldsValue({
-            //           ...record,
-            //           nik: record.NIK,
-            //           str: record.STR,
-            //           rt: record.addresses.length
-            //             ? record.addresses[0].rtrw.split("/")[0]
-            //             : null,
-            //           rw: record.addresses.length
-            //             ? record.addresses[0].rtrw.split("/")[1]
-            //             : null,
-            //           provinceID:
-            //             record.addresses.length > 0
-            //               ? record.addresses[0].provinceID
-            //               : null,
-            //           districtID:
-            //             record.addresses.length > 0
-            //               ? record.addresses[0].districtID
-            //               : null,
-            //           subdistrictID:
-            //             record.addresses.length > 0
-            //               ? record.addresses[0].subdistrictID
-            //               : null,
-            //           villageID:
-            //             record.addresses.length > 0
-            //               ? record.addresses[0].villageID
-            //               : null,
-            //         });
-            //         setEdit(true);
-            //         setOpen(true);
-            //       }}
-            //     />
-            //   </Col>
-            //   <Col>
-            //     <FaTrash
-            //       color={colorPallate.red}
-            //       style={{ cursor: "pointer" }}
-            //       onClick={() => {
-            //         confirm({
-            //           title: "Apakah anda yakin ingin menghapus data ?",
-            //           content: "Hapus data",
-            //           onOk() {
-            //             console.log("oke");
-            //           },
-            //           okText: "Hapus data",
-            //           onCancel() {
-            //             console.log("Cancel");
-            //           },
-            //           cancelText: "Batal",
-            //         });
-            //       }}
-            //     />
-            //   </Col>
-            // </Row>
             <FaEye
               style={{ cursor: "pointer" }}
               onClick={() => {
@@ -906,22 +305,13 @@ const Validation = () => {
                 });
               }}
             />
-            // <Button
-            //   type="primary"
-            //   onClick={() =>
-            //     setDetailModal({
-            //       status: true,
-            //       dataDetail: record,
-            //     })
-            //   }
-            // >
-            //   Details
-            // </Button>
           )}
         />
       </Table>
       <Modal
         open={detailModal.status}
+        okText="Validasi"
+        cancelText="Batal"
         onOk={() =>
           setDetailModal({
             ...detailModal,
@@ -947,7 +337,7 @@ const Validation = () => {
               }}
             >
               <Image
-                src="https://www.utphysicians.com/wp-content/uploads/2022/03/Kar-Biswajit-web.jpg.webp"
+                src={`${PATH_IMAGE}/${detailModal.dataDetail?.photos}`}
                 width={100}
                 height={100}
                 style={{ borderRadius: "100%", objectFit: "cover" }}
@@ -966,7 +356,10 @@ const Validation = () => {
                   <p>:</p>
                 </div>
                 <div style={{ width: "70%", marginLeft: 10 }}>
-                  <p>{detailModal.dataDetail?.NIK}</p>
+                  <p>
+                    {detailModal.dataDetail?.STR} /{" "}
+                    {detailModal.dataDetail?.NIK}
+                  </p>
                 </div>
               </div>
             </Col>
@@ -983,7 +376,11 @@ const Validation = () => {
                   <p>:</p>
                 </div>
                 <div style={{ width: "70%", marginLeft: 10 }}>
-                  <p>{detailModal.dataDetail?.name}</p>
+                  <p>
+                    {detailModal.dataDetail?.name}
+                    {", "}
+                    {detailModal.dataDetail?.academics?.map((el) => el.degree)}
+                  </p>
                 </div>
               </div>
             </Col>
@@ -1102,6 +499,92 @@ const Validation = () => {
                       detailModal.dataDetail?.addresses[0].village.name +
                       ", " +
                       detailModal.dataDetail?.addresses[0].rtrw}
+                  </p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Akademik</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>
+                    {detailModal.dataDetail?.academics?.map((el) => {
+                      return (
+                        el.name +
+                        ", " +
+                        el.year_entry +
+                        " - " +
+                        el.year_out +
+                        " "
+                      );
+                    })}
+                  </p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Pekerjaan</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>
+                    {detailModal.dataDetail?.works?.map((el) => {
+                      return (
+                        el.name +
+                        ", " +
+                        el.year_entry +
+                        " - " +
+                        el.year_out +
+                        " "
+                      );
+                    })}
+                  </p>
+                </div>
+              </div>
+            </Col>
+            <Col span={24}>
+              <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    width: "30%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>Harga</p>
+                  <p>:</p>
+                </div>
+                <div style={{ width: "70%", marginLeft: 10 }}>
+                  <p>
+                    {detailModal.dataDetail?.prices?.map((el) => {
+                      return (
+                        <>
+                          <Tag
+                            color={`${el.type == "chatt" ? "blue" : "yellow"}`}
+                            title={el.type}
+                          >
+                            {el.price.toLocaleString("id", "ID")}
+                          </Tag>
+                        </>
+                      );
+                    })}
                   </p>
                 </div>
               </div>

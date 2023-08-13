@@ -12,9 +12,9 @@ import {
   Upload,
   Breadcrumb,
   Table,
-  Tag,
-  Space,
   Card,
+  Tag,
+  Image,
 } from "antd";
 
 import { UploadOutlined } from "@ant-design/icons";
@@ -32,11 +32,19 @@ import { BsFillTrashFill } from "react-icons/bs";
 import { isNull } from "lodash";
 import { getSpecialist } from "@/API/http";
 import { FaPencil, FaTrash } from "react-icons/fa6";
+import { FaEye } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { PATH_IMAGE } from "@/utils/base_url";
 
 const Doctors = () => {
+  const navigation = useRouter();
   const { confirm } = Modal;
   const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false);
+  const [detailModal, setDetailModal] = useState({
+    status: false,
+    dataDetail: null,
+  });
   const [dataProvince, setDataProvince] = useState({
     ProvSelect: null,
     data: [],
@@ -213,6 +221,294 @@ const Doctors = () => {
           Tambah Dokter
         </Button>
         <Modal
+          open={detailModal.status}
+          okText="Validasi"
+          cancelText="Batal"
+          onOk={() =>
+            setDetailModal({
+              ...detailModal,
+              status: false,
+            })
+          }
+          onCancel={() =>
+            setDetailModal({
+              ...detailModal,
+              status: false,
+            })
+          }
+        >
+          <Card>
+            <Row gutter={[10, 10]}>
+              <Col
+                span={24}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  objectFit: "cover",
+                  padding: "20px 0px",
+                }}
+              >
+                <Image
+                  src={`${PATH_IMAGE}/${detailModal.dataDetail?.photos}`}
+                  width={100}
+                  height={100}
+                  style={{ borderRadius: "100%", objectFit: "cover" }}
+                />
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>NIK/STR</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>
+                      {detailModal.dataDetail?.STR} /{" "}
+                      {detailModal.dataDetail?.NIK}
+                    </p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Nama</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>
+                      {detailModal.dataDetail?.name}
+                      {", "}
+                      {detailModal.dataDetail?.academics?.map(
+                        (el) => el.degree
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Tempat ,Tanggal Lahir</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>
+                      {detailModal.dataDetail?.placebirth}
+                      {", "}
+                      {detailModal.dataDetail?.birthdate}
+                    </p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Jenis Kelamin</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>{detailModal.dataDetail?.gender}</p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Agama</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>{detailModal.dataDetail?.religion}</p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Email</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>{detailModal.dataDetail?.email}</p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Telfon</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>{detailModal.dataDetail?.phone}</p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Alamat</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    {console.log(detailModal.dataDetail?.addresses)}
+                    <p>
+                      {/* {detailModal.dataDetail?.NIK} */}
+
+                      {detailModal.dataDetail?.addresses[0].province.name +
+                        ", " +
+                        detailModal.dataDetail?.addresses[0].district.name +
+                        ", " +
+                        detailModal.dataDetail?.addresses[0].subdistrict?.name +
+                        ", " +
+                        detailModal.dataDetail?.addresses[0].village.name +
+                        ", " +
+                        detailModal.dataDetail?.addresses[0].rtrw}
+                    </p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Akademik</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>
+                      {detailModal.dataDetail?.academics?.map((el) => {
+                        return (
+                          el.name +
+                          ", " +
+                          el.year_entry +
+                          " - " +
+                          el.year_out +
+                          " "
+                        );
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Pekerjaan</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>
+                      {detailModal.dataDetail?.works?.map((el) => {
+                        return (
+                          el.name +
+                          ", " +
+                          el.year_entry +
+                          " - " +
+                          el.year_out +
+                          " "
+                        );
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div style={{ display: "flex" }}>
+                  <div
+                    style={{
+                      width: "30%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p>Harga</p>
+                    <p>:</p>
+                  </div>
+                  <div style={{ width: "70%", marginLeft: 10 }}>
+                    <p>
+                      {detailModal.dataDetail?.prices?.map((el) => {
+                        return (
+                          <>
+                            <Tag
+                              color={`${
+                                el.type == "chatt" ? "blue" : "yellow"
+                              }`}
+                              title={el.type}
+                            >
+                              {el.price.toLocaleString("id", "ID")}
+                            </Tag>
+                          </>
+                        );
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
           title={`${edit ? "Ubah" : "Tambah"} Dokter`}
           centered
           open={open}
@@ -313,21 +609,6 @@ const Doctors = () => {
                   <Input type="number" placeholder="Telepon" />
                 </Form.Item>
               </Col>
-              {/* <Col span={12}>
-                <Form.Item
-                  name="price"
-                  label="Harga"
-                  rules={[
-                    {
-                      required: true,
-
-                      message: "price isn't valid",
-                    },
-                  ]}
-                >
-                  <Input type="number" placeholder="harga" />
-                </Form.Item>
-              </Col> */}
               <Col span={12}>
                 <Form.Item
                   name="specialistID"
@@ -349,23 +630,6 @@ const Doctors = () => {
                       );
                     })}
                   </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="photos"
-                  label="Gambar"
-                  rules={[
-                    {
-                      required: true,
-                    },
-                  ]}
-                >
-                  <Upload {...props}>
-                    <Button icon={<UploadOutlined />}>
-                      File harus png | jpg | jpeg
-                    </Button>
-                  </Upload>
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -753,6 +1017,57 @@ const Doctors = () => {
                   }}
                 </Form.List>
               </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="photos"
+                  label="Gambar"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Upload {...props}>
+                    <Button icon={<UploadOutlined />}>
+                      File harus png | jpg | jpeg
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="ktp"
+                  label="KTP"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Upload {...props}>
+                    <Button icon={<UploadOutlined />}>
+                      File harus png | jpg | jpeg
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  name="practice"
+                  label="Bukti Praktik"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Upload {...props}>
+                    <Button icon={<UploadOutlined />}>
+                      File harus png | jpg | jpeg
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
             </Row>
           </Form>
         </Modal>
@@ -862,6 +1177,17 @@ const Doctors = () => {
           key="action"
           render={(_, record) => (
             <Row gutter={[10]}>
+              <Col>
+                <FaEye
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setDetailModal({
+                      status: true,
+                      dataDetail: record,
+                    });
+                  }}
+                />
+              </Col>
               <Col>
                 <FaPencil
                   color={colorPallate.blue}

@@ -259,23 +259,6 @@ const RegisterDoctor = () => {
               </Col>
               <Col span={12}>
                 <Form.Item
-                  name="photos"
-                  label="Gambar"
-                  rules={[
-                    {
-                      required: true,
-                    },
-                  ]}
-                >
-                  <Upload {...props}>
-                    <Button icon={<UploadOutlined />}>
-                      File harus png | jpg | jpeg
-                    </Button>
-                  </Upload>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
                   label="Provinsi"
                   name={"provinceID"}
                   rules={[{ required: true }]}
@@ -621,6 +604,57 @@ const RegisterDoctor = () => {
                     );
                   }}
                 </Form.List>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="photos"
+                  label="Gambar"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Upload {...props}>
+                    <Button icon={<UploadOutlined />}>
+                      File harus png | jpg | jpeg
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="ktp"
+                  label="KTP"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Upload {...props}>
+                    <Button icon={<UploadOutlined />}>
+                      File harus png | jpg | jpeg
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  name="practice"
+                  label="Bukti Praktik"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Upload {...props}>
+                    <Button icon={<UploadOutlined />}>
+                      File harus png | jpg | jpeg
+                    </Button>
+                  </Upload>
+                </Form.Item>
               </Col>
               <Col span={24}>
                 <Button
