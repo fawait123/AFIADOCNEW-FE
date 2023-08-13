@@ -124,6 +124,9 @@ const LayoutApp = ({ children }) => {
       >
         <Col span={1}>
           <Image
+            onClick={() => {
+              navigation.push("/");
+            }}
             style={{ objectFit: "contain" }}
             alt="afia-docs"
             src={"/assets/logo.png"}
@@ -138,7 +141,11 @@ const LayoutApp = ({ children }) => {
               return (
                 <Col key={i}>
                   {" "}
-                  <p className="text" style={{ fontWeight: 450, fontSize: 14 }}>
+                  <p
+                    onClick={() => navigation.push("/")}
+                    className="text"
+                    style={{ fontWeight: 450, fontSize: 14 }}
+                  >
                     {val}
                   </p>
                 </Col>
