@@ -33,6 +33,7 @@ import { BsFillTrashFill } from "react-icons/bs";
 import { isNull } from "lodash";
 import { getSpecialist } from "@/API/http";
 import { FaPencil, FaTrash } from "react-icons/fa6";
+import { FaEye } from "react-icons/fa";
 
 const Validation = () => {
   const { confirm } = Modal;
@@ -94,9 +95,16 @@ const Validation = () => {
   });
 
   useEffect(() => {
-    getDoctor((res) => {
-      setDataDoctor(res);
-    });
+    getDoctor(
+      {
+        page: 0,
+        limit: 10,
+        isActive: 0,
+      },
+      (res) => {
+        setDataDoctor(res);
+      }
+    );
   }, []);
 
   const props = {
@@ -182,17 +190,6 @@ const Validation = () => {
           <Breadcrumb.Item>Halaman</Breadcrumb.Item>
           <Breadcrumb.Item>Dokter</Breadcrumb.Item>
         </Breadcrumb>
-        <Button
-          style={{ marginBottom: 10 }}
-          onClick={() => {
-            setOpen(true);
-            setEdit(false);
-            form.resetFields();
-          }}
-          type="primary"
-        >
-          Tambah Dokter
-        </Button>
         <Modal
           title={`${edit ? "Ubah" : "Tambah"} Dokter`}
           centered
@@ -900,17 +897,26 @@ const Validation = () => {
             //     />
             //   </Col>
             // </Row>
-            <Button
-              type="primary"
-              onClick={() =>
+            <FaEye
+              style={{ cursor: "pointer" }}
+              onClick={() => {
                 setDetailModal({
                   status: true,
                   dataDetail: record,
-                })
-              }
-            >
-              Details
-            </Button>
+                });
+              }}
+            />
+            // <Button
+            //   type="primary"
+            //   onClick={() =>
+            //     setDetailModal({
+            //       status: true,
+            //       dataDetail: record,
+            //     })
+            //   }
+            // >
+            //   Details
+            // </Button>
           )}
         />
       </Table>

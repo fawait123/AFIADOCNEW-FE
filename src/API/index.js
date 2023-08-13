@@ -43,11 +43,11 @@ API.interceptors.response.use(
     if (!error.response) {
       handleNotification("error", "Error", "Something when wrong");
     }
-    if (error.response.data.message) {
+    if (error?.response?.data?.message) {
       handleNotification("error", "Error", error.response.data.message);
     }
     console.log(error);
-    if (error.data.response.status === 401) {
+    if (error?.data?.response?.status === 401) {
       window.localStorage.removeItem("token");
       window.location.href = "/login";
     }
