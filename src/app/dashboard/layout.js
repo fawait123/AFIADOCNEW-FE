@@ -37,6 +37,7 @@ const DashboardLayout = ({ children }) => {
 
   const [menu, setMenu] = useState([]);
   const [wallet, setWallet] = useState(0);
+  const [user, setUser] = useState(null);
 
   const navigation = useRouter();
   const path = usePathname();
@@ -45,6 +46,10 @@ const DashboardLayout = ({ children }) => {
     getWallet((res) => {
       setWallet(res.amount);
     });
+  };
+
+  const getUser = () => {
+    setUser(JSON.parse(window.localStorage.getItem("user")));
   };
 
   // console.log(path);
@@ -133,6 +138,7 @@ const DashboardLayout = ({ children }) => {
     }
 
     getDataWallet();
+    getUser();
 
     let TemplateMenu = [
       {
@@ -159,7 +165,7 @@ const DashboardLayout = ({ children }) => {
       {
         key: "/dashboard/validation",
         icon: <BsKeyFill />,
-        label: "Validation",
+        label: "Validasi Dokter",
         prefix: "admin",
         onClick: (e) => navigation.push(e.key),
       },
@@ -321,7 +327,7 @@ const DashboardLayout = ({ children }) => {
                   border: `2px solid ${colorPallate.blue}`,
                 }}
               />
-              <p>Achmad Fawait</p>
+              <p>{user?.name}</p>
             </a>
           </Dropdown>
         </Header>
