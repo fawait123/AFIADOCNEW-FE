@@ -46,8 +46,8 @@ API.interceptors.response.use(
     if (error?.response?.data?.message) {
       handleNotification("error", "Error", error.response.data.message);
     }
-    console.log(error);
-    if (error?.data?.response?.status === 401) {
+    // console.log(error?.response?.status, "err");
+    if (error?.response?.status === 401) {
       window.localStorage.removeItem("token");
       window.location.href = "/login";
     }
