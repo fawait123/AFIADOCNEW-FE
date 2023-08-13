@@ -489,7 +489,10 @@ const Home = () => {
                               {doc.name},
                               {doc.academics.map((aca) => aca.degree)}
                             </p>
+                            {/* msmsm */}
                             <p>{doc?.specialist?.name || "not set"}</p>
+
+                            {/* {console.log(doc)} */}
                             {doc.prices.map((item) => {
                               return (
                                 <Tag
