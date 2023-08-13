@@ -8,7 +8,7 @@ import {
   publicDashboard,
   publicDashboardDoctor,
 } from "@/API/http";
-import { BASE_URL } from "@/utils/base_url";
+import { BASE_URL, PATH_IMAGE } from "@/utils/base_url";
 import { AiOutlineCloseCircle, AiFillLike } from "react-icons/ai";
 import { IoBagSharp } from "react-icons/io5";
 import { useRouter } from "next/navigation";
@@ -206,7 +206,7 @@ const TanyaDokter = () => {
                               </p>
                               <p>Dokter Umum</p>
                               <Badge
-                                text={doc.price.toLocaleString("id", "ID")}
+                                text={doc?.price?.toLocaleString("id", "ID")}
                                 color={colorPallate.red}
                               />
                               <div
@@ -307,7 +307,7 @@ const TanyaDokter = () => {
                                 objectPosition: "top",
                               }}
                               alt="afia-docs"
-                              src={`${BASE_URL}/public/uploads/${spec.picture}`}
+                              src={`${PATH_IMAGE}/${spec.picture}`}
                               width={70}
                               preview={false}
                               height={70}
