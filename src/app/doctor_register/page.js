@@ -88,12 +88,29 @@ const RegisterDoctor = () => {
         console.log(item, typeof formValues[item]);
         if (item == "photos") {
           formData.append("photos", formValues[item].file.originFileObj);
+        } else if (item == "ktp") {
+          formData.append("ktp", formValues[item].file.originFileObj);
+        } else if (item == "practice") {
+          formData.append("practice", formValues[item].file.originFileObj);
         } else if (item == "academics" || item == "works") {
           formData.append(item, JSON.stringify(formValues[item]));
         } else {
           formData.append(item, formValues[item]);
         }
       });
+
+      let prices = [
+        {
+          type: "chatt",
+          price: formValues.chatt,
+        },
+        {
+          type: "booking",
+          price: formValues.booking,
+        },
+      ];
+
+      formData.append("prices", JSON.stringify(prices));
 
       registerDoctor(formData, (res) => {
         form.resetFields();
@@ -217,21 +234,6 @@ const RegisterDoctor = () => {
                   ]}
                 >
                   <Input type="number" placeholder="Telepon" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="price"
-                  label="Harga"
-                  rules={[
-                    {
-                      required: true,
-
-                      message: "price isn't valid",
-                    },
-                  ]}
-                >
-                  <Input type="number" placeholder="harga" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -434,6 +436,42 @@ const RegisterDoctor = () => {
                 >
                   <Input type="number" placeholder="RW" />
                 </Form.Item>
+              </Col>
+
+              <Col span={24} style={{ marginBottom: 10 }}>
+                <Col span={24}>
+                  <p style={{ fontWeight: 500 }}>Harga</p>
+                </Col>
+                <Card>
+                  <Row gutter={[15, 15]}>
+                    <Col span={12}>
+                      <Form.Item
+                        name="chatt"
+                        label="Chat"
+                        rules={[
+                          {
+                            required: true,
+                          },
+                        ]}
+                      >
+                        <Input type="number" placeholder="harga" />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        name="booking"
+                        label="Booking"
+                        rules={[
+                          {
+                            required: true,
+                          },
+                        ]}
+                      >
+                        <Input type="number" placeholder="harga" />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Card>
               </Col>
 
               <Col span={24}>

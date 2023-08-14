@@ -125,6 +125,10 @@ const Doctors = () => {
       // console.log(item, typeof formValues[item]);
       if (item == "photos") {
         formData.append("photos", formValues[item].file.originFileObj);
+      } else if (item == "ktp") {
+        formData.append("ktp", formValues[item].file.originFileObj);
+      } else if (item == "practice") {
+        formData.append("practice", formValues[item].file.originFileObj);
       } else if (item == "academics" || item == "works") {
         formData.append(item, JSON.stringify(formValues[item]));
       } else {
