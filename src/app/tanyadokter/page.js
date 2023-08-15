@@ -62,7 +62,7 @@ const TanyaDokter = () => {
   useEffect(() => {
     getDataDoctor();
     getDataSpecialist();
-
+  
     let Entitiy = JSON.parse(localStorage.getItem("user"))?.role?.name;
     // console.log(Entitiy);
     setNameEntitiy(isUndefined(Entitiy) ? "pengguna" : Entitiy);

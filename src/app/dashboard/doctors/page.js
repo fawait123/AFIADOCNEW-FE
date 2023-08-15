@@ -1196,14 +1196,26 @@ const Doctors = () => {
                 <FaPencil
                   color={colorPallate.blue}
                   style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    console.log(record);
+                  onClick={async () => {
+                    const ALLSPECIALIST = await getSpecialist((res) => {
+                      // // setDataSpecialist(res.rows);
+
+                      // let data = res.rows.find((r) => {
+                      //   // console.log(record.specialist?.id, "r");
+                      //   return r.name == "Kandungan";
+                      // });
+                      console.log(res);
+                      return res;
+                    });
+
+                    console.log(ALLSPECIALIST, "tehe");
                     setDataAcademic(record.academics);
                     setDataWork(record.works);
                     form.setFieldsValue({
                       ...record,
                       nik: record.NIK,
                       str: record.STR,
+
                       rt: record.addresses.length
                         ? record.addresses[0].rtrw.split("/")[0]
                         : null,

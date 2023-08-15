@@ -112,7 +112,7 @@ export const getSpecialist = async (next) => {
   const res = await API.get("/admin/specialist", {
     params: {
       page: 0,
-      limit: 10,
+      limit: 1000,
     },
   }).then((response) => next(response.data.results.data));
 };
