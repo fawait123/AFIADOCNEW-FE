@@ -52,6 +52,10 @@ API.interceptors.response.use(
       window.location.href = "/login";
     }
 
+    if (error?.response?.status === 403) {
+      window.location.href = "/";
+    }
+
     return Promise.reject(error);
   }
 );

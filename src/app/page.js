@@ -549,6 +549,7 @@ const Home = () => {
                                 display: nameEntitiy !== "pengguna" && "none",
                               }}
                               type="primary"
+                              size="small"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 showModal();
@@ -565,6 +566,7 @@ const Home = () => {
                               }}
                               type="default"
                               color="red"
+                              size="small"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setIsModalBooking(true);
