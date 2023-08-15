@@ -404,7 +404,6 @@ const Doctors = () => {
                     <p>:</p>
                   </div>
                   <div style={{ width: "70%", marginLeft: 10 }}>
-                    {console.log(detailModal.dataDetail?.addresses)}
                     <p>
                       {/* {detailModal.dataDetail?.NIK} */}
 
@@ -1197,25 +1196,53 @@ const Doctors = () => {
                   color={colorPallate.blue}
                   style={{ cursor: "pointer" }}
                   onClick={async () => {
-                    const ALLSPECIALIST = await getSpecialist((res) => {
-                      // // setDataSpecialist(res.rows);
+                    console.log(record);
 
-                      // let data = res.rows.find((r) => {
-                      //   // console.log(record.specialist?.id, "r");
-                      //   return r.name == "Kandungan";
-                      // });
-                      console.log(res);
-                      return res;
+                    let ALLSPECIALIST = [];
+                    let ALLPROVINSI = [];
+                    let ALLKABUPATEN = [];
+                    let ALLKECAMATAN = [];
+                    let ALLDESA = [];
+                    await getRegional({ type: "province" }, (data) => {
+                      ALLPROVINSI = data.data.results.data.find((add) => {
+                        // console.log(add.id);
+                        return add.id === record.addresses?.[0]?.province?.id;
+                      });
                     });
 
-                    console.log(ALLSPECIALIST, "tehe");
+                    await getRegional({ type: "district" }, (data) => {
+                      ALLKABUPATEN = data.data.results.data.find((add) => {
+                        // console.log(add.id);
+                        return add.id === record.addresses?.[0]?.districtID;
+                      });
+                    });
+                    await getRegional({ type: "district" }, (data) => {
+                      ALLKECAMATAN = data.data.results.data.find((add) => {
+                        // console.log(add.id);
+                        return add.id === record.addresses?.[0]?.subdistrictID;
+                      });
+                    });
+                    await getRegional({ type: "viilage" }, (data) => {
+                      ALLDESA = data.data.results.data.find((add) => {
+                        // console.log(add.id);
+                        return add.id === record.addresses?.[0]?.villageID;
+                      });
+                    });
+
+                    await getSpecialist((res) => {
+                      ALLSPECIALIST = res.rows.find((r) => {
+                        return r.id === record.specialist.id;
+                      });
+                    });
+
+                    // console.log(ALLDESA, "tehe");
                     setDataAcademic(record.academics);
                     setDataWork(record.works);
                     form.setFieldsValue({
-                      ...record,
+                      // ...record,
                       nik: record.NIK,
                       str: record.STR,
-
+                      specialistID: ALLSPECIALIST?.name,
                       rt: record.addresses.length
                         ? record.addresses[0].rtrw.split("/")[0]
                         : null,
@@ -1223,21 +1250,13 @@ const Doctors = () => {
                         ? record.addresses[0].rtrw.split("/")[1]
                         : null,
                       provinceID:
-                        record.addresses.length > 0
-                          ? record.addresses[0].provinceID
-                          : null,
+                        record.addresses.length > 0 ? ALLPROVINSI?.name : null,
                       districtID:
-                        record.addresses.length > 0
-                          ? record.addresses[0].districtID
-                          : null,
+                        record.addresses.length > 0 ? ALLKABUPATEN?.name : null,
                       subdistrictID:
-                        record.addresses.length > 0
-                          ? record.addresses[0].subdistrictID
-                          : null,
+                        record.addresses.length > 0 ? ALLKECAMATAN?.name : null,
                       villageID:
-                        record.addresses.length > 0
-                          ? record.addresses[0].villageID
-                          : null,
+                        record.addresses.length > 0 ? ALLDESA?.name : null,
                     });
                     setEdit(true);
                     setOpen(true);
