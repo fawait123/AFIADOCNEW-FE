@@ -82,8 +82,9 @@ const Home = () => {
       let payload = {
         date: formValue.date,
         doctorID: selectDoctor.id,
+        time: formValue.time,
       };
-      console.log(payload);
+
       insertBooking(payload, (response) => {
         setIsModalBooking(false);
         navigation.push("/booking");
@@ -549,6 +550,7 @@ const Home = () => {
                                 display: nameEntitiy !== "pengguna" && "none",
                               }}
                               type="primary"
+                              size="small"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 showModal();
@@ -565,6 +567,7 @@ const Home = () => {
                               }}
                               type="default"
                               color="red"
+                              size="small"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setIsModalBooking(true);
@@ -648,6 +651,18 @@ const Home = () => {
             ]}
           >
             <Input type="date"></Input>
+          </Form.Item>
+          <Form.Item
+            label="Waktu"
+            name="time"
+            rules={[
+              {
+                required: true,
+                message: "Please input your time!",
+              },
+            ]}
+          >
+            <Input type="time"></Input>
           </Form.Item>
         </Form>
       </Modal>

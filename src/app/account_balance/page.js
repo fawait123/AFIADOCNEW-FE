@@ -11,6 +11,7 @@ import { HiQrcode } from "react-icons/hi";
 import { MdAccountBalanceWallet, MdPayments } from "react-icons/md";
 import { getHistory, getWallet, topUp } from "@/API/wallet";
 import API from "@/API";
+import HistoryComponent from "./components/historycomponent";
 const { Panel } = Collapse;
 const AccountBalancePage = () => {
   const [open, setOpen] = useState({ status: false, title: "" });
@@ -88,7 +89,7 @@ const AccountBalancePage = () => {
                 icon: <FaWallet size={40} />,
               },
               {
-                name: "Bayar",
+                name: "History",
                 icon: <MdPayments size={40} />,
               },
               {
@@ -243,37 +244,38 @@ const AccountBalancePage = () => {
         onCancel={() => setOpen({ status: false, title: "" })}
         width={1000}
       >
-        <Collapse>
-          <Panel header="Transfer Bank" key="1" showArrow={true}>
-            <Row gutter={10}>
-              {[
-                { name: "BCA", icon: <FaWallet /> },
-                { name: "BRI", icon: <FaWallet /> },
-                { name: "MANDIRI", icon: <FaWallet /> },
-                { name: "BNI", icon: <FaWallet /> },
-              ].map((bank) => {
-                return (
-                  <Col span={4}>
-                    <Card
-                      className={`cards ${
-                        payload.bank == bank.name ? "cards-select" : ""
-                      }`}
-                      onClick={() =>
-                        setPayload({ ...payload, bank: bank.name })
-                      }
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
+        {open.title == "Isi Saldo" ? (
+          <Collapse>
+            <Panel header="Transfer Bank" key="1" showArrow={true}>
+              <Row gutter={10}>
+                {[
+                  { name: "BCA", icon: <FaWallet /> },
+                  { name: "BRI", icon: <FaWallet /> },
+                  // { name: "MANDIRI", icon: <FaWallet /> },
+                  { name: "BNI", icon: <FaWallet /> },
+                ].map((bank) => {
+                  return (
+                    <Col span={4}>
+                      <Card
+                        className={`cards ${
+                          payload.bank == bank.name ? "cards-select" : ""
+                        }`}
+                        onClick={() =>
+                          setPayload({ ...payload, bank: bank.name })
+                        }
                       >
-                        {bank.icon}
-                        <p style={{ marginLeft: 10 }}>{bank.name}</p>
-                      </div>
-                    </Card>
-                    {/* {payload.bank == bank.name ? (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          {bank.icon}
+                          <p style={{ marginLeft: 10 }}>{bank.name}</p>
+                        </div>
+                      </Card>
+                      {/* {payload.bank == bank.name ? (
                       <Input
                         placeholder="jumlah"
                         onChange={(event) =>
@@ -282,15 +284,26 @@ const AccountBalancePage = () => {
                         style={{ marginTop: 20 }}
                       />
                     ) : null} */}
-                  </Col>
-                );
-              })}
-            </Row>
-          </Panel>
-          {/* <Panel header="Virtual Account" key="2" showArrow={true}>
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Panel>
+            {/* <Panel header="Virtual Account" key="2" showArrow={true}>
             <p>a</p>
           </Panel> */}
-        </Collapse>
+          </Collapse>
+        ) : open.title == "Transfer" ? (
+          <HistoryComponent />
+        ) : open.title == "History" ? (
+          <HistoryComponent />
+        ) : open.title == "Kode Bayar" ? (
+          <HistoryComponent />
+        ) : open.title == "Transfer Bank" ? (
+          <HistoryComponent />
+        ) : (
+          <HistoryComponent />
+        )}
         <Modal
           title={payload?.bank}
           open={payload.bank === null ? false : true}

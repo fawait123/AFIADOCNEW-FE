@@ -50,10 +50,10 @@ const LayoutApp = ({ children }) => {
   };
 
   useEffect(() => {
+    getLogin();
     if (user) {
       getDataWallet();
     }
-    getLogin();
   }, []);
 
   // console.log(specialistData);

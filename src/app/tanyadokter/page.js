@@ -62,7 +62,7 @@ const TanyaDokter = () => {
   useEffect(() => {
     getDataDoctor();
     getDataSpecialist();
-  
+
     let Entitiy = JSON.parse(localStorage.getItem("user"))?.role?.name;
     // console.log(Entitiy);
     setNameEntitiy(isUndefined(Entitiy) ? "pengguna" : Entitiy);
@@ -85,6 +85,7 @@ const TanyaDokter = () => {
       let payload = {
         date: formValue.date,
         doctorID: chatDokter.id,
+        time: formValue.time,
       };
       // console.log(payload);
       insertBooking(payload, (response) => {
@@ -176,8 +177,8 @@ const TanyaDokter = () => {
             {selectDoctor === null ? (
               <Col xs={{ span: 24 }} md={{ span: 12 }}>
                 <Search
+                  allowClear={true}
                   placeholder="Cari Dokter"
-                  enterButton="Search"
                   size="large"
                   loading={false}
                   onSearch={(value) => {
@@ -215,7 +216,7 @@ const TanyaDokter = () => {
                     >
                       <Spin />
                     </div>
-                  ) : (
+                  ) : DoctorData.length > 0 ? (
                     DoctorData.map((doc) => {
                       return (
                         <Col span={12} style={{ cursor: "pointer" }}>
@@ -304,6 +305,7 @@ const TanyaDokter = () => {
                                   display: nameEntitiy !== "pengguna" && "none",
                                 }}
                                 type="primary"
+                                size="small"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   showModal();
@@ -319,6 +321,7 @@ const TanyaDokter = () => {
                                   marginLeft: 10,
                                   display: nameEntitiy !== "pengguna" && "none",
                                 }}
+                                size="small"
                                 type="default"
                                 color="red"
                                 onClick={(e) => {
@@ -335,6 +338,22 @@ const TanyaDokter = () => {
                         </Col>
                       );
                     })
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <Image
+                        preview={false}
+                        src="/assets/Oops.svg"
+                        width={180}
+                        height={180}
+                      />
+                    </div>
                   )}
                 </Row>
                 <p style={{ marginTop: 20, fontWeight: 600, fontSize: 20 }}>
@@ -679,6 +698,18 @@ const TanyaDokter = () => {
               ]}
             >
               <Input type="date"></Input>
+            </Form.Item>
+            <Form.Item
+              label="Waktu"
+              name="time"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your time!",
+                },
+              ]}
+            >
+              <Input type="time"></Input>
             </Form.Item>
           </Form>
         </Modal>

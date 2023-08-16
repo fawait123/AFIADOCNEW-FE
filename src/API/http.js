@@ -16,11 +16,10 @@ export const publicDashboardDoctor = async (payload, next) => {
     params: {
       page: 0,
       limit: 6,
-      association:
-        "specialist,company,addresses.province.district.subdistrict.village,academics,works",
       ...payload,
     },
   }).then((response) => {
+    console.log(response);
     next(response.data.results.data.rows);
   });
 };
@@ -31,7 +30,7 @@ export const publicDashboardDoctorQuery = async (payload, query, next) => {
       limit: 6,
       association:
         "specialist,company,addresses.province.district.subdistrict.village,academics,works",
-      query,
+      search: query,
       ...payload,
     },
   }).then((response) => {

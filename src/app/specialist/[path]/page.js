@@ -46,12 +46,12 @@ const SpecialistPage = ({ params }) => {
 
   const getDataDoctor = () => {
     setLoadingDoctor(true);
-    getDoctor(
+    publicDashboardDoctor(
       {
         specialistID: path,
       },
       (res) => {
-        setDoctorData(res.rows);
+        setDoctorData(res);
 
         setLoadingDoctor(false);
       }
@@ -85,6 +85,7 @@ const SpecialistPage = ({ params }) => {
       let payload = {
         date: formValue.date,
         doctorID: chatDokter.id,
+        time: formValue.time,
       };
       // console.log(payload);
       insertBooking(payload, (response) => {
@@ -179,18 +180,18 @@ const SpecialistPage = ({ params }) => {
               <Col xs={{ span: 24 }} md={{ span: 12 }}>
                 <Search
                   placeholder="Cari Dokter"
-                  enterButton="Search"
                   size="large"
+                  allowClear={true}
                   loading={false}
                   onSearch={(value) => {
                     setLoadingDoctor(true);
-                    getDoctor(
+                    publicDashboardDoctor(
                       {
                         specialistID: path,
-                        query: value,
+                        search: value,
                       },
                       (res) => {
-                        setDoctorData(res.rows);
+                        setDoctorData(res);
                         setLoadingDoctor(false);
                       }
                     );
@@ -219,7 +220,7 @@ const SpecialistPage = ({ params }) => {
                     >
                       <Spin />
                     </div>
-                  ) : (
+                  ) : DoctorData.length > 0 ? (
                     DoctorData.map((doc) => {
                       return (
                         <Col span={12} style={{ cursor: "pointer" }}>
@@ -308,6 +309,7 @@ const SpecialistPage = ({ params }) => {
                                   display: nameEntitiy !== "pengguna" && "none",
                                 }}
                                 type="primary"
+                                size="small"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   showModal();
@@ -324,6 +326,7 @@ const SpecialistPage = ({ params }) => {
                                   display: nameEntitiy !== "pengguna" && "none",
                                 }}
                                 type="default"
+                                size="small"
                                 color="red"
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -339,7 +342,22 @@ const SpecialistPage = ({ params }) => {
                         </Col>
                       );
                     })
-                    // <p>jaj</p>
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <Image
+                        preview={false}
+                        src="/assets/Oops.svg"
+                        width={180}
+                        height={180}
+                      />
+                    </div>
                   )}
                 </Row>
               </Col>
@@ -618,6 +636,18 @@ const SpecialistPage = ({ params }) => {
               ]}
             >
               <Input type="date"></Input>
+            </Form.Item>
+            <Form.Item
+              label="Waktu"
+              name="time"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your time!",
+                },
+              ]}
+            >
+              <Input type="time"></Input>
             </Form.Item>
           </Form>
         </Modal>
