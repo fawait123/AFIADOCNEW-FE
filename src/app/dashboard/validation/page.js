@@ -26,6 +26,7 @@ import {
   getRegional,
   storeDoctor,
   updateDoctor,
+  validasiDokter,
 } from "@/API/doctor";
 import moment from "moment/moment";
 import { colorPallate } from "@/utils/colorpallate";
@@ -37,65 +38,19 @@ import { FaEye } from "react-icons/fa";
 import { PATH_IMAGE } from "@/utils/base_url";
 
 const Validation = () => {
-  const { confirm } = Modal;
-  const [edit, setEdit] = useState(false);
-  const [open, setOpen] = useState(false);
   const [detailModal, setDetailModal] = useState({
     status: false,
     dataDetail: null,
   });
 
-  const [dataProvince, setDataProvince] = useState({
-    ProvSelect: null,
-    data: [],
-  });
-  const [dataDistrict, setDataDistrict] = useState({
-    DistSelect: null,
-    data: [],
-  });
-  const [dataSubDistrict, setDataSubDistrict] = useState({
-    SubDistSelect: null,
-    data: [],
-  });
-  const [datavillage, setDataVillage] = useState({
-    VillageSelect: null,
-    data: [],
-  });
-  const [dataAcademic, setDataAcademic] = useState([
-    {
-      name: null,
-      year_entry: null,
-      year_out: null,
-      degree: null,
-    },
-  ]);
-  const [dataWork, setDataWork] = useState([
-    {
-      name: null,
-      year_entry: null,
-      year_out: null,
-    },
-  ]);
-  const [prices, setPrices] = useState([
-    {
-      booking: null,
-      price: null,
-    },
-  ]);
-  const [dataSpecialist, setDataSpecialist] = useState([]);
-  const [form] = Form.useForm();
   const [dataDoctor, setDataDoctor] = useState({
     count: 0,
     limit: 0,
     page: 0,
     rows: [],
   });
-  const [addingForm, setAddingForm] = useState({
-    FormPendidikan: [1],
-    FormPekerjaan: [1],
-  });
 
-  useEffect(() => {
+  const getData = () => {
     getDoctor(
       {
         page: 0,
@@ -106,76 +61,27 @@ const Validation = () => {
         setDataDoctor(res);
       }
     );
+  };
+
+  const actionValidateDoctor = async () => {
+    await validasiDokter(
+      {
+        id: detailModal.dataDetail.id,
+      },
+      (response) => {
+        setDetailModal({
+          status: false,
+          dataDetail: null,
+        });
+        getData();
+      }
+    );
+  };
+
+  useEffect(() => {
+    getData();
   }, []);
 
-  const props = {
-    beforeUpload: (file) => {
-      const extension = ["image/png", "image/jpg", "image/jpeg", "image/svg"];
-      if (extension.filter((item) => item == file.type).length == 0) {
-        message.error(`${file.name} is not a png|jpg|jpeg|svg file`);
-      }
-
-      return true;
-    },
-    onChange: (info) => {
-      console.log(info.fileList);
-    },
-  };
-
-  const tambahDoctor = () => {
-    // console.log(form.getFieldsValue());
-    // form.validateFields().then(() => {
-    const formData = new FormData();
-    let formValues = form.getFieldsValue();
-    console.log(formValues, "jsjsj");
-    let keys = Object.keys(form.getFieldsValue());
-    keys.map((item, index) => {
-      // console.log(item, typeof formValues[item]);
-      if (item == "photos") {
-        formData.append("photos", formValues[item].file.originFileObj);
-      } else if (item == "academics" || item == "works") {
-        formData.append(item, JSON.stringify(formValues[item]));
-      } else {
-        formData.append(item, formValues[item]);
-      }
-    });
-
-    // storeDoctor(formData, (res) => {
-    //   setOpen(false);
-    //   getDoctor((res) => {
-    //     setDataDoctor(res);
-    //   });
-    //   form.resetFields();
-    // });
-    // });
-  };
-
-  const editDoctor = () => {
-    form.validateFields().then(() => {
-      const formData = new FormData();
-      let formValues = form.getFieldValue();
-      let keys = Object.keys(form.getFieldValue());
-      keys.map((item, index) => {
-        if (item == "photos") {
-          if (formValues[item].file) {
-            formData.append("photos", formValues[item].file.originFileObj);
-          }
-        } else if (item == "academics" || item == "works") {
-          formData.append(item, JSON.stringify(formValues[item]));
-        } else {
-          formData.append(item, formValues[item]);
-        }
-      });
-
-      updateDoctor(formValues.id, formData, (res) => {
-        setOpen(false);
-        getDoctor((res) => {
-          setDataDoctor(res);
-        });
-        form.resetFields();
-      });
-    });
-  };
   return (
     <div>
       <div
@@ -312,12 +218,7 @@ const Validation = () => {
         open={detailModal.status}
         okText="Validasi"
         cancelText="Batal"
-        onOk={() =>
-          setDetailModal({
-            ...detailModal,
-            status: false,
-          })
-        }
+        onOk={() => actionValidateDoctor()}
         onCancel={() =>
           setDetailModal({
             ...detailModal,

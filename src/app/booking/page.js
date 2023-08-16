@@ -34,7 +34,13 @@ const BookingPage = () => {
             dataIndex="date"
             key="date"
             render={(_, record) => {
-              return <p>{moment(record.date).format("DD MMMM YYYY")}</p>;
+              return (
+                <p>
+                  {moment(record.date).format("DD MMMM YYYY") +
+                    " " +
+                    record.time}
+                </p>
+              );
             }}
           />
           <Column
@@ -43,6 +49,14 @@ const BookingPage = () => {
             key="doctorID"
             render={(_, record) => {
               return <p>{record.doctor.name}</p>;
+            }}
+          />
+          <Column
+            title="Harga"
+            dataIndex="price"
+            key="price"
+            render={(_, record) => {
+              return <p>{record?.price?.toLocaleString("id", "ID")}</p>;
             }}
           />
           <Column

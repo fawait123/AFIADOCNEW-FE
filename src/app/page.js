@@ -82,8 +82,9 @@ const Home = () => {
       let payload = {
         date: formValue.date,
         doctorID: selectDoctor.id,
+        time: formValue.time,
       };
-      console.log(payload);
+
       insertBooking(payload, (response) => {
         setIsModalBooking(false);
         navigation.push("/booking");
@@ -650,6 +651,18 @@ const Home = () => {
             ]}
           >
             <Input type="date"></Input>
+          </Form.Item>
+          <Form.Item
+            label="Waktu"
+            name="time"
+            rules={[
+              {
+                required: true,
+                message: "Please input your time!",
+              },
+            ]}
+          >
+            <Input type="time"></Input>
           </Form.Item>
         </Form>
       </Modal>

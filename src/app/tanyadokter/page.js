@@ -62,7 +62,7 @@ const TanyaDokter = () => {
   useEffect(() => {
     getDataDoctor();
     getDataSpecialist();
-  
+
     let Entitiy = JSON.parse(localStorage.getItem("user"))?.role?.name;
     // console.log(Entitiy);
     setNameEntitiy(isUndefined(Entitiy) ? "pengguna" : Entitiy);
@@ -85,6 +85,7 @@ const TanyaDokter = () => {
       let payload = {
         date: formValue.date,
         doctorID: chatDokter.id,
+        time: formValue.time,
       };
       // console.log(payload);
       insertBooking(payload, (response) => {
@@ -697,6 +698,18 @@ const TanyaDokter = () => {
               ]}
             >
               <Input type="date"></Input>
+            </Form.Item>
+            <Form.Item
+              label="Waktu"
+              name="time"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your time!",
+                },
+              ]}
+            >
+              <Input type="time"></Input>
             </Form.Item>
           </Form>
         </Modal>

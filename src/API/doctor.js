@@ -61,3 +61,13 @@ export const deleteDoctor = async (id) => {
     },
   });
 };
+
+export const validasiDokter = async (params, next) => {
+  await API({
+    url: "/admin/doctor/approve",
+    method: "post",
+    params,
+  }).then((response) => {
+    next(response.data);
+  });
+};
