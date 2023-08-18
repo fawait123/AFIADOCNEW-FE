@@ -15,6 +15,7 @@ import {
   Card,
   Tag,
   Image,
+  Tooltip,
 } from "antd";
 
 import { UploadOutlined } from "@ant-design/icons";
@@ -35,6 +36,7 @@ import { FaPencil, FaTrash } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { PATH_IMAGE } from "@/utils/base_url";
+import API from "@/API";
 
 const Doctors = () => {
   const navigation = useRouter();
@@ -160,10 +162,27 @@ const Doctors = () => {
   };
 
   const editDoctor = () => {
-    form.validateFields().then(() => {
+    form.validateFields().then(async () => {
       const formData = new FormData();
       let formValues = form.getFieldValue();
-      let keys = Object.keys(form.getFieldValue());
+      const dataUpdate = await API({
+        url: "/admin/doctor/show",
+        method: "get",
+        params: {
+          id: formValues.id,
+        },
+      }).then((res) => {
+        return res.data.results.data.doctor;
+      });
+
+      formValues.specialistID = dataUpdate?.specialist?.name;
+      formValues.provinceID = dataUpdate?.addresses?.[0].provinceID;
+      formValues.districtID = dataUpdate?.addresses?.[0].districtID;
+      formValues.subdistrictID = dataUpdate?.addresses?.[0].subdistrictID;
+      formValues.villageID = dataUpdate?.addresses?.[0].villageID;
+      // console.log(formValues);
+
+      let keys = Object.keys(formValues);
       keys.map((item, index) => {
         if (item == "photos") {
           if (formValues[item].file) {
@@ -1030,10 +1049,23 @@ const Doctors = () => {
                     },
                   ]}
                 >
+                  {/* {console.log(form.getFieldsValue().photos)} */}
                   <Upload {...props}>
-                    <Button icon={<UploadOutlined />}>
-                      File harus png | jpg | jpeg
-                    </Button>
+                    {edit ? (
+                      <Tooltip title="klik untuk preview dan update Gambar">
+                        <Image
+                          src={`${PATH_IMAGE}/${form.getFieldsValue()?.photos}`}
+                          width={"100%"}
+                          preview={true}
+                          // height={100}
+                          style={{ objectFit: "contain" }}
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Button icon={<UploadOutlined />}>
+                        File harus png | jpg | jpeg
+                      </Button>
+                    )}
                   </Upload>
                 </Form.Item>
               </Col>
@@ -1047,10 +1079,25 @@ const Doctors = () => {
                     },
                   ]}
                 >
+                  {/* {console.log(
+                    `${PATH_IMAGE}/${form.getFieldsValue()?.photos}`
+                  )} */}
                   <Upload {...props}>
-                    <Button icon={<UploadOutlined />}>
-                      File harus png | jpg | jpeg
-                    </Button>
+                    {edit ? (
+                      <Tooltip title="klik untuk preview dan update KTP">
+                        <Image
+                          src={`${PATH_IMAGE}/${form.getFieldsValue()?.ktp}`}
+                          width={"100%"}
+                          preview={true}
+                          // height={100}
+                          style={{ objectFit: "contain" }}
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Button icon={<UploadOutlined />}>
+                        File harus png | jpg | jpeg
+                      </Button>
+                    )}
                   </Upload>
                 </Form.Item>
               </Col>
@@ -1065,9 +1112,23 @@ const Doctors = () => {
                   ]}
                 >
                   <Upload {...props}>
-                    <Button icon={<UploadOutlined />}>
-                      File harus png | jpg | jpeg
-                    </Button>
+                    {edit ? (
+                      <Tooltip title="klik untuk preview dan update Praktek">
+                        <Image
+                          src={`${PATH_IMAGE}/${
+                            form.getFieldsValue()?.practice
+                          }`}
+                          width={"100%"}
+                          preview={true}
+                          // height={100}
+                          style={{ objectFit: "contain" }}
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Button icon={<UploadOutlined />}>
+                        File harus png | jpg | jpeg
+                      </Button>
+                    )}
                   </Upload>
                 </Form.Item>
               </Col>
@@ -1196,53 +1257,63 @@ const Doctors = () => {
                   color={colorPallate.blue}
                   style={{ cursor: "pointer" }}
                   onClick={async () => {
-                    console.log(record);
-
-                    let ALLSPECIALIST = [];
-                    let ALLPROVINSI = [];
-                    let ALLKABUPATEN = [];
-                    let ALLKECAMATAN = [];
-                    let ALLDESA = [];
-                    await getRegional({ type: "province" }, (data) => {
-                      ALLPROVINSI = data.data.results.data.find((add) => {
-                        // console.log(add.id);
-                        return add.id === record.addresses?.[0]?.province?.id;
-                      });
+                    const dataUpdate = await API({
+                      url: "/admin/doctor/show",
+                      method: "get",
+                      params: {
+                        id: record.id,
+                      },
+                    }).then((res) => {
+                      return res.data.results.data.doctor;
                     });
 
-                    await getRegional({ type: "district" }, (data) => {
-                      ALLKABUPATEN = data.data.results.data.find((add) => {
-                        // console.log(add.id);
-                        return add.id === record.addresses?.[0]?.districtID;
-                      });
-                    });
-                    await getRegional({ type: "district" }, (data) => {
-                      ALLKECAMATAN = data.data.results.data.find((add) => {
-                        // console.log(add.id);
-                        return add.id === record.addresses?.[0]?.subdistrictID;
-                      });
-                    });
-                    await getRegional({ type: "viilage" }, (data) => {
-                      ALLDESA = data.data.results.data.find((add) => {
-                        // console.log(add.id);
-                        return add.id === record.addresses?.[0]?.villageID;
-                      });
-                    });
+                    // console.log(dataUpdate);
 
-                    await getSpecialist((res) => {
-                      ALLSPECIALIST = res.rows.find((r) => {
-                        return r.id === record.specialist.id;
-                      });
-                    });
+                    // let ALLSPECIALIST = [];
+                    // let ALLPROVINSI = [];
+                    // let ALLKABUPATEN = [];
+                    // let ALLKECAMATAN = [];
+                    // let ALLDESA = [];
+                    // await getRegional({ type: "province" }, (data) => {
+                    //   ALLPROVINSI = data.data.results.data.find((add) => {
+                    //     // console.log(add.id);
+                    //     return add.id === record.addresses?.[0]?.province?.id;
+                    //   });
+                    // });
+
+                    // await getRegional({ type: "district" }, (data) => {
+                    //   ALLKABUPATEN = data.data.results.data.find((add) => {
+                    //     // console.log(add.id);
+                    //     return add.id === record.addresses?.[0]?.districtID;
+                    //   });
+                    // });
+                    // await getRegional({ type: "district" }, (data) => {
+                    //   ALLKECAMATAN = data.data.results.data.find((add) => {
+                    //     // console.log(add.id);
+                    //     return add.id === record.addresses?.[0]?.subdistrictID;
+                    //   });
+                    // });
+                    // await getRegional({ type: "viilage" }, (data) => {
+                    //   ALLDESA = data.data.results.data.find((add) => {
+                    //     // console.log(add.id);
+                    //     return add.id === record.addresses?.[0]?.villageID;
+                    //   });
+                    // });
+
+                    // await getSpecialist((res) => {
+                    //   ALLSPECIALIST = res.rows.find((r) => {
+                    //     return r.id === record.specialist.id;
+                    //   });
+                    // });
 
                     // console.log(ALLDESA, "tehe");
                     setDataAcademic(record.academics);
                     setDataWork(record.works);
                     form.setFieldsValue({
-                      // ...record,
+                      ...record,
                       nik: record.NIK,
                       str: record.STR,
-                      specialistID: ALLSPECIALIST?.name,
+                      specialistID: dataUpdate?.specialist?.name,
                       rt: record.addresses.length
                         ? record.addresses[0].rtrw.split("/")[0]
                         : null,
@@ -1250,13 +1321,27 @@ const Doctors = () => {
                         ? record.addresses[0].rtrw.split("/")[1]
                         : null,
                       provinceID:
-                        record.addresses.length > 0 ? ALLPROVINSI?.name : null,
+                        record.addresses.length > 0
+                          ? dataUpdate?.addresses?.[0]?.province?.name
+                          : null,
                       districtID:
-                        record.addresses.length > 0 ? ALLKABUPATEN?.name : null,
+                        record.addresses.length > 0
+                          ? dataUpdate?.addresses?.[0]?.district?.name
+                          : null,
                       subdistrictID:
-                        record.addresses.length > 0 ? ALLKECAMATAN?.name : null,
+                        record.addresses.length > 0
+                          ? dataUpdate?.addresses?.[0]?.subdistrict?.name
+                          : null,
                       villageID:
-                        record.addresses.length > 0 ? ALLDESA?.name : null,
+                        record.addresses.length > 0
+                          ? dataUpdate?.addresses?.[0]?.village?.name
+                          : null,
+                      booking: dataUpdate?.prices.find((el) => {
+                        return el.type === "booking";
+                      })?.price,
+                      chatt: dataUpdate?.prices.find((el) => {
+                        return el.type === "chatt";
+                      })?.price,
                     });
                     setEdit(true);
                     setOpen(true);
