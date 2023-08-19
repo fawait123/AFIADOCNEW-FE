@@ -155,7 +155,7 @@ const LayoutApp = ({ children }) => {
         </Col>
         <Col xs={{ span: 0 }} md={{ span: 2 }} xl={{ span: 2 }}>
           {isLogin ? (
-            user.role.name !== "pengguna" ? (
+            user?.role?.name !== "pengguna" ? (
               <Button
                 onClick={() => {
                   navigation.push("/dashboard");

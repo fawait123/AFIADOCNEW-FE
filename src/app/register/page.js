@@ -15,12 +15,19 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const registerAction = () => {
-    formValue.validateFields().then(() => {
-      const field = formValue.getFieldsValue();
-      registerUser(field, (res) => {
-        window.location.href = "/login";
+    setLoading(true);
+    formValue
+      .validateFields()
+      .then(() => {
+        const field = formValue.getFieldsValue();
+        registerUser(field, (res) => {
+          setLoading(false);
+          window.location.href = "/login";
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
       });
-    });
   };
 
   return (
@@ -126,6 +133,7 @@ const Register = () => {
             // loading={loading}
             onClick={() => registerAction()}
             type="primary"
+            loading={loading}
             htmlType="submit"
           >
             Register

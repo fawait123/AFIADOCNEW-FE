@@ -13,3 +13,16 @@ export const insertBooking = async (payload, next) => {
     next(response.data);
   });
 };
+
+export const updateBooking = async (id, data, next) => {
+  await API({
+    url: "/admin/booking",
+    method: "put",
+    params: {
+      id: id,
+    },
+    data: data,
+  }).then((response) => {
+    next(response.data);
+  });
+};
