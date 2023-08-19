@@ -43,6 +43,7 @@ const Doctors = () => {
   const { confirm } = Modal;
   const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false);
+  const [loadingBtn, setLoadingBtn] = useState(false);
   const [detailModal, setDetailModal] = useState({
     status: false,
     dataDetail: null,
@@ -118,104 +119,142 @@ const Doctors = () => {
   };
 
   const tambahDoctor = () => {
-    // console.log(form.getFieldsValue());
-    // form.validateFields().then(() => {
-    const formData = new FormData();
-    let formValues = form.getFieldsValue();
-    let keys = Object.keys(form.getFieldsValue());
-    keys.map((item, index) => {
-      // console.log(item, typeof formValues[item]);
-      if (item == "photos") {
-        formData.append("photos", formValues[item].file.originFileObj);
-      } else if (item == "ktp") {
-        formData.append("ktp", formValues[item].file.originFileObj);
-      } else if (item == "practice") {
-        formData.append("practice", formValues[item].file.originFileObj);
-      } else if (item == "academics" || item == "works") {
-        formData.append(item, JSON.stringify(formValues[item]));
-      } else {
-        formData.append(item, formValues[item]);
-      }
-    });
+    setLoadingBtn(true);
+    form
+      .validateFields()
+      .then(() => {
+        const formData = new FormData();
+        let formValues = form.getFieldsValue();
+        let keys = Object.keys(form.getFieldsValue());
+        keys.map((item, index) => {
+          // console.log(item, typeof formValues[item]);
+          if (item == "photos") {
+            formData.append("photos", formValues[item].file.originFileObj);
+          } else if (item == "ktp") {
+            formData.append("ktp", formValues[item].file.originFileObj);
+          } else if (item == "practice") {
+            formData.append("practice", formValues[item].file.originFileObj);
+          } else if (item == "academics" || item == "works") {
+            formData.append(item, JSON.stringify(formValues[item]));
+          } else {
+            formData.append(item, formValues[item]);
+          }
+        });
 
-    let prices = [
-      {
-        type: "chatt",
-        price: formValues.chatt,
-      },
-      {
-        type: "booking",
-        price: formValues.booking,
-      },
-    ];
+        let prices = [
+          {
+            type: "chatt",
+            price: formValues.chatt,
+          },
+          {
+            type: "booking",
+            price: formValues.booking,
+          },
+        ];
 
-    formData.append("prices", JSON.stringify(prices));
+        formData.append("prices", JSON.stringify(prices));
 
-    storeDoctor(formData, (res) => {
-      setOpen(false);
-      getDoctor((res) => {
-        setDataDoctor(res);
+        storeDoctor(formData, (res) => {
+          setOpen(false);
+          setLoadingBtn(false);
+          getDoctor(
+            {
+              page: 1,
+              limit: 10,
+              isActive: 1,
+            },
+            (res) => {
+              setDataDoctor(res);
+            }
+          );
+          form.resetFields();
+        });
+      })
+      .catch((err) => {
+        setLoadingBtn(false);
       });
-      form.resetFields();
-    });
-    // });
   };
 
   const editDoctor = () => {
-    form.validateFields().then(async () => {
-      const formData = new FormData();
-      let formValues = form.getFieldValue();
-      const dataUpdate = await API({
-        url: "/admin/doctor/show",
-        method: "get",
-        params: {
-          id: formValues.id,
-        },
-      }).then((res) => {
-        return res.data.results.data.doctor;
-      });
-
-      formValues.specialistID = dataUpdate?.specialist?.name;
-      formValues.provinceID = dataUpdate?.addresses?.[0].provinceID;
-      formValues.districtID = dataUpdate?.addresses?.[0].districtID;
-      formValues.subdistrictID = dataUpdate?.addresses?.[0].subdistrictID;
-      formValues.villageID = dataUpdate?.addresses?.[0].villageID;
-      // console.log(formValues);
-
-      let keys = Object.keys(formValues);
-      keys.map((item, index) => {
-        if (item == "photos") {
-          if (formValues[item].file) {
-            formData.append("photos", formValues[item].file.originFileObj);
-          }
-        } else if (item == "academics" || item == "works") {
-          formData.append(item, JSON.stringify(formValues[item]));
-        } else {
-          formData.append(item, formValues[item]);
-        }
-      });
-
-      let prices = [
-        {
-          type: "chatt",
-          price: formValues.chatt,
-        },
-        {
-          type: "booking",
-          price: formValues.booking,
-        },
-      ];
-
-      formData.append("prices", JSON.stringify(prices));
-
-      updateDoctor(formValues.id, formData, (res) => {
-        setOpen(false);
-        getDoctor((res) => {
-          setDataDoctor(res);
+    setLoadingBtn(true);
+    form
+      .validateFields()
+      .then(async () => {
+        const formData = new FormData();
+        let formValues = form.getFieldValue();
+        console.log(formValues);
+        const dataUpdate = await API({
+          url: "/admin/doctor/show",
+          method: "get",
+          params: {
+            id: formValues.id,
+          },
+        }).then((res) => {
+          return res.data.results.data.doctor;
         });
-        form.resetFields();
+
+        formValues.specialistID = dataUpdate?.specialist?.name;
+        formValues.provinceID = dataUpdate?.addresses?.[0].provinceID;
+        formValues.districtID = dataUpdate?.addresses?.[0].districtID;
+        formValues.subdistrictID = dataUpdate?.addresses?.[0].subdistrictID;
+        formValues.villageID = dataUpdate?.addresses?.[0].villageID;
+        // console.log(formValues);
+
+        let keys = Object.keys(formValues);
+        keys.map((item, index) => {
+          if (item == "photos") {
+            if (formValues[item].file) {
+              formData.append("photos", formValues[item].file.originFileObj);
+            }
+          } else if (item == "ktp") {
+            if (formValues[item].file) {
+              formData.append("ktp", formValues[item].file.originFileObj);
+            }
+          } else if (item == "practice") {
+            if (formValues[item].file) {
+              formData.append("practice", formValues[item].file.originFileObj);
+            }
+          } else if (item == "academics" || item == "works") {
+            formData.append(item, JSON.stringify(formValues[item]));
+          } else {
+            formData.append(item, formValues[item]);
+          }
+        });
+
+        let prices = [
+          {
+            type: "chatt",
+            price: formValues.chatt,
+          },
+          {
+            type: "booking",
+            price: formValues.booking,
+          },
+        ];
+
+        console.log(prices);
+
+        formData.append("uprices", JSON.stringify(prices));
+
+        updateDoctor(formValues.id, formData, (res) => {
+          setOpen(false);
+          setLoadingBtn(false);
+          getDoctor(
+            {
+              page: 1,
+              limit: 10,
+              isActive: 1,
+            },
+            (res) => {
+              setDataDoctor(res);
+            }
+          );
+          form.resetFields();
+        });
+      })
+      .catch((err) => {
+        setLoadingBtn(false);
       });
-    });
   };
   return (
     <div>
@@ -532,6 +571,7 @@ const Doctors = () => {
         </Modal>
         <Modal
           title={`${edit ? "Ubah" : "Tambah"} Dokter`}
+          confirmLoading={loadingBtn}
           centered
           open={open}
           okText={`${edit ? "Ubah" : "Tambah"} Dokter`}
@@ -1267,53 +1307,12 @@ const Doctors = () => {
                       return res.data.results.data.doctor;
                     });
 
-                    // console.log(dataUpdate);
-
-                    // let ALLSPECIALIST = [];
-                    // let ALLPROVINSI = [];
-                    // let ALLKABUPATEN = [];
-                    // let ALLKECAMATAN = [];
-                    // let ALLDESA = [];
-                    // await getRegional({ type: "province" }, (data) => {
-                    //   ALLPROVINSI = data.data.results.data.find((add) => {
-                    //     // console.log(add.id);
-                    //     return add.id === record.addresses?.[0]?.province?.id;
-                    //   });
-                    // });
-
-                    // await getRegional({ type: "district" }, (data) => {
-                    //   ALLKABUPATEN = data.data.results.data.find((add) => {
-                    //     // console.log(add.id);
-                    //     return add.id === record.addresses?.[0]?.districtID;
-                    //   });
-                    // });
-                    // await getRegional({ type: "district" }, (data) => {
-                    //   ALLKECAMATAN = data.data.results.data.find((add) => {
-                    //     // console.log(add.id);
-                    //     return add.id === record.addresses?.[0]?.subdistrictID;
-                    //   });
-                    // });
-                    // await getRegional({ type: "viilage" }, (data) => {
-                    //   ALLDESA = data.data.results.data.find((add) => {
-                    //     // console.log(add.id);
-                    //     return add.id === record.addresses?.[0]?.villageID;
-                    //   });
-                    // });
-
-                    // await getSpecialist((res) => {
-                    //   ALLSPECIALIST = res.rows.find((r) => {
-                    //     return r.id === record.specialist.id;
-                    //   });
-                    // });
-
-                    // console.log(ALLDESA, "tehe");
                     setDataAcademic(record.academics);
                     setDataWork(record.works);
                     form.setFieldsValue({
                       ...record,
                       nik: record.NIK,
                       str: record.STR,
-                      specialistID: dataUpdate?.specialist?.name,
                       rt: record.addresses.length
                         ? record.addresses[0].rtrw.split("/")[0]
                         : null,

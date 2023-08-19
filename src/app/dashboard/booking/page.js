@@ -1,12 +1,32 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Badge, Breadcrumb, Space, Table, Tag } from "antd";
-import { getBooking } from "@/API/booking";
-import { FaEye } from "react-icons/fa";
+import {
+  Badge,
+  Breadcrumb,
+  Card,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Space,
+  Table,
+  Tag,
+} from "antd";
+import { getBooking, updateBooking } from "@/API/booking";
+import { FaCalendar, FaEye } from "react-icons/fa";
 import moment from "moment";
+import { colorPallate } from "@/utils/colorpallate";
 const { Column, ColumnGroup } = Table;
 const Booking = () => {
   const [data, setData] = useState([]);
+  const [detailModal, setDetailModal] = useState({
+    open: false,
+    data: null,
+  });
+  const [loading, setLoading] = useState(false);
+
+  const [form] = Form.useForm();
 
   const getData = () => {
     let user = JSON.parse(window.localStorage.getItem("user"));
@@ -16,6 +36,28 @@ const Booking = () => {
     getBooking(params, (response) => {
       setData(response);
     });
+  };
+
+  const reschedule = () => {
+    setLoading(true);
+    form
+      .validateFields()
+      .then(() => {
+        let formValues = form.getFieldsValue();
+        updateBooking(detailModal.data.id, formValues, (response) => {
+          setLoading(false);
+          getData();
+          setDetailModal({
+            open: false,
+            data: null,
+          });
+        }).catch((e) => {
+          setLoading(false);
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -71,12 +113,56 @@ const Booking = () => {
           title="Action"
           key="action"
           render={(_, record) => (
-            <Space size="middle">
-              <FaEye style={{ cursor: "pointer" }} />
-            </Space>
+            <FaCalendar
+              color={colorPallate.blue}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setDetailModal({
+                  open: true,
+                  data: record,
+                });
+                form.setFieldsValue({
+                  ...record,
+                });
+              }}
+            />
           )}
         />
       </Table>
+      <Modal
+        open={detailModal.open}
+        okText="Reschedule"
+        cancelText="Batal"
+        confirmLoading={loading}
+        onOk={() => reschedule()}
+        onCancel={() =>
+          setDetailModal({
+            open: false,
+            data: null,
+          })
+        }
+      >
+        <Card>
+          <Form layout="vertical" form={form}>
+            <Row gutter={[20]}>
+              <Col span={24}>
+                <Form.Item
+                  name="date"
+                  label="Tanggal"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="Tanggal" type="date" />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item name="time" label="Jam" rules={[{ required: true }]}>
+                  <Input placeholder="Jam" type="time" />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
+      </Modal>
     </div>
   );
 };
