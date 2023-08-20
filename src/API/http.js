@@ -3,7 +3,7 @@ import API from ".";
 export const publicDashboard = async (payload, next) => {
   const res = await API.get("/public/specialist", {
     params: {
-      page: 0,
+      page: 1,
       limit: 6,
       ...payload,
     },
@@ -14,7 +14,7 @@ export const publicDashboard = async (payload, next) => {
 export const publicDashboardDoctor = async (payload, next) => {
   const res = await API.get("/public/doctor", {
     params: {
-      page: 0,
+      page: 1,
       limit: 6,
       ...payload,
     },
@@ -26,7 +26,7 @@ export const publicDashboardDoctor = async (payload, next) => {
 export const publicDashboardDoctorQuery = async (payload, query, next) => {
   const res = await API.get("/public/doctor", {
     params: {
-      page: 0,
+      page: 1,
       limit: 6,
       association:
         "specialist,company,addresses.province.district.subdistrict.village,academics,works",
@@ -62,7 +62,7 @@ export const registerUser = async (fields, next) => {
 export const getUser = async (next) => {
   const res = await API.get("/admin/user", {
     params: {
-      page: 0,
+      page: 1,
       limit: 10,
     },
   }).then((response) => next(response.data.results.data));
@@ -100,7 +100,7 @@ export const DeleteUser = async (id, next) => {
 export const getRole = async (next) => {
   const res = await API.get("/admin/role", {
     params: {
-      page: 0,
+      page: 1,
       limit: 10,
     },
   }).then((response) => next(response.data.results.data));
@@ -111,7 +111,7 @@ export const getRole = async (next) => {
 export const getSpecialist = async (next) => {
   const res = await API.get("/admin/specialist", {
     params: {
-      page: 0,
+      page: 1,
       limit: 1000,
     },
   }).then((response) => next(response.data.results.data));
@@ -120,7 +120,7 @@ export const getSpecialist = async (next) => {
 export const getPublicSpecialist = async (next) => {
   const res = await API.get("/public/specialist", {
     params: {
-      page: 0,
+      page: 1,
       limit: 10,
     },
   }).then((response) => next(response.data.results.data));

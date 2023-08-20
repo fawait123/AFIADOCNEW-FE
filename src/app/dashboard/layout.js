@@ -12,7 +12,12 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { FaUserDoctor, FaHospital } from "react-icons/fa6";
-import { BiSolidLeftArrow, BiSolidRightArrow, BiWallet } from "react-icons/bi";
+import {
+  BiMoneyWithdraw,
+  BiSolidLeftArrow,
+  BiSolidRightArrow,
+  BiWallet,
+} from "react-icons/bi";
 import { HiOutlineReceiptTax } from "react-icons/hi";
 
 import { Layout, Menu, Button, theme, Row, Col } from "antd";
@@ -21,7 +26,7 @@ import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { colorPallate } from "@/utils/colorpallate";
 import { AiOutlinePoweroff } from "react-icons/ai";
-import { FaUsers } from "react-icons/fa";
+import { FaMoneyBill, FaUsers } from "react-icons/fa";
 import { MdOutlineManageAccounts } from "react-icons/md";
 
 import { BsKey, BsKeyFill } from "react-icons/bs";
@@ -190,12 +195,20 @@ const DashboardLayout = ({ children }) => {
         prefix: "dokter",
         onClick: (e) => navigation.push(e.key),
       },
-      // {
-      //   key: "/dashboard/hospital",
-      //   icon: <FaHospital />,
-      //   label: "Rumah Sakit",
-      //   onClick: (e) => navigation.push(e.key),
-      // },
+      {
+        key: "/dashboard/wallet",
+        icon: <FaMoneyBill />,
+        label: "Wallet",
+        onClick: (e) => navigation.push(e.key),
+        prefix: "admin",
+      },
+      {
+        key: "/dashboard/payout",
+        icon: <BiMoneyWithdraw />,
+        label: "Payout",
+        onClick: (e) => navigation.push(e.key),
+        prefix: "admin",
+      },
     ];
 
     let menusManagement = TemplateMenu.filter((items) => {
