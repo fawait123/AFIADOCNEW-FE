@@ -20,15 +20,7 @@ import { useRouter } from "next/navigation";
 import { publicDashboard, publicDashboardDoctor } from "@/API/http";
 import { BASE_URL } from "@/utils/base_url";
 import { IoBagSharp } from "react-icons/io5";
-import {
-  AiFillLike,
-  AiOutlineCloseCircle,
-  AiOutlinePoweroff,
-} from "react-icons/ai";
-import { BiWallet } from "react-icons/bi";
-import { MdOutlineManageAccounts } from "react-icons/md";
-import { HiOutlineReceiptTax } from "react-icons/hi";
-import { FaUsers } from "react-icons/fa";
+import { AiFillLike, AiOutlineCloseCircle } from "react-icons/ai";
 import LayoutApp from "@/component/app_component/LayoutApp";
 import { useForm } from "antd/es/form/Form";
 import { insertBooking } from "@/API/booking";

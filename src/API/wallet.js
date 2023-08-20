@@ -20,3 +20,24 @@ export const topUp = async ({ amount, bank }, next) => {
     next(response.data);
   });
 };
+
+export const getList = async (params, next) => {
+  await API({
+    url: "/admin/cashless/list",
+    method: "get",
+    params,
+  }).then((response) => {
+    next(response.data);
+  });
+};
+
+export const payoutByAdmin = async (params, data, next) => {
+  await API({
+    url: "/admin/cashless/payout",
+    method: "put",
+    params,
+    data,
+  }).then((response) => {
+    next(response.data);
+  });
+};
