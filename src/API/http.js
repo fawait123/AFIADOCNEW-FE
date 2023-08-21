@@ -1,3 +1,4 @@
+import { isNull, isUndefined } from "lodash";
 import API from ".";
 
 export const publicDashboard = async (payload, next) => {
@@ -59,11 +60,19 @@ export const registerUser = async (fields, next) => {
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-export const getUser = async (next) => {
+export const getUser = async (
+  payload = { page: 1, limit: 10, search: "" },
+  next
+) => {
+  // console.log(payload);
   const res = await API.get("/admin/user", {
     params: {
-      page: 1,
-      limit: 10,
+      page: payload.page,
+      limit: payload.limit,
+      search:
+        isUndefined(payload.search) || isNull(payload.search)
+          ? ""
+          : payload?.search,
     },
   }).then((response) => next(response.data.results.data));
 };
@@ -97,11 +106,18 @@ export const DeleteUser = async (id, next) => {
   });
 };
 
-export const getRole = async (next) => {
+export const getRole = async (
+  payload = { page: 1, limit: 10, search: "" },
+  next
+) => {
   const res = await API.get("/admin/role", {
     params: {
-      page: 1,
-      limit: 10,
+      page: payload.page,
+      limit: payload.limit,
+      search:
+        isUndefined(payload.search) || isNull(payload.search)
+          ? ""
+          : payload?.search,
     },
   }).then((response) => next(response.data.results.data));
 };
