@@ -46,7 +46,7 @@ const Home = () => {
   };
   const handleOk = () => {
     setIsModalChat(false);
-    navigation.push(`/chat/${selectDoctor?.id}`);
+    navigation.push(`/chat/${selectDoctor?.user?.id}`);
   };
   const handleCancel = () => {
     setIsModalChat(false);

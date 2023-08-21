@@ -4,9 +4,9 @@ import { Avatar, Badge, Card } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import React from "react";
 
-const ListContact = () => {
+const ListContact = ({ item, onClick }) => {
   return (
-    <Card>
+    <Card style={{ cursor: "pointer" }} onClick={onClick}>
       <div
         style={{
           display: "flex",
@@ -25,10 +25,8 @@ const ListContact = () => {
           }}
         >
           <div>
-            <p style={{ color: colorPallate.blue }}>Achmad Fawait</p>
-            <p style={{ fontSize: 10, color: "gray" }}>
-              terakhir dilihat 09:00
-            </p>
+            <p style={{ color: colorPallate.blue }}>{item?.name}</p>
+            <p style={{ fontSize: 10, color: "gray" }}>{item?.email}</p>
             <p style={{ fontSize: 10, fontWeight: 400, color: "black" }}>
               Reprehenderit cupid...
             </p>
