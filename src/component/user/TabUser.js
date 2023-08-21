@@ -21,15 +21,18 @@ import { FaPencil } from "react-icons/fa6";
 import { isUndefined } from "lodash";
 import { AddUser, EditUser } from "@/API/http";
 
-const TabUser = ({ dataUser }) => {
+const TabUser = ({
+  dataUser,
+  handlePaginationUserLimit,
+  handlePaginationUserPage,
+  valuePaginate,
+  setValuePaginate,
+  handleSearch,
+}) => {
   const { Column, ColumnGroup } = Table;
   const [open, setOpen] = useState(false);
   const [statusModal, setStatusModal] = useState("");
   const [formValue] = useForm();
-
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
-  };
 
   return (
     <div>
@@ -184,7 +187,16 @@ const TabUser = ({ dataUser }) => {
             style={{
               width: 70,
             }}
-            onChange={handleChange}
+            onChange={(e) => {
+              setValuePaginate({
+                ...valuePaginate,
+                limit: parseInt(e),
+                page: 1,
+                loading: true,
+              });
+
+              handlePaginationUserLimit(parseInt(e));
+            }}
             options={[
               {
                 value: "10",
@@ -207,13 +219,32 @@ const TabUser = ({ dataUser }) => {
           />
         </Col>
         <Col>
-          <Input style={{ width: 200 }} placeholder="Search..." />
+          <Input
+            style={{ width: 200 }}
+            onChange={(e) => handleSearch(e)}
+            placeholder="Search..."
+          />
         </Col>
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
         dataSource={dataUser?.rows}
-        loading={!dataUser.rows ? true : false}
+        loading={valuePaginate.loading}
+        pagination={{
+          current: valuePaginate?.page,
+          pageSize: valuePaginate?.limit,
+          total: valuePaginate?.total,
+        }}
+        onChange={(e) => {
+          setValuePaginate({
+            ...valuePaginate,
+            page: e.current,
+            loading: true,
+            // limit: e.pageSize,
+          });
+
+          handlePaginationUserPage(e.current);
+        }}
       >
         <Column title="Name" fixed="left" dataIndex="name" key="id" />
         <Column title="Email" dataIndex="email" key="id" />

@@ -15,10 +15,19 @@ import {
   Breadcrumb,
   Tabs,
 } from "antd";
+import { useForm } from "antd/es/form/Form";
 
-const TabRole = ({ dataRoles }) => {
+const TabRole = ({
+  dataRoles,
+  handlePaginationRoleLimit,
+  handlePaginationRolePage,
+  valuePaginate,
+  setValuePaginate,
+  handleSearch,
+}) => {
   const { Column, ColumnGroup } = Table;
   const [open, setOpen] = useState(false);
+  const [formValue] = useForm();
 
   const handleChange = (value) => {
     console.log(`selected ${value}`);
@@ -117,22 +126,31 @@ const TabRole = ({ dataRoles }) => {
             style={{
               width: 70,
             }}
-            onChange={handleChange}
+            onChange={(e) => {
+              setValuePaginate({
+                ...valuePaginate,
+                limit: parseInt(e),
+                page: 1,
+                loading: true,
+              });
+
+              handlePaginationRoleLimit(parseInt(e));
+            }}
             options={[
               {
-                value: "10",
+                value: 10,
                 label: "10",
               },
               {
-                value: "25",
-                label: "25",
+                value: 25,
+                label: 25,
               },
               {
-                value: "50",
+                value: 50,
                 label: "50",
               },
               {
-                value: "100",
+                value: 100,
                 label: "100",
                 disabled: true,
               },
@@ -140,15 +158,34 @@ const TabRole = ({ dataRoles }) => {
           />
         </Col>
         <Col>
-          <Input style={{ width: 200 }} placeholder="Search..." />
+          <Input
+            style={{ width: 200 }}
+            onChange={(e) => handleSearch(e)}
+            placeholder="Search..."
+          />
         </Col>
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
         dataSource={dataRoles?.rows}
-        loading={!dataRoles.rows ? true : false}
+        loading={valuePaginate.loading}
         scroll={{
           x: 1500,
+        }}
+        pagination={{
+          current: valuePaginate?.page,
+          pageSize: valuePaginate?.limit,
+          total: valuePaginate?.total,
+        }}
+        onChange={(e) => {
+          setValuePaginate({
+            ...valuePaginate,
+            page: e.current,
+            loading: true,
+            // limit: e.pageSize,
+          });
+
+          handlePaginationRolePage(e.current);
         }}
       >
         <Column
