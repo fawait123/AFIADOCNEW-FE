@@ -1,11 +1,13 @@
 "use client";
-import { Badge, Button, Card, Col, Input, Row } from "antd";
+import { Badge, Button, Card, Col, Form, Input, Row } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Space } from "antd";
 import React from "react";
 import { colorPallate } from "@/utils/colorpallate";
+import { useForm } from "antd/es/form/Form";
 
-const ChatField = () => {
+const ChatField = ({ datas, params, send }) => {
+  const [form] = useForm();
   return (
     <div
       style={{
@@ -39,7 +41,7 @@ const ChatField = () => {
               color={colorPallate.blue}
               style={{ marginRight: "10px" }}
             />{" "}
-            Achmad Fawait
+            {params?.name}
           </p>
         </div>
       </div>
@@ -50,87 +52,76 @@ const ChatField = () => {
           backgroundColor: "aliceblue",
         }}
       >
-        <Col>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((val) => {
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "start",
-                  padding: "10px 10px",
-                }}
-              >
-                <Card
-                  style={{
-                    // border: "1px solid green",
-
-                    padding: "5px 10px",
-                    borderRadius: "10px 10px 10px 3px",
-                    color: "green",
-                    maxWidth: "45%",
-                  }}
-                >
-                  <p style={{ textAlign: "justify", color: "black" }}>
-                    Duis velit anim laborum incididunt magna. Amet proident
-                    deserunt officia deserunt consectetur aute aliqua aute
-                    exercitation ad exercitation. Enim ut et ea et ea. Quis
-                    officia deserunt id proident qui do dolore aliquip in.
-                    Excepteur qui culpa aute reprehenderit ad elit est duis
-                    officia incididunt sit eiusmod elit sit. Ex ex reprehenderit
-                    qui aliqua exercitation officia enim velit proident dolor
-                    ipsum minim voluptate culpa. Officia eiusmod proident et
-                    voluptate in ea sit.
-                  </p>
-                </Card>
-              </div>
-            );
-          })}
-
-          {[1, 2, 3, 4, 5, 6].map((val) => {
-            return (
-              <div
-                key={val}
-                style={{
-                  display: "flex",
-                  justifyContent: "end",
-                  padding: "10px 10px",
-                }}
-              >
-                <Card
-                  style={{
-                    // border: "1px solid gray",
-                    padding: "5px 10px",
-                    borderRadius: "10px 10px 3px 10px",
-                    backgroundColor: colorPallate.blue,
-
-                    maxWidth: "45%",
-                  }}
-                >
-                  <p style={{ textAlign: "justify", color: "white" }}>
-                    Veniam labore sunt sunt dolore reprehenderit duis quis dolor
-                    aute.
-                  </p>
-                </Card>
-              </div>
-            );
-          })}
-        </Col>
-      </Row>
-      <Row
-        gutter={10}
-        style={{ padding: "10px 80px", backgroundColor: colorPallate.gray }}
-      >
         <Col flex={1}>
-          {" "}
-          <Input
-            style={{ color: colorPallate.blue }}
-            placeholder="Kirim Pesan"
-          />
-        </Col>
-        <Col span={2}>
-          <Button type="primary">Send</Button>
+          {datas.map((item, index) => {
+            return (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  justifyContent: params.id == item?.senderID ? "start" : "end",
+                  padding: "10px 10px",
+                }}
+              >
+                <Card
+                  style={{
+                    width: "50%",
+                    background:
+                      params.id == item?.senderID ? "" : colorPallate.blue,
+                  }}
+                >
+                  <p
+                    style={{
+                      textAlign: "justify",
+                      color: params.id == item?.senderID ? "black" : "white",
+                    }}
+                  >
+                    {item?.message}
+                  </p>
+                </Card>
+              </div>
+            );
+          })}
         </Col>
       </Row>
+      <Form form={form}>
+        <Row
+          gutter={10}
+          style={{ padding: "10px 80px", backgroundColor: colorPallate.gray }}
+        >
+          <Form.Item
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            name="message"
+          >
+            <Col flex={1}>
+              {" "}
+              <Input
+                style={{ color: colorPallate.blue }}
+                placeholder="Kirim Pesan"
+              />
+            </Col>
+          </Form.Item>
+          <Col span={2}>
+            <Button
+              type="primary"
+              onClick={() => {
+                form.validateFields().then(() => {
+                  send({
+                    ...form.getFieldsValue(),
+                    params,
+                  });
+                });
+              }}
+            >
+              Send
+            </Button>
+          </Col>
+        </Row>
+      </Form>
     </div>
   );
 };
