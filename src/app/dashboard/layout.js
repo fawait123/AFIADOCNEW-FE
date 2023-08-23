@@ -66,7 +66,16 @@ const DashboardLayout = ({ children }) => {
     {
       key: "1",
       label: (
-        <div style={{ width: 200 }}>
+        <div
+          style={{ width: 200 }}
+          onClick={() => {
+            if (user?.role?.name === "dokter") {
+              navigation.push("/account_balance_dokter");
+            } else if (user?.role?.name === "pengguna") {
+              navigation.push("/account_balance");
+            }
+          }}
+        >
           <p>AFIA WALLET</p>
           <div
             style={{
@@ -135,6 +144,8 @@ const DashboardLayout = ({ children }) => {
       disabled: false,
     },
   ];
+
+  console.log(user, "user");
 
   useEffect(() => {
     const roleManagement = JSON.parse(window.localStorage.getItem("user"));
