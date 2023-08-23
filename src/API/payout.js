@@ -20,3 +20,13 @@ export const updatePayout = async (params, data, next) => {
     next(response.data.results.data);
   });
 };
+export const postPayout = async (params, data, next) => {
+  await API({
+    url: "/admin/payout",
+    method: "post",
+    params,
+    data,
+  }).then((response) => {
+    next(response.data.results.data);
+  });
+};
