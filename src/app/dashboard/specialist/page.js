@@ -28,23 +28,46 @@ import Column from "antd/es/table/Column";
 import React, { useEffect, useState } from "react";
 import { BiSolidCloudUpload } from "react-icons/bi";
 import { FaPencil, FaTrash } from "react-icons/fa6";
+import _debounce from "lodash/debounce";
 
 const Specialist = () => {
   const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false);
   const [formValue] = useForm();
   const { confirm } = Modal;
-  const [dataSpecialist, setDataSpecialist] = useState({
-    count: 0,
-    limit: 0,
-    page: 0,
-    rows: [],
-  });
+  const [dataSpecialist, setDataSpecialist] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [count, setCount] = useState(10);
+  const [search, setSearch] = useState(null);
+  const [loadingTable, setLoadingTable] = useState(false);
+
+  const getData = () => {
+    setLoadingTable(true);
+    getSpecialist(
+      {
+        page: dataSpecialist.page,
+        limit: dataSpecialist.limit,
+        search: search,
+      },
+      (res) => {
+        setLoadingTable(false);
+        setDataSpecialist(res.rows);
+        setCount(res.count);
+      }
+    );
+  };
+
+  const handleSearch = (e) => {
+    let value = e.target.value;
+    setSearch(value);
+  };
 
   useEffect(() => {
-    getSpecialist((res) => setDataSpecialist(res));
-  }, []);
+    getData();
+  }, [page, limit, search]);
 
+  const debounceSearch = _debounce(handleSearch, 800);
   const addSpecialist = () => {
     let formData = new FormData();
 
@@ -203,14 +226,31 @@ const Specialist = () => {
           />
         </Col>
         <Col>
-          <Input style={{ width: 200 }} placeholder="Search..." />
+          <Input
+            style={{ width: 200 }}
+            placeholder="Cari..."
+            onKeyUp={(e) => {
+              setPage(1);
+              debounceSearch(e);
+            }}
+          />
         </Col>
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={dataSpecialist.rows}
+        dataSource={dataSpecialist}
+        loading={loadingTable}
         scroll={{
           x: 1500,
+        }}
+        pagination={{
+          current: page,
+          pageSize: limit,
+          total: count,
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setLimit(pageSize);
+          },
         }}
       >
         <Column title="Nama" dataIndex="name" key="name" />

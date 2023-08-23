@@ -124,12 +124,9 @@ export const getRole = async (
 
 //========================================== API GET SPECIALIST ==============================
 
-export const getSpecialist = async (next) => {
-  const res = await API.get("/admin/specialist", {
-    params: {
-      page: 1,
-      limit: 1000,
-    },
+export const getSpecialist = async (params, next) => {
+  await API.get("/admin/specialist", {
+    params,
   }).then((response) => next(response.data.results.data));
 };
 

@@ -17,6 +17,7 @@ import {
   Image,
   Tooltip,
 } from "antd";
+import _debounce from "lodash/debounce";
 
 import { UploadOutlined } from "@ant-design/icons";
 import { AiOutlinePlusCircle } from "react-icons/ai";
@@ -34,16 +35,15 @@ import { isNull } from "lodash";
 import { getSpecialist } from "@/API/http";
 import { FaPencil, FaTrash } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import { PATH_IMAGE } from "@/utils/base_url";
 import API from "@/API";
 
 const Doctors = () => {
-  const navigation = useRouter();
   const { confirm } = Modal;
   const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false);
   const [loadingBtn, setLoadingBtn] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
   const [detailModal, setDetailModal] = useState({
     status: false,
     dataDetail: null,
@@ -79,31 +79,37 @@ const Doctors = () => {
       year_out: null,
     },
   ]);
-  const [prices, setPrices] = useState([
-    {
-      booking: null,
-      price: null,
-    },
-  ]);
   const [dataSpecialist, setDataSpecialist] = useState([]);
   const [form] = Form.useForm();
-  const [dataDoctor, setDataDoctor] = useState({
-    count: 0,
-    limit: 0,
-    page: 0,
-    rows: [],
-  });
-  const [addingForm, setAddingForm] = useState({
-    FormPendidikan: [1],
-    FormPekerjaan: [1],
-  });
+  const [dataDoctor, setDataDoctor] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [count, setCount] = useState(10);
+  const [search, setSearch] = useState(null);
+
+  const getData = () => {
+    setLoadingTable(true);
+    getDoctor(
+      { page: page, limit: limit, isActive: 1, search: search },
+      (res) => {
+        setDataDoctor(res.rows);
+        setCount(res.count);
+        setLoadingTable(false);
+      }
+    );
+  };
+
+  const handleOnKeyUp = (e) => {
+    let value = e.target.value;
+    setPage(1);
+    setSearch(value);
+  };
 
   useEffect(() => {
-    getDoctor({ page: 0, limit: 10, isActive: 1 }, (res) => {
-      setDataDoctor(res);
-    });
-  }, []);
+    getData();
+  }, [page, limit, search]);
 
+  let debounceOnKeyUp = _debounce(handleOnKeyUp, 800);
   const props = {
     beforeUpload: (file) => {
       const extension = ["image/png", "image/jpg", "image/jpeg", "image/svg"];
@@ -1212,14 +1218,28 @@ const Doctors = () => {
           />
         </Col>
         <Col>
-          <Input style={{ width: 200 }} placeholder="Search..." />
+          <Input
+            style={{ width: 200 }}
+            placeholder="Cari..."
+            onKeyUp={(e) => debounceOnKeyUp(e)}
+          />
         </Col>
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={dataDoctor.rows}
+        loading={loadingTable}
+        dataSource={dataDoctor}
         scroll={{
           x: 1500,
+        }}
+        pagination={{
+          current: page,
+          pageSize: limit,
+          total: count,
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setLimit(pageSize);
+          },
         }}
       >
         <Column
