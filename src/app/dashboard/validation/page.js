@@ -1,39 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   Col,
-  Form,
   Input,
   Modal,
   Row,
   Select,
-  message,
-  Upload,
   Breadcrumb,
   Table,
   Tag,
-  Space,
   Card,
   Image,
 } from "antd";
+import _debounce from "lodash/debounce";
 
-import { UploadOutlined } from "@ant-design/icons";
-import { AiOutlinePlusCircle } from "react-icons/ai";
 import Column from "antd/es/table/Column";
-import {
-  getDoctor,
-  getRegional,
-  storeDoctor,
-  updateDoctor,
-  validasiDokter,
-} from "@/API/doctor";
+import { getDoctor, validasiDokter } from "@/API/doctor";
 import moment from "moment/moment";
-import { colorPallate } from "@/utils/colorpallate";
-import { BsFillTrashFill } from "react-icons/bs";
-import { isNull } from "lodash";
-import { getSpecialist } from "@/API/http";
-import { FaPencil, FaTrash } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { PATH_IMAGE } from "@/utils/base_url";
 
@@ -43,24 +26,34 @@ const Validation = () => {
     dataDetail: null,
   });
 
-  const [dataDoctor, setDataDoctor] = useState({
-    count: 0,
-    limit: 0,
-    page: 0,
-    rows: [],
-  });
+  const [dataDoctor, setDataDoctor] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [count, setCount] = useState(10);
+  const [search, setSearch] = useState(null);
+  const [loadingTable, setLoadingTable] = useState(false);
 
   const getData = () => {
+    setLoadingTable(true);
     getDoctor(
       {
-        page: 0,
-        limit: 10,
+        page: page,
+        limit: limit,
         isActive: 0,
+        search: search,
       },
       (res) => {
-        setDataDoctor(res);
+        setLoadingTable(false);
+        setDataDoctor(res.rows);
+        setCount(res.count);
       }
     );
+  };
+
+  const handleSearch = (e) => {
+    let value = e.target.value;
+    setSearch(value);
+    setPage(1);
   };
 
   const actionValidateDoctor = async () => {
@@ -80,8 +73,9 @@ const Validation = () => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [page, limit, search]);
 
+  let debounceSearch = _debounce(handleSearch, 800);
   return (
     <div>
       <div
@@ -134,12 +128,26 @@ const Validation = () => {
           />
         </Col>
         <Col>
-          <Input style={{ width: 200 }} placeholder="Search..." />
+          <Input
+            style={{ width: 200 }}
+            placeholder="Cari..."
+            onKeyUp={(e) => debounceSearch(e)}
+          />
         </Col>
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={dataDoctor.rows}
+        dataSource={dataDoctor}
+        loading={loadingTable}
+        pagination={{
+          current: page,
+          pageSize: limit,
+          total: count,
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setLimit(limit);
+          },
+        }}
         scroll={{
           x: 1500,
         }}

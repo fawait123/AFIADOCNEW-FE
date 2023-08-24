@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  Badge,
   Breadcrumb,
   Card,
   Col,
@@ -9,7 +8,6 @@ import {
   Input,
   Modal,
   Row,
-  Space,
   Table,
   Tag,
 } from "antd";
@@ -17,24 +15,34 @@ import { getBooking, updateBooking } from "@/API/booking";
 import { FaCalendar, FaEye } from "react-icons/fa";
 import moment from "moment";
 import { colorPallate } from "@/utils/colorpallate";
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 const Booking = () => {
-  const [data, setData] = useState([]);
+  const [form] = Form.useForm();
   const [detailModal, setDetailModal] = useState({
     open: false,
     data: null,
   });
   const [loading, setLoading] = useState(false);
-
-  const [form] = Form.useForm();
+  const [data, setData] = useState([]);
+  const [count, setCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [search, setSearch] = useState(null);
+  const [loadingTable, setLoadingTable] = useState(false);
 
   const getData = () => {
+    setLoadingTable(true);
     let user = JSON.parse(window.localStorage.getItem("user"));
     let params = {
       doctorID: user.prefixID,
+      page: page,
+      limit: limit,
+      search: search,
     };
     getBooking(params, (response) => {
-      setData(response);
+      setData(response.rows);
+      setCount(response.count);
+      setLoadingTable(false);
     });
   };
 
@@ -62,7 +70,8 @@ const Booking = () => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [page, limit, search]);
+
   return (
     <div>
       <div
@@ -78,7 +87,19 @@ const Booking = () => {
           <Breadcrumb.Item>Booking</Breadcrumb.Item>
         </Breadcrumb>
       </div>
-      <Table dataSource={data}>
+      <Table
+        dataSource={data}
+        loading={loadingTable}
+        pagination={{
+          current: page,
+          pageSize: limit,
+          total: count,
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setLimit(pageSize);
+          },
+        }}
+      >
         <Column
           title="Pasien"
           dataIndex="userID"

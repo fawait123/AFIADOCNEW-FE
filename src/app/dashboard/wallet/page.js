@@ -19,7 +19,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { BiMoneyWithdraw, BiSolidCloudUpload } from "react-icons/bi";
 import { FaMoneyBill } from "react-icons/fa";
-import { FaPencil, FaTrash } from "react-icons/fa6";
+import _debounce from "lodash/debounce";
 
 const Wallet = () => {
   const [open, setOpen] = useState(false);
@@ -27,23 +27,25 @@ const Wallet = () => {
   const [formValue] = useForm();
   const [dataBank, setDataBank] = useState([]);
   const [loadingBtn, setLoadingBtn] = useState(false);
-  const [dataWallet, setdataWallet] = useState({
-    count: 0,
-    limit: 20,
-    page: 1,
-    rows: [],
-  });
+  const [dataWallet, setdataWallet] = useState([]);
+  const [count, setCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [search, setSearch] = useState(null);
+  const [loadingTable, setLoadingTable] = useState(false);
 
   const getData = () => {
+    setLoadingTable(true);
     getList(
       {
-        page: dataWallet.page,
-        limit: dataWallet.limit,
+        page: page,
+        limit: limit,
+        search: search,
       },
       (response) => {
-        setdataWallet({
-          rows: response.results.data.rows,
-        });
+        setdataWallet(response.results.data.rows);
+        setCount(response.results.data.count);
+        setLoadingTable(false);
       }
     );
   };
@@ -54,10 +56,19 @@ const Wallet = () => {
     });
   };
 
+  const handleSearch = (e) => {
+    let value = e.target.value;
+    setSearch(value);
+    setPage(1);
+  };
+
   useEffect(() => {
-    getData();
     getDataBank();
   }, []);
+
+  useEffect(() => {
+    getData();
+  }, [page, limit, search]);
 
   const onFinish = (values) => {
     console.log("Success:", values);
@@ -66,6 +77,7 @@ const Wallet = () => {
     console.log("Failed:", errorInfo);
   };
 
+  let debounceSearch = _debounce(handleSearch, 800);
   const payoutaction = () => {
     setLoadingBtn(true);
     formValue
@@ -245,12 +257,26 @@ const Wallet = () => {
           />
         </Col>
         <Col>
-          <Input style={{ width: 200 }} placeholder="Search..." />
+          <Input
+            style={{ width: 200 }}
+            placeholder="Cari..."
+            onKeyUp={(e) => debounceSearch(e)}
+          />
         </Col>
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={dataWallet.rows}
+        dataSource={dataWallet}
+        loading={loadingTable}
+        pagination={{
+          current: page,
+          pageSize: limit,
+          total: count,
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setLimit(pageSize);
+          },
+        }}
         scroll={{
           x: 1500,
         }}
