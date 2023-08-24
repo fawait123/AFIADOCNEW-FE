@@ -10,6 +10,15 @@ export const getPayout = async (params, next) => {
   });
 };
 
+export const getPayoutByUser = async (next) => {
+  await API({
+    url: "/admin/payout/user",
+    method: "get",
+  }).then((response) => {
+    next(response.data.results.data);
+  });
+};
+
 export const updatePayout = async (params, data, next) => {
   await API({
     url: "/admin/payout",

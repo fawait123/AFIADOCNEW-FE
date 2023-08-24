@@ -1,27 +1,26 @@
 "use client";
 import LayoutApp from "@/component/app_component/LayoutApp";
 import { colorPallate } from "@/utils/colorpallate";
-import { Card, Col, Collapse, Form, Input, Modal, Row } from "antd";
+import { Card, Col, Input, Modal, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import "./account_balance.css";
-import { AiFillBank } from "react-icons/ai";
-import { FaHistory, FaMoneyBillAlt, FaWallet, FaSync } from "react-icons/fa";
+import { FaHistory, FaWallet, FaSync } from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { HiQrcode } from "react-icons/hi";
 import { MdAccountBalanceWallet, MdPayments } from "react-icons/md";
-import { getHistory, getWallet, topUp } from "@/API/wallet";
-import API from "@/API";
+import { getWallet, topUp } from "@/API/wallet";
 import HistoryComponent from "./components/historycomponent";
 import PayoutDokter from "./components/PayoutDokter";
-const { Panel } = Collapse;
+import { getPayoutByUser } from "@/API/payout";
+
 const AccountBalancePage = () => {
   const [open, setOpen] = useState({ status: false, title: "" });
-  // const [openBank,setOpenBank]= useState()
   const [wallet, setWallet] = useState(0);
   const [payload, setPayload] = useState({
     bank: null,
     amount: null,
   });
+
   const [history, setHistory] = useState([]);
   const [loadingModal, setLoadingModal] = useState(false);
 
@@ -32,23 +31,9 @@ const AccountBalancePage = () => {
   };
 
   const getDataHistory = () => {
-    getHistory((res) => {
-      console.log("res", res);
+    getPayoutByUser((res) => {
+      console.log(res);
       setHistory(res);
-    });
-  };
-
-  const checkTopup = async (data) => {
-    await API({
-      url: "/admin/cashless/topup/check",
-      method: "get",
-      params: {
-        midtransID: data.id,
-      },
-    }).then((response) => {
-      console.log("res", response);
-      getDataHistory();
-      getDataWallet();
     });
   };
 
@@ -146,11 +131,9 @@ const AccountBalancePage = () => {
               padding: "10px 10px",
             }}
           >
-            {history.map((val) => {
-              let detail = JSON.parse(val.detail);
-              console.log(detail);
+            {history.map((item) => {
               return (
-                <Col key={val.id} span={24}>
+                <Col key={item.id} span={24}>
                   <Card>
                     <div
                       style={{
@@ -170,28 +153,15 @@ const AccountBalancePage = () => {
                           <FaWallet size={30} />
                         </div>
                         <div style={{ marginLeft: 20 }}>
-                          <p>{`Topup transfer bank ${
-                            detail.va_numbers
-                              ? detail.va_numbers[0].bank.toUpperCase()
-                              : "Mandiri"
-                          }`}</p>
-                          <p style={{ fontSize: 11, color: "gray" }}>
-                            {detail.transaction_status}
-                          </p>
+                          <p>{item.description}</p>
                           <p
                             style={{
                               fontSize: 11,
-                              color: "gray",
-                              fontWeight: "bold",
+                              color:
+                                item.status == "success" ? "green" : "#FD8D14",
                             }}
                           >
-                            VA :{" "}
-                            {detail.va_numbers
-                              ? detail.va_numbers[0].va_number
-                              : detail.permata_va_number}
-                          </p>
-                          <p style={{ fontSize: 11, color: "gray" }}>
-                            {detail.expiry_time}
+                            {item.status}
                           </p>
                         </div>
                       </div>
@@ -199,24 +169,11 @@ const AccountBalancePage = () => {
                         <h4
                           style={{
                             color:
-                              val.status === "settlement" ? "green" : "#FD8D14",
+                              item.status === "success" ? "green" : "#FD8D14",
                           }}
                         >
-                          + {detail.gross_amount.toLocaleString("id", "ID")}
+                          + {item.amount.toLocaleString("id", "ID")}
                         </h4>
-                        {val.status == "settlement" ? null : (
-                          <div
-                            // style={{
-                            //   cursor: "pointer",
-                            //   width: 100,
-                            //   height: 100,
-                            //   background: "blue",
-                            // }}
-                            onClick={() => checkTopup(val)}
-                          >
-                            <FaSync />
-                          </div>
-                        )}
                       </div>
                     </div>
                   </Card>

@@ -1,7 +1,6 @@
 "use client";
 import { getBank } from "@/API/bank";
 import { getPayout, updatePayout } from "@/API/payout";
-import { getList, payoutByAdmin } from "@/API/wallet";
 import { colorPallate } from "@/utils/colorpallate";
 import {
   Breadcrumb,
@@ -14,13 +13,11 @@ import {
   Table,
   Tag,
 } from "antd";
+import _debounce from "lodash/debounce";
 import { useForm } from "antd/es/form/Form";
 import Column from "antd/es/table/Column";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { BiMoneyWithdraw, BiSolidCloudUpload } from "react-icons/bi";
-import { FaEdit, FaMoneyBill } from "react-icons/fa";
-import { FaPencil, FaTrash } from "react-icons/fa6";
+import { FaEdit } from "react-icons/fa";
 
 const Payout = () => {
   const [open, setOpen] = useState(false);
@@ -28,23 +25,25 @@ const Payout = () => {
   const [formValue] = useForm();
   const [dataBank, setDataBank] = useState([]);
   const [loadingBtn, setLoadingBtn] = useState(false);
-  const [dataPayout, setdataPayout] = useState({
-    count: 0,
-    limit: 20,
-    page: 1,
-    rows: [],
-  });
+  const [dataPayout, setdataPayout] = useState([]);
+  const [count, setCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [search, setSearch] = useState(null);
+  const [loadingTable, setLoadingTable] = useState(false);
 
   const getData = () => {
+    setLoadingTable(true);
     getPayout(
       {
-        page: dataPayout.page,
-        limit: dataPayout.limit,
+        page: page,
+        limit: limit,
+        search: search,
       },
       (response) => {
-        setdataPayout({
-          rows: response.rows,
-        });
+        setdataPayout(response.rows);
+        setCount(response.count);
+        setLoadingTable(false);
       }
     );
   };
@@ -55,10 +54,19 @@ const Payout = () => {
     });
   };
 
+  const handleSearch = (e) => {
+    let value = e.target.value;
+    setSearch(value);
+    setPage(1);
+  };
+
   useEffect(() => {
-    getData();
     getDataBank();
   }, []);
+
+  useEffect(() => {
+    getData();
+  }, [page, limit, search]);
 
   const onFinish = (values) => {
     console.log("Success:", values);
@@ -67,6 +75,7 @@ const Payout = () => {
     console.log("Failed:", errorInfo);
   };
 
+  let debounceSearch = _debounce(handleSearch, 800);
   const payoutaction = () => {
     setLoadingBtn(true);
     formValue
@@ -190,12 +199,26 @@ const Payout = () => {
           />
         </Col>
         <Col>
-          <Input style={{ width: 200 }} placeholder="Search..." />
+          <Input
+            style={{ width: 200 }}
+            placeholder="Cari..."
+            onKeyUp={(e) => debounceSearch(e)}
+          />
         </Col>
       </Row>
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
-        dataSource={dataPayout.rows}
+        dataSource={dataPayout}
+        loading={loadingTable}
+        pagination={{
+          current: page,
+          pageSize: limit,
+          total: count,
+          onChange: (page, pageSize) => {
+            setPage(page);
+            setLimit(pageSize);
+          },
+        }}
         scroll={{
           x: 1500,
         }}
