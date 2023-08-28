@@ -71,8 +71,6 @@ const DashboardLayout = ({ children }) => {
           onClick={() => {
             if (user?.role?.name === "dokter") {
               navigation.push("/account_balance_dokter");
-            } else if (user?.role?.name === "pengguna") {
-              navigation.push("/account_balance");
             }
           }}
         >
@@ -145,7 +143,7 @@ const DashboardLayout = ({ children }) => {
     },
   ];
 
-  console.log(user, "user");
+  // console.log(user, "user");
 
   useEffect(() => {
     const roleManagement = JSON.parse(window.localStorage.getItem("user"));

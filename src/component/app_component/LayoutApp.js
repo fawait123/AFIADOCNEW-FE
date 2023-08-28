@@ -16,12 +16,18 @@ import { MdOutlineManageAccounts } from "react-icons/md";
 import { HiOutlineReceiptTax } from "react-icons/hi";
 import { FaUsers } from "react-icons/fa";
 import { getWallet } from "@/API/wallet";
+import { Grid } from "antd";
+import { FaPerson } from "react-icons/fa6";
+const { useBreakpoint } = Grid;
 
 const LayoutApp = ({ children }) => {
+  const screens = useBreakpoint();
   const [isLogin, setIsLogin] = useState(false);
   const [user, setUser] = useState(null);
   const [wallet, setWallet] = useState(0);
   const navigation = useRouter();
+
+  // console.log(screens);
 
   const getDataWallet = async () => {
     await getWallet((res) => {
@@ -56,8 +62,24 @@ const LayoutApp = ({ children }) => {
     }
   }, []);
 
-  // console.log(specialistData);
+  console.log(screens);
   const items = [
+    {
+      key: "0",
+      // icon: <FaPerson />,
+      label: (
+        <div
+          style={{
+            width: 200,
+            color: colorPallate.blue,
+            display: screens.xs ? "block" : "none",
+          }}
+        >
+          <h3>{user?.name}</h3>
+        </div>
+      ),
+      // icon: <SmileOutlined />,
+    },
     {
       key: "1",
 
@@ -119,7 +141,7 @@ const LayoutApp = ({ children }) => {
       {/* Header */}
       <Row
         justify={"space-between"}
-        style={{ padding: "10px 30px" }}
+        style={{ padding: screens.xs ? "10px 0px" : "10px 30px" }}
         align={"middle"}
       >
         <Col span={1}>
@@ -153,7 +175,7 @@ const LayoutApp = ({ children }) => {
             })}
           </Row>
         </Col>
-        <Col xs={{ span: 0 }} md={{ span: 2 }} xl={{ span: 2 }}>
+        <Col>
           {isLogin ? (
             user?.role?.name !== "pengguna" ? (
               <Button
@@ -191,7 +213,9 @@ const LayoutApp = ({ children }) => {
                       border: `2px solid ${colorPallate.blue}`,
                     }}
                   />
-                  <p>{user.name}</p>
+                  <p style={{ display: screens.xs ? "none" : "block" }}>
+                    {user.name}
+                  </p>
                 </a>
               </Dropdown>
             )
@@ -208,7 +232,9 @@ const LayoutApp = ({ children }) => {
         </Col>
       </Row>
       {/* CONTENT*/}
-      {children}
+      <div style={{ marginTop: screens.xs ? 30 : 0, width: "100%" }}>
+        {children}
+      </div>
       {/* FOOTER */}
       <div
         style={{
