@@ -28,9 +28,12 @@ import { useForm } from "antd/es/form/Form";
 import { insertBooking } from "@/API/booking";
 import { getDoctor } from "@/API/doctor";
 import { isUndefined } from "lodash";
+import { Grid } from "antd";
+const { useBreakpoint } = Grid;
 
 const { Search } = Input;
 const SpecialistPage = ({ params }) => {
+  const screen = useBreakpoint();
   const [DoctorData, setDoctorData] = useState([]);
   const [SpecialistData, setSpecialistData] = useState([]);
   const [selectDoctor, setSelectDoctor] = useState(null);
@@ -115,7 +118,7 @@ const SpecialistPage = ({ params }) => {
           <Row gutter={[10, 10]} style={{ padding: "10px 10px" }} wrap={true}>
             <Col xs={{ span: 24 }} md={{ span: 12 }}>
               <div>
-                <div style={{ textAlign: "start" }}>
+                <div style={{ textAlign: "start", maxWidth: 500 }}>
                   <p
                     style={{ fontWeight: 700, fontSize: 18, marginBottom: 10 }}
                   >
@@ -125,7 +128,7 @@ const SpecialistPage = ({ params }) => {
                   <div
                     style={{
                       display: "flex",
-                      width: 350,
+                      // width: 350,
                       alignItems: "center",
                       marginBottom: 20,
                     }}
@@ -142,7 +145,7 @@ const SpecialistPage = ({ params }) => {
                   <div
                     style={{
                       display: "flex",
-                      width: 350,
+                      // width: 350,
                       alignItems: "center",
                       marginBottom: 20,
                     }}
@@ -159,7 +162,7 @@ const SpecialistPage = ({ params }) => {
                   <div
                     style={{
                       display: "flex",
-                      width: 350,
+                      // width: 350,
                       alignItems: "center",
                       marginBottom: 20,
                     }}
@@ -176,388 +179,193 @@ const SpecialistPage = ({ params }) => {
                 </div>
               </div>
             </Col>
-            {selectDoctor === null ? (
-              <Col xs={{ span: 24 }} md={{ span: 12 }}>
-                <Search
-                  placeholder="Cari Dokter"
-                  size="large"
-                  allowClear={true}
-                  loading={false}
-                  onSearch={(value) => {
-                    setLoadingDoctor(true);
-                    publicDashboardDoctor(
-                      {
-                        specialistID: path,
-                        search: value,
-                      },
-                      (res) => {
-                        setDoctorData(res);
-                        setLoadingDoctor(false);
-                      }
-                    );
-                  }}
-                />
-                <p style={{ marginTop: 20, fontWeight: 600, fontSize: 20 }}>
-                  Rekomendasi Dokter Specialist
-                </p>
-                <p style={{ margin: "7px 0px 40px 0px" }}>
-                  Pilih dokter untuk konsultasi kesehatan anda
-                </p>
-                <Row
-                  gutter={[10, 10]}
-                  justify={"start"}
-                  style={{ marginTop: 10 }}
-                  wrap={true}
-                >
-                  {loadingDoctor ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "100%",
-                      }}
-                    >
-                      <Spin />
-                    </div>
-                  ) : DoctorData.length > 0 ? (
-                    DoctorData.map((doc) => {
-                      return (
-                        <Col span={12} style={{ cursor: "pointer" }}>
-                          <div
-                            // name="parent"
-                            id="parent1"
-                            key={doc.id}
-                            onClick={() => {
-                              // console.log(e);
-                              setSelectDoctor(doc);
-                            }}
-                            style={{
-                              padding: 10,
-                              boxShadow: "0.1px 1px 3px gray",
-                              fontSize: 12,
-                              borderRadius: 10,
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Image
-                              style={{
-                                objectFit: "cover",
-                                objectPosition: "top",
-                              }}
-                              alt="afia-docs"
-                              src={`${BASE_URL}/public/uploads/${doc.photos}`}
-                              width={70}
-                              preview={false}
-                              height={100}
-                            />
-                            <div style={{ flex: 1, marginLeft: 10 }}>
-                              <p style={{ marginTop: 10, fontWeight: 500 }}>
-                                {doc.name},{" "}
-                                {doc.academics.map((aca) => aca.degree)}
-                              </p>
-                              <p>{doc?.specialist?.name}</p>
-                              {doc.prices.map((item) => {
-                                return (
-                                  <Tag
-                                    color={
-                                      item.type == "chatt" ? "blue" : "red"
-                                    }
-                                    title={item.type}
-                                    style={{ margin: "7px 2px" }}
-                                  >
-                                    {item.price.toLocaleString("id", "ID")}
-                                  </Tag>
-                                );
-                              })}
 
+            <Col xs={{ span: 24 }} md={{ span: 12 }}>
+              <Search
+                placeholder="Cari Dokter"
+                size="large"
+                allowClear={true}
+                loading={false}
+                onSearch={(value) => {
+                  setLoadingDoctor(true);
+                  publicDashboardDoctor(
+                    {
+                      specialistID: path,
+                      search: value,
+                    },
+                    (res) => {
+                      setDoctorData(res);
+                      setLoadingDoctor(false);
+                    }
+                  );
+                }}
+              />
+              <p style={{ marginTop: 20, fontWeight: 600, fontSize: 20 }}>
+                Rekomendasi Dokter Specialist
+              </p>
+              <p style={{ margin: "7px 0px 40px 0px" }}>
+                Pilih dokter untuk konsultasi kesehatan anda
+              </p>
+              <Row
+                gutter={[10, 10]}
+                justify={"start"}
+                style={{ marginTop: 10 }}
+                wrap={true}
+              >
+                {loadingDoctor ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <Spin />
+                  </div>
+                ) : DoctorData.length > 0 ? (
+                  DoctorData.map((doc) => {
+                    return (
+                      <Col
+                        xs={{ span: 24 }}
+                        lg={{ span: 12 }}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <div
+                          // name="parent"
+                          id="parent1"
+                          key={doc.id}
+                          onClick={() => {
+                            // console.log(e);
+                            setSelectDoctor(doc);
+                          }}
+                          style={{
+                            padding: 10,
+                            boxShadow: "0.1px 1px 3px gray",
+                            fontSize: 12,
+                            borderRadius: 10,
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Image
+                            style={{
+                              objectFit: "cover",
+                              objectPosition: "top",
+                            }}
+                            alt="afia-docs"
+                            src={`${BASE_URL}/public/uploads/${doc.photos}`}
+                            width={70}
+                            preview={false}
+                            height={100}
+                          />
+                          <div style={{ flex: 1, marginLeft: 10 }}>
+                            <p style={{ marginTop: 10, fontWeight: 500 }}>
+                              {doc.name},{" "}
+                              {doc.academics.map((aca) => aca.degree)}
+                            </p>
+                            <p>{doc?.specialist?.name}</p>
+                            {doc.prices.map((item) => {
+                              return (
+                                <Tag
+                                  color={item.type == "chatt" ? "blue" : "red"}
+                                  title={item.type}
+                                  style={{ margin: "7px 2px" }}
+                                >
+                                  {item.price.toLocaleString("id", "ID")}
+                                </Tag>
+                              );
+                            })}
+
+                            <div
+                              style={{
+                                display: "flex",
+                                // justifyContent: "space-around",
+                                margin: "10px 0px",
+                              }}
+                            >
                               <div
                                 style={{
                                   display: "flex",
-                                  // justifyContent: "space-around",
-                                  margin: "10px 0px",
+                                  alignContent: "center",
                                 }}
                               >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignContent: "center",
-                                  }}
-                                >
-                                  <IoBagSharp />
-                                  <p style={{ color: "gray", marginLeft: 5 }}>
-                                    4 tahun
-                                  </p>
-                                </div>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignContent: "center",
-                                    marginLeft: 10,
-                                  }}
-                                >
-                                  <AiFillLike />
-                                  <p style={{ color: "gray", marginLeft: 5 }}>
-                                    100
-                                  </p>
-                                </div>
+                                <IoBagSharp />
+                                <p style={{ color: "gray", marginLeft: 5 }}>
+                                  4 tahun
+                                </p>
                               </div>
-                              <Button
+                              <div
                                 style={{
+                                  display: "flex",
+                                  alignContent: "center",
                                   marginLeft: 10,
-                                  display: nameEntitiy !== "pengguna" && "none",
-                                }}
-                                type="primary"
-                                size="small"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  showModal();
-                                  setChatDokter(doc);
-                                  // setIsModalChat(false);
-                                  // e.preventDefault();
                                 }}
                               >
-                                Chat
-                              </Button>
-                              <Button
-                                style={{
-                                  marginLeft: 10,
-                                  display: nameEntitiy !== "pengguna" && "none",
-                                }}
-                                type="default"
-                                size="small"
-                                color="red"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setIsModalBooking(true);
-                                  setChatDokter(doc);
-                                  // e.preventDefault();
-                                }}
-                              >
-                                Booking
-                              </Button>
+                                <AiFillLike />
+                                <p style={{ color: "gray", marginLeft: 5 }}>
+                                  100
+                                </p>
+                              </div>
                             </div>
+                            <Button
+                              style={{
+                                marginLeft: 10,
+                                display: nameEntitiy !== "pengguna" && "none",
+                              }}
+                              type="primary"
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                showModal();
+                                setChatDokter(doc);
+                                // setIsModalChat(false);
+                                // e.preventDefault();
+                              }}
+                            >
+                              Chat
+                            </Button>
+                            <Button
+                              style={{
+                                marginLeft: 10,
+                                display: nameEntitiy !== "pengguna" && "none",
+                              }}
+                              type="default"
+                              size="small"
+                              color="red"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsModalBooking(true);
+                                setChatDokter(doc);
+                                // e.preventDefault();
+                              }}
+                            >
+                              Booking
+                            </Button>
                           </div>
-                        </Col>
-                      );
-                    })
-                  ) : (
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: "100%",
-                      }}
-                    >
-                      <Image
-                        preview={false}
-                        src="/assets/Oops.svg"
-                        width={180}
-                        height={180}
-                      />
-                    </div>
-                  )}
-                </Row>
-              </Col>
-            ) : (
-              <Col
-                xs={{ span: 24 }}
-                md={{ span: 12 }}
-                style={{
-                  backgroundColor: colorPallate.gray,
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <div
-                  onClick={() => {
-                    setSelectDoctor(null);
-                  }}
-                  style={{
-                    position: "absolute",
-                    top: 10,
-                    left: 10,
-                    opacity: 0.8,
-                  }}
-                >
-                  <AiOutlineCloseCircle color="gray" size={35} />
-                </div>
-                <Col style={{ cursor: "pointer", width: 350, color: "gray" }}>
+                        </div>
+                      </Col>
+                    );
+                  })
+                ) : (
                   <div
-                    key={selectDoctor.id}
                     style={{
-                      padding: 10,
-                      boxShadow: "0.1px 1px 3px gray",
-                      fontSize: 12,
-                      borderRadius: 5,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
                     }}
                   >
                     <Image
-                      style={{
-                        objectFit: "contain",
-                      }}
-                      alt="afia-docs"
-                      src={`${BASE_URL}/public/uploads/${selectDoctor.photos}`}
-                      width={"100%"}
                       preview={false}
-                      height={200}
+                      src="/assets/Oops.svg"
+                      width={180}
+                      height={180}
                     />
-                    <div>
-                      <p
-                        style={{ marginTop: 15, fontWeight: 600, fontSize: 16 }}
-                      >
-                        {selectDoctor.name},{" "}
-                        {selectDoctor.academics.map((aca) => aca.degree)}
-                      </p>
-                      <p style={{ margin: "13px 0px" }}>Dokter Umum</p>
-                      <div
-                        style={{
-                          display: "flex",
-                          // justifyContent: "space-around",
-                          margin: "10px 0px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignContent: "center",
-                          }}
-                        >
-                          <IoBagSharp />
-                          <p style={{ color: "gray", marginLeft: 5 }}>
-                            4 tahun
-                          </p>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignContent: "center",
-                            marginLeft: 10,
-                          }}
-                        >
-                          <AiFillLike />
-                          <p style={{ color: "gray", marginLeft: 5 }}>100</p>
-                        </div>
-                      </div>
-                      <Row>
-                        <Col span={24}>
-                          <Row>
-                            <Col span={24}>
-                              <Row gutter={[10, 10]}>
-                                <Col span={24}>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "start",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <Image
-                                      src="/assets/academic.svg"
-                                      width={40}
-                                      height={40}
-                                      alt="academic"
-                                    />
-                                    <div style={{ marginLeft: 10 }}>
-                                      <p
-                                        style={{
-                                          fontSize: 16,
-                                          fontWeight: "bold",
-                                        }}
-                                      >
-                                        PENDIDIKAN
-                                      </p>
-                                      {selectDoctor.academics.map((aca) => (
-                                        <>
-                                          <p style={{ marginTop: 5 }}>
-                                            {aca.name},
-                                          </p>
-                                          <p>
-                                            {aca.year_entry} - {aca.year_out}
-                                          </p>
-                                        </>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </Col>
-                                <Col span={24}>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "start",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <Image
-                                      src="/assets/work.svg"
-                                      width={40}
-                                      height={40}
-                                      alt="academic"
-                                    />
-                                    <div style={{ marginLeft: 10 }}>
-                                      <p
-                                        style={{
-                                          fontSize: 16,
-                                          fontWeight: "bold",
-                                        }}
-                                      >
-                                        PEKERJAAN
-                                      </p>
-                                      {selectDoctor.works.map((work) => (
-                                        <>
-                                          <p style={{ marginTop: 5 }}>
-                                            {work.name},
-                                          </p>
-                                          <p>
-                                            {work.year_entry} - {work.year_out}
-                                          </p>
-                                        </>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </Col>
-                                <Col span={24}>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "start",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <Image
-                                      src="/assets/money.svg"
-                                      width={40}
-                                      height={40}
-                                      alt="academic"
-                                    />
-                                    <div style={{ marginLeft: 10 }}>
-                                      <p
-                                        style={{
-                                          fontSize: 16,
-                                          fontWeight: "bold",
-                                        }}
-                                      >
-                                        NOMOR STR
-                                      </p>
-                                      <p style={{ marginTop: 5 }}>
-                                        {selectDoctor.STR}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row>
-                    </div>
-                    {/* {console.log(selectDoctor)} */}
                   </div>
-                </Col>
-              </Col>
-            )}
+                )}
+              </Row>
+            </Col>
           </Row>
         </Col>
         {/* <Modal
@@ -650,6 +458,205 @@ const SpecialistPage = ({ params }) => {
               <Input type="time"></Input>
             </Form.Item>
           </Form>
+        </Modal>
+        {/* Detail Dokter */}
+        <Modal
+          open={selectDoctor !== null ? true : false}
+          onCancel={() => setSelectDoctor(null)}
+          footer={null}
+        >
+          <Col
+            // xs={{ span: 24 }}
+            // md={{ span: 12 }}
+            flex={1}
+            style={{
+              // backgroundColor: colorPallate.gray,
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {/* <div
+              onClick={() => {
+                setSelectDoctor(null);
+              }}
+              style={{
+                // position: "absolute",
+                top: 10,
+                left: 10,
+                opacity: 0.8,
+              }}
+            >
+              <AiOutlineCloseCircle color="gray" size={35} />
+            </div> */}
+            <Col style={{ cursor: "pointer", width: 350, color: "gray" }}>
+              <div
+                key={selectDoctor?.id}
+                style={{
+                  padding: 10,
+                  boxShadow: "0.1px 1px 3px gray",
+                  fontSize: 12,
+                  borderRadius: 5,
+                }}
+              >
+                <Image
+                  style={{
+                    objectFit: "contain",
+                  }}
+                  alt="afia-docs"
+                  src={`${BASE_URL}/public/uploads/${selectDoctor?.photos}`}
+                  width={"100%"}
+                  preview={false}
+                  height={200}
+                />
+                <div>
+                  <p style={{ marginTop: 15, fontWeight: 600, fontSize: 16 }}>
+                    {selectDoctor?.name},{" "}
+                    {selectDoctor?.academics.map((aca) => aca.degree)}
+                  </p>
+                  <p style={{ margin: "13px 0px" }}>Dokter Umum</p>
+                  <div
+                    style={{
+                      display: "flex",
+                      // justifyContent: "space-around",
+                      margin: "10px 0px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignContent: "center",
+                      }}
+                    >
+                      <IoBagSharp />
+                      <p style={{ color: "gray", marginLeft: 5 }}>4 tahun</p>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignContent: "center",
+                        marginLeft: 10,
+                      }}
+                    >
+                      <AiFillLike />
+                      <p style={{ color: "gray", marginLeft: 5 }}>100</p>
+                    </div>
+                  </div>
+                  <Row>
+                    <Col span={24}>
+                      <Row>
+                        <Col span={24}>
+                          <Row gutter={[10, 10]}>
+                            <Col span={24}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "start",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Image
+                                  src="/assets/academic.svg"
+                                  width={40}
+                                  height={40}
+                                  alt="academic"
+                                />
+                                <div style={{ marginLeft: 10 }}>
+                                  <p
+                                    style={{
+                                      fontSize: 16,
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    PENDIDIKAN
+                                  </p>
+                                  {selectDoctor?.academics.map((aca) => (
+                                    <>
+                                      <p style={{ marginTop: 5 }}>
+                                        {aca.name},
+                                      </p>
+                                      <p>
+                                        {aca.year_entry} - {aca.year_out}
+                                      </p>
+                                    </>
+                                  ))}
+                                </div>
+                              </div>
+                            </Col>
+                            <Col span={24}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "start",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Image
+                                  src="/assets/work.svg"
+                                  width={40}
+                                  height={40}
+                                  alt="academic"
+                                />
+                                <div style={{ marginLeft: 10 }}>
+                                  <p
+                                    style={{
+                                      fontSize: 16,
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    PEKERJAAN
+                                  </p>
+                                  {selectDoctor?.works.map((work) => (
+                                    <>
+                                      <p style={{ marginTop: 5 }}>
+                                        {work.name},
+                                      </p>
+                                      <p>
+                                        {work.year_entry} - {work.year_out}
+                                      </p>
+                                    </>
+                                  ))}
+                                </div>
+                              </div>
+                            </Col>
+                            <Col span={24}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "start",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Image
+                                  src="/assets/money.svg"
+                                  width={40}
+                                  height={40}
+                                  alt="academic"
+                                />
+                                <div style={{ marginLeft: 10 }}>
+                                  <p
+                                    style={{
+                                      fontSize: 16,
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    NOMOR STR
+                                  </p>
+                                  <p style={{ marginTop: 5 }}>
+                                    {selectDoctor?.STR}
+                                  </p>
+                                </div>
+                              </div>
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </div>
+                {/* {console.log(selectDoctor)} */}
+              </div>
+            </Col>
+          </Col>
         </Modal>
       </div>
     </LayoutApp>

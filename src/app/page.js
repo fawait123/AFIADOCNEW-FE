@@ -13,6 +13,7 @@ import {
   Tag,
   Form,
   Card,
+  Grid,
 } from "antd";
 import { colorPallate } from "@/utils/colorpallate";
 import "./page.css";
@@ -25,6 +26,8 @@ import LayoutApp from "@/component/app_component/LayoutApp";
 import { useForm } from "antd/es/form/Form";
 import { insertBooking } from "@/API/booking";
 import { isUndefined } from "lodash";
+// import {useBrea}
+const { useBreakpoint } = Grid;
 
 const Home = () => {
   const navigation = useRouter();
@@ -39,8 +42,9 @@ const Home = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [nameEntitiy, setNameEntitiy] = useState("");
   const [form] = useForm();
-
+  const screens = useBreakpoint();
   // console.log(DoctorData);
+
   const showModal = () => {
     setIsModalChat(true);
   };
@@ -146,11 +150,11 @@ const Home = () => {
           </Col>
 
           <Col
-            // span={12}
-            md={{
-              span: 24,
-            }}
-            lg={{ span: 12 }}
+          // span={12}
+          // md={{
+          //   span: 24,
+          // }}
+          // lg={{ span: 12 }}
           >
             <Image
               alt="doctor"
@@ -236,8 +240,8 @@ const Home = () => {
               </p>
               <Row
                 justify={"space-evenly"}
-                gutter={[100, 20]}
-                style={{ margin: "20px 0px" }}
+                // gutter={[100, 20]}
+                // style={{ margin: "20px 0px" }}
               >
                 {loadingDoctor ? (
                   <div
@@ -250,224 +254,27 @@ const Home = () => {
                   >
                     <Spin />
                   </div>
-                ) : detailDoctor ? (
-                  <Col
-                    xs={{ span: 24 }}
-                    md={{ span: 12 }}
-                    style={{
-                      backgroundColor: colorPallate.gray,
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <div
-                      onClick={() => {
-                        setDetailDoctor(null);
-                      }}
-                      style={{
-                        position: "absolute",
-                        top: 10,
-                        left: 10,
-                        opacity: 0.8,
-                      }}
-                    >
-                      <AiOutlineCloseCircle color="gray" size={35} />
-                    </div>
-                    <Col
-                      style={{ cursor: "pointer", width: 350, color: "gray" }}
-                    >
-                      <div
-                        key={detailDoctor.id}
-                        style={{
-                          padding: 10,
-                          boxShadow: "0.1px 1px 3px gray",
-                          fontSize: 12,
-                          borderRadius: 5,
-                        }}
-                      >
-                        <Image
-                          style={{
-                            objectFit: "contain",
-                          }}
-                          alt="afia-docs"
-                          src={`${BASE_URL}/public/uploads/${detailDoctor.photos}`}
-                          width={"100%"}
-                          preview={false}
-                          height={200}
-                        />
-                        <div>
-                          <p
-                            style={{
-                              marginTop: 15,
-                              fontWeight: 600,
-                              fontSize: 16,
-                            }}
-                          >
-                            {detailDoctor.name},{" "}
-                            {detailDoctor.academics.map((aca) => aca.degree)}
-                          </p>
-                          <p style={{ margin: "13px 0px" }}>Dokter Umum</p>
-                          <div
-                            style={{
-                              display: "flex",
-                              margin: "10px 0px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignContent: "center",
-                              }}
-                            >
-                              <IoBagSharp />
-                              <p style={{ color: "gray", marginLeft: 5 }}>
-                                4 tahun
-                              </p>
-                            </div>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignContent: "center",
-                                marginLeft: 10,
-                              }}
-                            >
-                              <AiFillLike />
-                              <p style={{ color: "gray", marginLeft: 5 }}>
-                                100
-                              </p>
-                            </div>
-                          </div>
-                          <Row>
-                            <Col span={24}>
-                              <Row>
-                                <Col span={24}>
-                                  <Row gutter={[10, 10]}>
-                                    <Col span={24}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          justifyContent: "start",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <Image
-                                          src="/assets/academic.svg"
-                                          width={40}
-                                          height={40}
-                                          alt="academic"
-                                        />
-                                        <div style={{ marginLeft: 10 }}>
-                                          <p
-                                            style={{
-                                              fontSize: 16,
-                                              fontWeight: "bold",
-                                            }}
-                                          >
-                                            PENDIDIKAN
-                                          </p>
-                                          {detailDoctor.academics.map((aca) => (
-                                            <>
-                                              <p style={{ marginTop: 5 }}>
-                                                {aca.name},
-                                              </p>
-                                              <p>
-                                                {aca.year_entry} -{" "}
-                                                {aca.year_out}
-                                              </p>
-                                            </>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    </Col>
-                                    <Col span={24}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          justifyContent: "start",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <Image
-                                          src="/assets/work.svg"
-                                          width={40}
-                                          height={40}
-                                          alt="academic"
-                                        />
-                                        <div style={{ marginLeft: 10 }}>
-                                          <p
-                                            style={{
-                                              fontSize: 16,
-                                              fontWeight: "bold",
-                                            }}
-                                          >
-                                            PEKERJAAN
-                                          </p>
-                                          {detailDoctor.works.map((work) => (
-                                            <>
-                                              <p style={{ marginTop: 5 }}>
-                                                {work.name},
-                                              </p>
-                                              <p>
-                                                {work.year_entry} -{" "}
-                                                {work.year_out}
-                                              </p>
-                                            </>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    </Col>
-                                    <Col span={24}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          justifyContent: "start",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <Image
-                                          src="/assets/money.svg"
-                                          width={40}
-                                          height={40}
-                                          alt="academic"
-                                        />
-                                        <div style={{ marginLeft: 10 }}>
-                                          <p
-                                            style={{
-                                              fontSize: 16,
-                                              fontWeight: "bold",
-                                            }}
-                                          >
-                                            NOMOR STR
-                                          </p>
-                                          <p style={{ marginTop: 5 }}>
-                                            {detailDoctor.STR}
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </Col>
-                                  </Row>
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                        </div>
-                      </div>
-                    </Col>
-                  </Col>
                 ) : (
                   DoctorData.map((doc, i) => {
                     return (
                       <Col
-                        span={12}
+                        // span={8}
+                        // sm={{ span: 24 }}
+                        // xs={{ span: 24 }}
+                        // md={{
+                        //   span: 10,
+                        // }}
                         style={{ cursor: "pointer" }}
                         onClick={() => setDetailDoctor(doc)}
                       >
                         <div
                           key={doc.id}
                           style={{
+                            // backgroundColor: "red",
                             padding: 10,
                             boxShadow: "0.1px 1px 3px gray",
                             fontSize: 12,
+                            width: "100%",
                             borderRadius: 10,
                             display: "flex",
                             alignItems: "center",
@@ -657,6 +464,189 @@ const Home = () => {
             <Input type="time"></Input>
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        footer={null}
+        onCancel={() => setDetailDoctor(null)}
+        open={detailDoctor !== null}
+      >
+        <Col
+          style={{
+            backgroundColor: colorPallate.gray,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Col style={{ cursor: "pointer", width: 350, color: "gray" }}>
+            <div
+              key={detailDoctor?.id}
+              style={{
+                padding: 10,
+                boxShadow: "0.1px 1px 3px gray",
+                fontSize: 12,
+                borderRadius: 5,
+              }}
+            >
+              <Image
+                style={{
+                  objectFit: "contain",
+                }}
+                alt="afia-docs"
+                src={`${BASE_URL}/public/uploads/${detailDoctor?.photos}`}
+                width={"100%"}
+                preview={false}
+                height={200}
+              />
+              <div>
+                <p
+                  style={{
+                    marginTop: 15,
+                    fontWeight: 600,
+                    fontSize: 16,
+                  }}
+                >
+                  {detailDoctor?.name},{" "}
+                  {detailDoctor?.academics.map((aca) => aca.degree)}
+                </p>
+                <p style={{ margin: "13px 0px" }}>Dokter Umum</p>
+                <div
+                  style={{
+                    display: "flex",
+                    margin: "10px 0px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignContent: "center",
+                    }}
+                  >
+                    <IoBagSharp />
+                    <p style={{ color: "gray", marginLeft: 5 }}>4 tahun</p>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignContent: "center",
+                      marginLeft: 10,
+                    }}
+                  >
+                    <AiFillLike />
+                    <p style={{ color: "gray", marginLeft: 5 }}>100</p>
+                  </div>
+                </div>
+                <Row>
+                  <Col span={24}>
+                    <Row>
+                      <Col span={24}>
+                        <Row gutter={[10, 10]}>
+                          <Col span={24}>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "start",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Image
+                                src="/assets/academic.svg"
+                                width={40}
+                                height={40}
+                                alt="academic"
+                              />
+                              <div style={{ marginLeft: 10 }}>
+                                <p
+                                  style={{
+                                    fontSize: 16,
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  PENDIDIKAN
+                                </p>
+                                {detailDoctor?.academics.map((aca) => (
+                                  <>
+                                    <p style={{ marginTop: 5 }}>{aca.name},</p>
+                                    <p>
+                                      {aca.year_entry} - {aca.year_out}
+                                    </p>
+                                  </>
+                                ))}
+                              </div>
+                            </div>
+                          </Col>
+                          <Col span={24}>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "start",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Image
+                                src="/assets/work.svg"
+                                width={40}
+                                height={40}
+                                alt="academic"
+                              />
+                              <div style={{ marginLeft: 10 }}>
+                                <p
+                                  style={{
+                                    fontSize: 16,
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  PEKERJAAN
+                                </p>
+                                {detailDoctor?.works.map((work) => (
+                                  <>
+                                    <p style={{ marginTop: 5 }}>{work.name},</p>
+                                    <p>
+                                      {work.year_entry} - {work.year_out}
+                                    </p>
+                                  </>
+                                ))}
+                              </div>
+                            </div>
+                          </Col>
+                          <Col span={24}>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "start",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Image
+                                src="/assets/money.svg"
+                                width={40}
+                                height={40}
+                                alt="academic"
+                              />
+                              <div style={{ marginLeft: 10 }}>
+                                <p
+                                  style={{
+                                    fontSize: 16,
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  NOMOR STR
+                                </p>
+                                <p style={{ marginTop: 5 }}>
+                                  {detailDoctor?.STR}
+                                </p>
+                              </div>
+                            </div>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </div>
+            </div>
+          </Col>
+        </Col>
       </Modal>
     </div>
   );
