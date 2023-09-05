@@ -7,7 +7,10 @@ import moment from "moment";
 const { Column, ColumnGroup } = Table;
 
 const BookingPage = () => {
-  const [dataBook, setDataBook] = useState([]);
+  const [dataBook, setDataBook] = useState({
+    count: 1,
+    rows: [],
+  });
 
   const getData = async () => {
     let payload = {
@@ -21,6 +24,7 @@ const BookingPage = () => {
   useEffect(() => {
     getData();
   }, []);
+  console.log(dataBook);
 
   return (
     <LayoutApp>
@@ -28,7 +32,7 @@ const BookingPage = () => {
         <Card style={{ marginBottom: 20 }}>
           <h3>BookingPage</h3>
         </Card>
-        <Table dataSource={dataBook}>
+        <Table dataSource={dataBook.rows}>
           <Column
             title="Tanggal"
             dataIndex="date"

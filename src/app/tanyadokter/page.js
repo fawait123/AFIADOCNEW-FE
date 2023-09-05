@@ -221,8 +221,8 @@ const TanyaDokter = () => {
                       <Col
                         // sm={{ span: 24 }}
                         // md={{ span: 24 }}
-                        xs={{ span: 24 }}
                         // md={{ span: 24 }}
+                        xs={{ span: 24 }}
                         lg={{ span: 12 }}
                         style={{ cursor: "pointer" }}
                       >

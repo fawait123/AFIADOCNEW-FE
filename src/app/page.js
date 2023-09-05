@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -26,9 +26,11 @@ import LayoutApp from "@/component/app_component/LayoutApp";
 import { useForm } from "antd/es/form/Form";
 import { insertBooking } from "@/API/booking";
 import { isUndefined } from "lodash";
+import Screens from "@/utils/Screens";
+import Texting from "@/utils/Texting";
+import CardComponent from "@/component/CardComponent";
 // import {useBrea}
 const { useBreakpoint } = Grid;
-
 const Home = () => {
   const navigation = useRouter();
   const [specialistData, setSpecialistData] = useState([]);
@@ -42,8 +44,8 @@ const Home = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [nameEntitiy, setNameEntitiy] = useState("");
   const [form] = useForm();
-  const screens = useBreakpoint();
-  // console.log(DoctorData);
+  const screens = useContext(Screens);
+  const fontSize = useContext(Texting);
 
   const showModal = () => {
     setIsModalChat(true);
@@ -99,17 +101,18 @@ const Home = () => {
     // console.log(Entitiy);
     setNameEntitiy(isUndefined(Entitiy) ? "pengguna" : Entitiy);
   }, []);
-
+  console.log(screens, "context");
   return (
     <div>
       {/* CONTENT */}
       <LayoutApp>
         <Row justify={"space-between"} align={"middle"}>
           <Col
-            md={{
-              span: 24,
-            }}
-            lg={{ span: 12 }}
+            // md={{
+            //   span: 24,
+            // }}
+            // lg={{ span: 12 }}
+            span={12}
             style={{
               display: "flex",
               justifyContent: "center",
@@ -118,18 +121,24 @@ const Home = () => {
             }}
           >
             <div style={{ width: "50%" }}>
-              <p style={{ fontWeight: 600, fontSize: 40 }}>AFIA DOC</p>
-              <p style={{ fontSize: 16, marginBottom: 30 }}>
+              <p style={{ fontWeight: 600, fontSize: fontSize.xl }}>AFIA DOC</p>
+              <p style={{ fontSize: fontSize.md, marginBottom: 30 }}>
                 Konsultasikan Kesehatan Anda.
               </p>
-              <p style={{ textAlign: "justify", color: "gray" }}>
+              <p
+                style={{
+                  textAlign: "justify",
+                  color: "gray",
+                  display: screens.xs ? "none" : "block",
+                }}
+              >
                 Consequat Lorem commodo mollit ut enim do ipsum. Nulla cillum
                 ipsum magna deserunt commodo consequat officia duis. Id et
                 commodo qui excepteur fugiat deserunt amet ad occaecat ipsum in
                 reprehenderit minim. Elit enim fugiat dolor sunt incididunt
                 culpa cupidatat amet deserunt.
               </p>
-              <Row gutter={[10, 10]} style={{ display: "flex", marginTop: 20 }}>
+              <Row gutter={[10, 10]} style={{ marginTop: 20 }}>
                 <Col>
                   <Button
                     onClick={() => {
@@ -137,12 +146,12 @@ const Home = () => {
                     }}
                     type="primary"
                   >
-                    Chat Dokter
+                    <p style={{ fontSize: fontSize.sm }}>Chat Dokter</p>
                   </Button>
                 </Col>
                 <Col>
                   <Button type="default" style={{ border: "1px solid blue" }}>
-                    Cari Obat
+                    <p style={{ fontSize: fontSize.sm }}>Cari Obat</p>
                   </Button>
                 </Col>
               </Row>
@@ -150,11 +159,11 @@ const Home = () => {
           </Col>
 
           <Col
-          // span={12}
-          // md={{
-          //   span: 24,
-          // }}
-          // lg={{ span: 12 }}
+            span={12}
+            // md={{
+            //   span: 24,
+            // }}
+            // lg={{ span: 12 }}
           >
             <Image
               alt="doctor"
@@ -168,15 +177,13 @@ const Home = () => {
         <div style={{ padding: "20px 0px" }}>
           <Row justify={"center"} style={{ marginBottom: 20 }}>
             <Col span={18}>
-              <p style={{ fontSize: 27, fontWeight: "bold" }}>Spesialis</p>
-              <p style={{ margin: "10px 0px 40px 0px" }}>
+              <p style={{ fontSize: fontSize.lg, fontWeight: "bold" }}>
+                Spesialis
+              </p>
+              <p style={{ margin: "10px 0px 40px 0px", fontSize: fontSize.md }}>
                 Pilih kategori dokter sesuai dengan kebutuhan anda
               </p>
-              <Row
-                justify={"center"}
-                gutter={[100, 20]}
-                style={{ margin: "20px 0px" }}
-              >
+              <Row justify={"center"} style={{ margin: "20px 0px" }}>
                 {loadingSpecialist ? (
                   <div
                     style={{
@@ -219,6 +226,7 @@ const Home = () => {
                                 textAlign: "center",
                                 color: colorPallate.blue,
                                 marginTop: 10,
+                                fontSize: fontSize.md,
                               }}
                             >
                               {val.name}
@@ -234,13 +242,15 @@ const Home = () => {
           </Row>
           <Row justify={"center"}>
             <Col span={18}>
-              <p style={{ fontSize: 27, fontWeight: "bold" }}>Dokter</p>
-              <p style={{ margin: "10px 0px 40px 0px" }}>
+              <p style={{ fontSize: fontSize.lg, fontWeight: "bold" }}>
+                Dokter
+              </p>
+              <p style={{ margin: "10px 0px 40px 0px", fontSize: fontSize.md }}>
                 Pilih dokter untuk konsultasi kesehatan anda
               </p>
               <Row
-                justify={"space-evenly"}
-                // gutter={[100, 20]}
+                // justify={"space-evenly"}
+                gutter={[20, 20]}
                 // style={{ margin: "20px 0px" }}
               >
                 {loadingDoctor ? (
@@ -257,152 +267,160 @@ const Home = () => {
                 ) : (
                   DoctorData.map((doc, i) => {
                     return (
-                      <Col
-                        // span={8}
-                        // sm={{ span: 24 }}
-                        // xs={{ span: 24 }}
-                        // md={{
-                        //   span: 10,
-                        // }}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setDetailDoctor(doc)}
-                      >
-                        <div
-                          key={doc.id}
-                          style={{
-                            // backgroundColor: "red",
-                            padding: 10,
-                            boxShadow: "0.1px 1px 3px gray",
-                            fontSize: 12,
-                            width: "100%",
-                            borderRadius: 10,
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Image
-                            style={{
-                              objectFit: "cover",
-                              objectPosition: "top",
-                              // borderRadius: "100%",
-                            }}
-                            alt="afia-docs"
-                            src={`${BASE_URL}/public/uploads/${doc.photos}`}
-                            width={70}
-                            preview={false}
-                            height={100}
-                          />
-                          <div style={{ flex: 1, marginLeft: 10 }}>
-                            <p style={{ marginTop: 10, fontWeight: 500 }}>
-                              {doc.name},
-                              {doc.academics.map((aca) => aca.degree)}
-                            </p>
-                            {/* msmsm */}
-                            <p>{doc?.specialist?.name || "not set"}</p>
+                      // <Col
+                      //   // span={8}
+                      //   // sm={{ span: 24 }}
+                      //   // xs={{ span: 24 }}
+                      //   // md={{
+                      //   //   span: 10,
+                      //   // }}
+                      //   style={{ cursor: "pointer" }}
+                      //   onClick={() => setDetailDoctor(doc)}
+                      // >
+                      //   <div
+                      //     key={doc.id}
+                      //     style={{
+                      //       // backgroundColor: "red",
+                      //       padding: 10,
+                      //       boxShadow: "0.1px 1px 3px gray",
+                      //       fontSize: 12,
+                      //       width: "100%",
+                      //       borderRadius: 10,
+                      //       display: "flex",
+                      //       alignItems: "center",
+                      //     }}
+                      //   >
+                      //     <Image
+                      //       style={{
+                      //         objectFit: "cover",
+                      //         objectPosition: "top",
+                      //         // borderRadius: "100%",
+                      //       }}
+                      //       alt="afia-docs"
+                      //       src={`${BASE_URL}/public/uploads/${doc.photos}`}
+                      //       width={70}
+                      //       preview={false}
+                      //       height={100}
+                      //     />
+                      //     <div style={{ flex: 1, marginLeft: 10 }}>
+                      //       <p style={{ marginTop: 10, fontWeight: 500 }}>
+                      //         {doc.name},
+                      //         {doc.academics.map((aca) => aca.degree)}
+                      //       </p>
+                      //       {/* msmsm */}
+                      //       <p>{doc?.specialist?.name || "not set"}</p>
 
-                            {/* {console.log(doc)} */}
-                            {doc.prices.map((item) => {
-                              return (
-                                <Tag
-                                  color={item.type == "chatt" ? "blue" : "red"}
-                                  title={item.type}
-                                  style={{ margin: "7px 2px" }}
-                                >
-                                  {item.price.toLocaleString("id", "ID")}
-                                </Tag>
-                              );
-                            })}
-                            <div
-                              style={{
-                                display: "flex",
-                                // justifyContent: "space-around",
-                                margin: "10px 0px",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignContent: "center",
-                                }}
-                              >
-                                <IoBagSharp />
-                                <p style={{ color: "gray", marginLeft: 5 }}>
-                                  4 tahun
-                                </p>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignContent: "center",
-                                  marginLeft: 10,
-                                }}
-                              >
-                                <AiFillLike />
-                                <p style={{ color: "gray", marginLeft: 5 }}>
-                                  100
-                                </p>
-                              </div>
-                            </div>
-                            <Button
-                              style={{
-                                marginLeft: 10,
-                                display: nameEntitiy !== "pengguna" && "none",
-                              }}
-                              type="primary"
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                showModal();
-                                setSelectDoctor(doc);
-                                // e.preventDefault();
-                              }}
-                            >
-                              Chat
-                            </Button>
-                            <Button
-                              style={{
-                                marginLeft: 10,
-                                display: nameEntitiy !== "pengguna" && "none",
-                              }}
-                              type="default"
-                              color="red"
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setIsModalBooking(true);
-                                setSelectDoctor(doc);
-                                // e.preventDefault();
-                              }}
-                            >
-                              Booking
-                            </Button>
-                            <Modal
-                              style={{
-                                top: 250,
-                              }}
-                              title={`Chat dengan ${selectDoctor?.name}`}
-                              okText="Mulai"
-                              cancelText="Batal"
-                              open={isModalChat}
-                              onOk={handleOk}
-                              onCancel={() => {
-                                setDetailDoctor(null);
-                                setSelectDoctor(null);
-                                setIsModalChat(false);
-                              }}
-                            >
-                              <p>
-                                Chatt dengan dokter {selectDoctor?.name} seharga{" "}
-                                <Tag color="blue">
-                                  {selectDoctor?.prices
-                                    .find((el) => el.type == "chatt")
-                                    .price.toLocaleString("id", "ID")}
-                                </Tag>
-                                , pastikan saldo anda cukup{" "}
-                              </p>
-                            </Modal>
-                          </div>
-                        </div>
+                      //       {/* {console.log(doc)} */}
+                      //       {doc.prices.map((item) => {
+                      //         return (
+                      //           <Tag
+                      //             color={item.type == "chatt" ? "blue" : "red"}
+                      //             title={item.type}
+                      //             style={{ margin: "7px 2px" }}
+                      //           >
+                      //             {item.price.toLocaleString("id", "ID")}
+                      //           </Tag>
+                      //         );
+                      //       })}
+                      //       <div
+                      //         style={{
+                      //           display: "flex",
+                      //           // justifyContent: "space-around",
+                      //           margin: "10px 0px",
+                      //         }}
+                      //       >
+                      //         <div
+                      //           style={{
+                      //             display: "flex",
+                      //             alignContent: "center",
+                      //           }}
+                      //         >
+                      //           <IoBagSharp />
+                      //           <p style={{ color: "gray", marginLeft: 5 }}>
+                      //             4 tahun
+                      //           </p>
+                      //         </div>
+                      //         <div
+                      //           style={{
+                      //             display: "flex",
+                      //             alignContent: "center",
+                      //             marginLeft: 10,
+                      //           }}
+                      //         >
+                      //           <AiFillLike />
+                      //           <p style={{ color: "gray", marginLeft: 5 }}>
+                      //             100
+                      //           </p>
+                      //         </div>
+                      //       </div>
+                      //       <Button
+                      //         style={{
+                      //           marginLeft: 10,
+                      //           display: nameEntitiy !== "pengguna" && "none",
+                      //         }}
+                      //         type="primary"
+                      //         size="small"
+                      //         onClick={(e) => {
+                      //           e.stopPropagation();
+                      //           showModal();
+                      //           setSelectDoctor(doc);
+                      //           // e.preventDefault();
+                      //         }}
+                      //       >
+                      //         Chat
+                      //       </Button>
+                      //       <Button
+                      //         style={{
+                      //           marginLeft: 10,
+                      //           display: nameEntitiy !== "pengguna" && "none",
+                      //         }}
+                      //         type="default"
+                      //         color="red"
+                      //         size="small"
+                      //         onClick={(e) => {
+                      //           e.stopPropagation();
+                      //           setIsModalBooking(true);
+                      //           setSelectDoctor(doc);
+                      //           // e.preventDefault();
+                      //         }}
+                      //       >
+                      //         Booking
+                      //       </Button>
+                      //       <Modal
+                      //         style={{
+                      //           top: 250,
+                      //         }}
+                      //         title={`Chat dengan ${selectDoctor?.name}`}
+                      //         okText="Mulai"
+                      //         cancelText="Batal"
+                      //         open={isModalChat}
+                      //         onOk={handleOk}
+                      //         onCancel={() => {
+                      //           setDetailDoctor(null);
+                      //           setSelectDoctor(null);
+                      //           setIsModalChat(false);
+                      //         }}
+                      //       >
+                      //         <p>
+                      //           Chatt dengan dokter {selectDoctor?.name} seharga{" "}
+                      //           <Tag color="blue">
+                      //             {selectDoctor?.prices
+                      //               .find((el) => el.type == "chatt")
+                      //               .price.toLocaleString("id", "ID")}
+                      //           </Tag>
+                      //           , pastikan saldo anda cukup{" "}
+                      //         </p>
+                      //       </Modal>
+                      //     </div>
+                      //   </div>
+                      // </Col>
+                      <Col xs={{ span: 8 }} md={{ span: 5 }} key={i}>
+                        <CardComponent
+                          photo={`${BASE_URL}/public/uploads/${doc.photos}`}
+                          name={doc.name}
+                          specialist={doc.specialist}
+                          allData={doc}
+                        />
                       </Col>
                     );
                   })
