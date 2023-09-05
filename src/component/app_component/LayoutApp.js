@@ -66,7 +66,7 @@ const LayoutApp = ({ children }) => {
     console.log("aka");
   }, []);
 
-  console.log(screens);
+  // console.log(screens);
   const items = [
     {
       key: "0",
