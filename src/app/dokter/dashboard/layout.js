@@ -40,7 +40,30 @@ const DashboardLayout = ({ children }) => {
     collapseWidth: 100,
   });
 
-  const [menu, setMenu] = useState([]);
+  const [menu, setMenu] = useState([
+    {
+      key: "/dokter/dashboard",
+      icon: <HomeOutlined />,
+      label: "Dashboard",
+      prefix: "all",
+      onClick: (e) => navigation.push(e.key),
+    },
+
+    {
+      key: "/dokter/dashboard/booking",
+      icon: <SubnodeOutlined />,
+      label: "Booking",
+      prefix: "dokter",
+      onClick: (e) => navigation.push(e.key),
+    },
+    {
+      key: "/dokter/dashboard/chat",
+      icon: <SubnodeOutlined />,
+      label: "Chat",
+      prefix: "dokter",
+      onClick: (e) => navigation.push(e.key),
+    },
+  ]);
   const [wallet, setWallet] = useState(0);
   const [user, setUser] = useState(null);
 
@@ -69,9 +92,7 @@ const DashboardLayout = ({ children }) => {
         <div
           style={{ width: 200 }}
           onClick={() => {
-            if (user?.role?.name === "dokter") {
-              navigation.push("/account_balance_dokter");
-            }
+            navigation.push("/dokter/account_balance_dokter");
           }}
         >
           <p>AFIA WALLET</p>
@@ -91,38 +112,38 @@ const DashboardLayout = ({ children }) => {
       ),
       // icon: <SmileOutlined />,
     },
-    {
-      key: "2",
-      label: (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <MdOutlineManageAccounts />
-          <div style={{ marginLeft: 10 }}>Notifikasi</div>
-        </div>
-      ),
-      disabled: false,
-    },
-    {
-      key: "3",
-      label: (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <HiOutlineReceiptTax />
-          <div style={{ marginLeft: 10 }}>Booking</div>
-        </div>
-      ),
+    // {
+    //   key: "2",
+    //   label: (
+    //     <div style={{ display: "flex", alignItems: "center" }}>
+    //       <MdOutlineManageAccounts />
+    //       <div style={{ marginLeft: 10 }}>Notifikasi</div>
+    //     </div>
+    //   ),
+    //   disabled: false,
+    // },
+    // {
+    //   key: "3",
+    //   label: (
+    //     <div style={{ display: "flex", alignItems: "center" }}>
+    //       <HiOutlineReceiptTax />
+    //       <div style={{ marginLeft: 10 }}>Booking</div>
+    //     </div>
+    //   ),
 
-      disabled: false,
-    },
-    {
-      key: "4",
-      label: (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <FaUsers />
-          <div style={{ marginLeft: 10 }}>Profil</div>
-        </div>
-      ),
+    //   disabled: false,
+    // },
+    // {
+    //   key: "4",
+    //   label: (
+    //     <div style={{ display: "flex", alignItems: "center" }}>
+    //       <FaUsers />
+    //       <div style={{ marginLeft: 10 }}>Profil</div>
+    //     </div>
+    //   ),
 
-      disabled: false,
-    },
+    //   disabled: false,
+    // },
     {
       key: "5",
       label: (
@@ -146,88 +167,88 @@ const DashboardLayout = ({ children }) => {
   // console.log(user, "user");
 
   useEffect(() => {
-    const roleManagement = JSON.parse(window.localStorage.getItem("user"));
-    if (roleManagement?.role?.name === "pengguna") {
-      navigation.push("/");
-    }
+    // const roleManagement = JSON.parse(window.localStorage.getItem("user"));
+    // if (roleManagement?.role?.name === "pengguna") {
+    //   navigation.push("/");
+    // }
 
     getDataWallet();
     getUser();
 
-    let TemplateMenu = [
-      {
-        key: "/dashboard",
-        icon: <HomeOutlined />,
-        label: "Dashboard",
-        prefix: "all",
-        onClick: (e) => navigation.push(e.key),
-      },
-      {
-        key: "/dashboard/user",
-        icon: <UserOutlined />,
-        label: "Pengguna",
-        prefix: "admin",
-        onClick: (e) => navigation.push(e.key),
-      },
-      {
-        key: "/dashboard/doctors",
-        icon: <FaUserDoctor />,
-        label: "Dokter",
-        prefix: "admin",
-        onClick: (e) => navigation.push(e.key),
-      },
-      {
-        key: "/dashboard/validation",
-        icon: <BsKeyFill />,
-        label: "Validasi Dokter",
-        prefix: "admin",
-        onClick: (e) => navigation.push(e.key),
-      },
-      {
-        key: "/dashboard/specialist",
-        icon: <SubnodeOutlined />,
-        label: "Spesialis",
-        prefix: "admin",
-        onClick: (e) => navigation.push(e.key),
-      },
-      {
-        key: "/dashboard/booking",
-        icon: <SubnodeOutlined />,
-        label: "Booking",
-        prefix: "dokter",
-        onClick: (e) => navigation.push(e.key),
-      },
-      {
-        key: "/dashboard/chat",
-        icon: <SubnodeOutlined />,
-        label: "Chat",
-        prefix: "dokter",
-        onClick: (e) => navigation.push(e.key),
-      },
-      {
-        key: "/dashboard/wallet",
-        icon: <FaMoneyBill />,
-        label: "Wallet",
-        onClick: (e) => navigation.push(e.key),
-        prefix: "admin",
-      },
-      {
-        key: "/dashboard/payout",
-        icon: <BiMoneyWithdraw />,
-        label: "Payout",
-        onClick: (e) => navigation.push(e.key),
-        prefix: "admin",
-      },
-    ];
+    // let TemplateMenu = [
+    //   {
+    //     key: "/dashboard",
+    //     icon: <HomeOutlined />,
+    //     label: "Dashboard",
+    //     prefix: "all",
+    //     onClick: (e) => navigation.push(e.key),
+    //   },
+    //   {
+    //     key: "/dashboard/user",
+    //     icon: <UserOutlined />,
+    //     label: "Pengguna",
+    //     prefix: "admin",
+    //     onClick: (e) => navigation.push(e.key),
+    //   },
+    //   {
+    //     key: "/dashboard/doctors",
+    //     icon: <FaUserDoctor />,
+    //     label: "Dokter",
+    //     prefix: "admin",
+    //     onClick: (e) => navigation.push(e.key),
+    //   },
+    //   {
+    //     key: "/dashboard/validation",
+    //     icon: <BsKeyFill />,
+    //     label: "Validasi Dokter",
+    //     prefix: "admin",
+    //     onClick: (e) => navigation.push(e.key),
+    //   },
+    //   {
+    //     key: "/dashboard/specialist",
+    //     icon: <SubnodeOutlined />,
+    //     label: "Spesialis",
+    //     prefix: "admin",
+    //     onClick: (e) => navigation.push(e.key),
+    //   },
+    //   {
+    //     key: "/dashboard/booking",
+    //     icon: <SubnodeOutlined />,
+    //     label: "Booking",
+    //     prefix: "dokter",
+    //     onClick: (e) => navigation.push(e.key),
+    //   },
+    //   {
+    //     key: "/dashboard/chat",
+    //     icon: <SubnodeOutlined />,
+    //     label: "Chat",
+    //     prefix: "dokter",
+    //     onClick: (e) => navigation.push(e.key),
+    //   },
+    //   {
+    //     key: "/dashboard/wallet",
+    //     icon: <FaMoneyBill />,
+    //     label: "Wallet",
+    //     onClick: (e) => navigation.push(e.key),
+    //     prefix: "admin",
+    //   },
+    //   {
+    //     key: "/dashboard/payout",
+    //     icon: <BiMoneyWithdraw />,
+    //     label: "Payout",
+    //     onClick: (e) => navigation.push(e.key),
+    //     prefix: "admin",
+    //   },
+    // ];
 
-    let menusManagement = TemplateMenu.filter((items) => {
-      return (
-        items.prefix === roleManagement?.role?.name || items.prefix === "all"
-      );
-    });
+    // let menusManagement = TemplateMenu.filter((items) => {
+    //   return (
+    //     items.prefix === roleManagement?.role?.name || items.prefix === "all"
+    //   );
+    // });
 
-    // console.log(menusManagement);
-    setMenu(menusManagement);
+    // // console.log(menusManagement);
+    // setMenu(menusManagement);
   }, []);
 
   return (

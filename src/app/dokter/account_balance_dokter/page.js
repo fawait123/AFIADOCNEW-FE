@@ -1,10 +1,16 @@
 "use client";
-import LayoutApp from "@/component/app_component/LayoutApp";
+
 import { colorPallate } from "@/utils/colorpallate";
 import { Card, Col, Input, Modal, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import "./account_balance.css";
-import { FaHistory, FaWallet, FaSync } from "react-icons/fa";
+import {
+  FaHistory,
+  FaWallet,
+  FaSync,
+  FaArrowCircleLeft,
+  FaArrowLeft,
+} from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { HiQrcode } from "react-icons/hi";
 import { MdAccountBalanceWallet, MdPayments } from "react-icons/md";
@@ -12,8 +18,10 @@ import { getWallet, topUp } from "@/API/wallet";
 import HistoryComponent from "./components/historycomponent";
 import PayoutDokter from "./components/PayoutDokter";
 import { getPayoutByUser } from "@/API/payout";
+import { useRouter } from "next/navigation";
 
 const AccountBalancePage = () => {
+  const navigation = useRouter();
   const [open, setOpen] = useState({ status: false, title: "" });
   const [wallet, setWallet] = useState(0);
   const [payload, setPayload] = useState({
@@ -43,9 +51,25 @@ const AccountBalancePage = () => {
   }, []);
 
   return (
-    <LayoutApp>
+    <div style={{ padding: 10 }}>
       <Row justify={"center"}>
         <Col span={20}>
+          <Card style={{ marginBottom: 10 }}>
+            <div
+              onClick={() => {
+                navigation.push("/dokter/dashboard");
+              }}
+              style={{
+                display: "flex",
+                color: colorPallate.blue,
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <FaArrowLeft />
+              <p style={{ marginLeft: 10 }}>Dashboard</p>
+            </div>
+          </Card>
           <Card>
             <div
               style={{
@@ -246,7 +270,7 @@ const AccountBalancePage = () => {
           ></Input>
         </Modal>
       </Modal>
-    </LayoutApp>
+    </div>
   );
 };
 

@@ -162,17 +162,23 @@ const CardComponent = ({ photo, name, specialist, allData }) => {
             style={{ display: "flex", justifyContent: "space-between" }}
           >
             {allData?.prices.map((butt) => {
+              // console.log(butt);
               return (
                 <Tooltip title={butt?.price}>
                   <Button
                     onClick={() => {
                       if (butt.type === "booking") {
-                        navigation.push(`/antrian_booking/list`);
+                        navigation.push(
+                          `/pengguna/antrian_booking/list/${butt?.doctorID}`
+                        );
                       } else {
                         alert("belum ada action");
                       }
                     }}
-                    style={{ width: "45%" }}
+                    style={{
+                      width: "45%",
+                      display: butt.type === "chatt" ? "none" : "block",
+                    }}
                     type="primary"
                   >
                     <p style={{ textTransform: "uppercase" }}>{butt?.type}</p>

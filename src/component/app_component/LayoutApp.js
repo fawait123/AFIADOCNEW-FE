@@ -60,10 +60,10 @@ const LayoutApp = ({ children }) => {
 
   useEffect(() => {
     getLogin();
-    if (user) {
-      getDataWallet();
-    }
-    console.log("aka");
+    // if (user) {
+    getDataWallet();
+    // }
+    // console.log("aka");
   }, []);
 
   // console.log(screens);
@@ -117,7 +117,9 @@ const LayoutApp = ({ children }) => {
     },
     {
       key: "3",
-      label: <div onClick={() => navigation.push("/booking")}>Booking</div>,
+      label: (
+        <div onClick={() => navigation.push("/user/booking")}>Booking</div>
+      ),
       icon: <BiBookAdd />,
       disabled: false,
     },
@@ -129,7 +131,9 @@ const LayoutApp = ({ children }) => {
     },
     {
       key: "5",
-      label: <div>Pasien</div>,
+      label: (
+        <div onClick={() => navigation.push("/pengguna/pasien")}>Pasien</div>
+      ),
       icon: <FaUsers />,
       disabled: false,
     },

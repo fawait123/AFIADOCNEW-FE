@@ -101,7 +101,7 @@ const Home = () => {
     // console.log(Entitiy);
     setNameEntitiy(isUndefined(Entitiy) ? "pengguna" : Entitiy);
   }, []);
-  console.log(screens, "context");
+  // console.log(screens, "context");
   return (
     <div>
       {/* CONTENT */}
