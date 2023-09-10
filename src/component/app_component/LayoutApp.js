@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Col, Row, Image, Dropdown } from "antd";
 import { colorPallate } from "@/utils/colorpallate";
 import { useRouter } from "next/navigation";
@@ -18,16 +18,19 @@ import { FaUsers } from "react-icons/fa";
 import { getWallet } from "@/API/wallet";
 import { Grid } from "antd";
 import { FaPerson } from "react-icons/fa6";
+import Screens from "@/utils/Screens";
+import Texting from "@/utils/Texting";
 const { useBreakpoint } = Grid;
 
 const LayoutApp = ({ children }) => {
-  const screens = useBreakpoint();
+  const screens = useContext(Screens);
   const [isLogin, setIsLogin] = useState(false);
   const [user, setUser] = useState(null);
   const [wallet, setWallet] = useState(0);
   const navigation = useRouter();
+  const fontSize = useContext(Texting);
 
-  // console.log(screens);
+  // console.log(screens, fontSize, "context");
 
   const getDataWallet = async () => {
     await getWallet((res) => {
@@ -57,12 +60,13 @@ const LayoutApp = ({ children }) => {
 
   useEffect(() => {
     getLogin();
-    if (user) {
-      getDataWallet();
-    }
+    // if (user) {
+    getDataWallet();
+    // }
+    // console.log("aka");
   }, []);
 
-  console.log(screens);
+  // console.log(screens);
   const items = [
     {
       key: "0",
@@ -113,7 +117,9 @@ const LayoutApp = ({ children }) => {
     },
     {
       key: "3",
-      label: <div onClick={() => navigation.push("/booking")}>Booking</div>,
+      label: (
+        <div onClick={() => navigation.push("/user/booking")}>Booking</div>
+      ),
       icon: <BiBookAdd />,
       disabled: false,
     },
@@ -125,7 +131,9 @@ const LayoutApp = ({ children }) => {
     },
     {
       key: "5",
-      label: <div>User Management</div>,
+      label: (
+        <div onClick={() => navigation.push("/pengguna/pasien")}>Pasien</div>
+      ),
       icon: <FaUsers />,
       disabled: false,
     },
@@ -232,7 +240,7 @@ const LayoutApp = ({ children }) => {
         </Col>
       </Row>
       {/* CONTENT*/}
-      <div style={{ marginTop: screens.xs ? 30 : 0, width: "100%" }}>
+      <div style={{ marginTop: screens.xs ? 0 : 30, width: "100%" }}>
         {children}
       </div>
       {/* FOOTER */}
@@ -244,7 +252,7 @@ const LayoutApp = ({ children }) => {
         }}
       >
         <div style={{ width: "85%", margin: "0px auto" }}>
-          <p style={{ fontSize: 25, fontWeight: "bold" }}>AFIA DOCS</p>
+          <p style={{ fontSize: fontSize.xl, fontWeight: "bold" }}>AFIA DOCS</p>
         </div>
         <Row justify={"space-between"} align={"top"} style={{ marginTop: 20 }}>
           <Col
@@ -255,7 +263,13 @@ const LayoutApp = ({ children }) => {
             }}
           >
             <div>
-              <p style={{ fontSize: 20, fontWeight: "500", marginBottom: 10 }}>
+              <p
+                style={{
+                  fontSize: fontSize.md,
+                  fontWeight: "500",
+                  marginBottom: 10,
+                }}
+              >
                 Site Map
               </p>
               <Row gutter={30}>
@@ -283,7 +297,13 @@ const LayoutApp = ({ children }) => {
             }}
           >
             <div>
-              <p style={{ fontSize: 20, fontWeight: "500", marginBottom: 10 }}>
+              <p
+                style={{
+                  fontSize: fontSize.md,
+                  fontWeight: "500",
+                  marginBottom: 10,
+                }}
+              >
                 Layanan Pengaduan Konsumen
               </p>
               <Row gutter={30}>
@@ -315,7 +335,7 @@ const LayoutApp = ({ children }) => {
                 <Col>
                   <p
                     style={{
-                      fontSize: 20,
+                      fontSize: fontSize.md,
                       fontWeight: "500",
                       marginBottom: 5,
                     }}
@@ -332,7 +352,7 @@ const LayoutApp = ({ children }) => {
                       {" "}
                       <p
                         style={{
-                          fontSize: 20,
+                          fontSize: fontSize.md,
                           fontWeight: "500",
                           margin: " 5px 0px",
                         }}

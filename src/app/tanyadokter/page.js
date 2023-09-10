@@ -29,6 +29,7 @@ import { useForm } from "antd/es/form/Form";
 import { insertBooking } from "@/API/booking";
 import { isUndefined } from "lodash";
 import { Grid } from "antd";
+import CardComponent from "@/component/CardComponent";
 const { useBreakpoint } = Grid;
 
 const { Search } = Input;
@@ -221,12 +222,18 @@ const TanyaDokter = () => {
                       <Col
                         // sm={{ span: 24 }}
                         // md={{ span: 24 }}
-                        xs={{ span: 24 }}
                         // md={{ span: 24 }}
+                        xs={{ span: 24 }}
                         lg={{ span: 12 }}
                         style={{ cursor: "pointer" }}
                       >
-                        <div
+                        <CardComponent
+                          photo={`${BASE_URL}/public/uploads/${doc.photos}`}
+                          name={doc.name}
+                          specialist={doc.specialist}
+                          allData={doc}
+                        />
+                        {/* <div
                           // name="parent"
                           id="parent1"
                           key={doc.id}
@@ -338,7 +345,7 @@ const TanyaDokter = () => {
                               Booking
                             </Button>
                           </div>
-                        </div>
+                        </div> */}
                       </Col>
                     );
                   })

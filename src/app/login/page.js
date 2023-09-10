@@ -24,9 +24,11 @@ const Login = () => {
         if (user.role.name === "pengguna") {
           // window.location.href = "/";
           navigation.push("/");
-        } else {
-          navigation.push("/dashboard");
+        } else if (user.role.name === "dokter") {
+          navigation.push("/dokter/dashboard");
           // window.location.href = "/dashboard";
+        } else if (user.role.name === "admin") {
+          navigation.push("/admin/dashboard");
         }
       }).catch((err) => {
         setLoading(false);
