@@ -9,12 +9,15 @@ import {
   Modal,
   Row,
   Table,
+  Tabs,
   Tag,
 } from "antd";
 import { getBooking, updateBooking } from "@/API/booking";
 import { FaCalendar, FaEye } from "react-icons/fa";
 import moment from "moment";
 import { colorPallate } from "@/utils/colorpallate";
+import API from "@/API";
+import { TableComponent } from "./components/tablecomponent";
 const { Column } = Table;
 const Booking = () => {
   const [form] = Form.useForm();
@@ -30,7 +33,35 @@ const Booking = () => {
   const [search, setSearch] = useState(null);
   const [loadingTable, setLoadingTable] = useState(false);
 
-  const getData = () => {
+  const onChange = (key) => {
+    getData([key]);
+  };
+
+  const items = [
+    {
+      key: "process",
+      label: "Proses",
+      children: (
+        <TableComponent datas={data} loading={loadingTable} type="process" />
+      ),
+    },
+    {
+      key: "reschedule",
+      label: "Reschedule",
+      children: (
+        <TableComponent datas={data} loading={loadingTable} type="reschedule" />
+      ),
+    },
+    {
+      key: "done",
+      label: "Selesai",
+      children: (
+        <TableComponent datas={data} loading={loadingTable} type="done" />
+      ),
+    },
+  ];
+
+  const getData = (status = null) => {
     setLoadingTable(true);
     let user = JSON.parse(window.localStorage.getItem("user"));
     let params = {
@@ -38,12 +69,20 @@ const Booking = () => {
       page: page,
       limit: limit,
       search: search,
+      status: status == null ? ["process"] : status,
     };
-    getBooking(params, (response) => {
-      setData(response.rows);
-      setCount(response.count);
-      setLoadingTable(false);
-    });
+    API({
+      url: "/admin/registration",
+      method: "get",
+      params: params,
+    })
+      .then((response) => {
+        setData(response.data?.results?.data);
+        setLoadingTable(false);
+      })
+      .catch((e) => {
+        setLoadingTable(false);
+      });
   };
 
   const reschedule = () => {
@@ -87,69 +126,7 @@ const Booking = () => {
           <Breadcrumb.Item>Booking</Breadcrumb.Item>
         </Breadcrumb>
       </div>
-      <Table
-        dataSource={data}
-        loading={loadingTable}
-        pagination={{
-          current: page,
-          pageSize: limit,
-          total: count,
-          onChange: (page, pageSize) => {
-            setPage(page);
-            setLimit(pageSize);
-          },
-        }}
-      >
-        <Column
-          title="Pasien"
-          dataIndex="userID"
-          key="userID"
-          render={(_, record) => {
-            return <p>{record.user.name}</p>;
-          }}
-        />
-        <Column
-          title="Tanggal"
-          dataIndex="date"
-          key="date"
-          render={(_, record) => {
-            return moment(record.date).format("dddd MMMM YYYY");
-          }}
-        />
-        <Column
-          title="Status"
-          dataIndex="status"
-          key="status"
-          render={(_, record) => {
-            return (
-              <>
-                <Tag color={record.status == "proccess" ? "yellow" : "blue"}>
-                  {record.status}
-                </Tag>
-              </>
-            );
-          }}
-        />
-        <Column
-          title="Action"
-          key="action"
-          render={(_, record) => (
-            <FaCalendar
-              color={colorPallate.blue}
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setDetailModal({
-                  open: true,
-                  data: record,
-                });
-                form.setFieldsValue({
-                  ...record,
-                });
-              }}
-            />
-          )}
-        />
-      </Table>
+      <Tabs defaultActiveKey="process" items={items} onChange={onChange} />
       <Modal
         open={detailModal.open}
         okText="Reschedule"

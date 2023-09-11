@@ -22,6 +22,7 @@ const Page = () => {
       url: "/admin/registration",
       params: {
         doctorID: user.prefixID,
+        status: ["process"],
       },
     }).then((response) => {
       setDataAntrian(response.data.results.data);
