@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { Button, Card, Col, Row, Select } from "antd";
 import Texting from "@/utils/Texting";
 import { useRouter } from "next/navigation";
-import PasienPages from "../pasien/PasienPages";
+import PasienPages from "../../../dokter/dashboard/medical-record/page";
 import ProsesAntrian from "../process_antrian/page";
 
 const AntrianPage = () => {

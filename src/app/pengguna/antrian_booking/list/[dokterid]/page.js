@@ -2,7 +2,7 @@
 import LayoutApp from "@/component/app_component/LayoutApp";
 import React, { useContext, useState } from "react";
 import { useParams } from "next/navigation";
-import { Button, Card, Col, Form, Input, Row, Select } from "antd";
+import { Button, Card, Col, Form, Image, Input, Row, Select } from "antd";
 import Texting from "@/utils/Texting";
 import { useRouter } from "next/navigation";
 import PasienPage from "@/app/pengguna/pasien/page";
@@ -83,26 +83,41 @@ const ListPage = () => {
                     style={{ height: 500, overflow: "auto" }}
                     gutter={[0, 10]}
                   >
-                    {dataAntrian?.map((val, index) => {
-                      return (
-                        <Col span={24} key={index}>
-                          <Card>
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-around",
-                              }}
-                            >
-                              <p>{val?.registrationID}</p>
-                              <p>{val?.patient?.name}</p>
-                              {/* <p>Dr hesemeleh</p> */}
-                              <p>{(index + 1) * 7} menit</p>
-                              <p>{index + 1}</p>
-                            </div>
-                          </Card>
-                        </Col>
-                      );
-                    })}
+                    {dataAntrian.length > 0 ? (
+                      dataAntrian?.map((val, index) => {
+                        return (
+                          <Col span={24} key={index}>
+                            <Card>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-around",
+                                }}
+                              >
+                                <p>{val?.registrationID}</p>
+                                <p>{val?.patient?.name}</p>
+                                {/* <p>Dr hesemeleh</p> */}
+                                <p>{(index + 1) * 7} menit</p>
+                                <p>{index + 1}</p>
+                              </div>
+                            </Card>
+                          </Col>
+                        );
+                      })
+                    ) : (
+                      <div
+                        style={{
+                          textAlign: "center",
+                          width: "100vw",
+                        }}
+                      >
+                        <Image
+                          preview={false}
+                          src="/assets/Oops.svg"
+                          alt="Oops"
+                        />
+                      </div>
+                    )}
                   </Row>
                   <div
                     style={{
