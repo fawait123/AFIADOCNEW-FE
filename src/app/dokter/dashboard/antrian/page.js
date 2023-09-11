@@ -6,14 +6,14 @@ import { Button, Card, Col, Form, Input, Row, Select } from "antd";
 import Texting from "@/utils/Texting";
 import { useRouter } from "next/navigation";
 import PasienPage from "@/app/pengguna/pasien/page";
-import ProsesAntrian from "../../process_antrian/page";
+// import ProsesAntrian from "../../process_antrian/page";
 import { useEffect } from "react";
 import API from "@/API";
 import moment from "moment";
 
 const ListPage = () => {
   const navigation = useRouter();
-  const params = useParams();
+  const [params, setParams] = useState("");
   const [form] = Form.useForm();
   const fontSize = useContext(Texting);
   const [selenjutnya, setSelanjutnya] = useState(false);
@@ -23,27 +23,28 @@ const ListPage = () => {
   // console.log(params);
 
   useEffect(() => {
-    getAntrian();
+    setParams(JSON.parse(localStorage.getItem("user")).prefixID);
+    getAntrian(dokterID);
     getDataTablePatient();
-    getDokter();
+    getDokter(dokterID);
   }, []);
-  const getAntrian = async () => {
+  const getAntrian = async (doctorID) => {
     await API({
       method: "get",
       url: "admin/registration",
       params: {
-        doctorID: params.dokterid,
+        doctorID,
       },
     }).then((res) => {
       setDataAntrian(res.data.results.data);
     });
   };
-  const getDokter = async () => {
+  const getDokter = async (dokterID) => {
     await API({
       url: "/admin/doctor/public",
       method: "get",
       params: {
-        doctorID: params.dokterid,
+        doctorID,
       },
     }).then((respon) => {
       setDataDoctor(respon.data.results.data.rows[0]);
