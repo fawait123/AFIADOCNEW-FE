@@ -29,6 +29,7 @@ import { insertBooking } from "@/API/booking";
 import { getDoctor } from "@/API/doctor";
 import { isUndefined } from "lodash";
 import { Grid } from "antd";
+import CardComponent from "@/component/CardComponent";
 const { useBreakpoint } = Grid;
 
 const { Search } = Input;
@@ -231,7 +232,7 @@ const SpecialistPage = ({ params }) => {
                         lg={{ span: 12 }}
                         style={{ cursor: "pointer" }}
                       >
-                        <div
+                        {/* <div
                           // name="parent"
                           id="parent1"
                           key={doc.id}
@@ -343,7 +344,13 @@ const SpecialistPage = ({ params }) => {
                               Booking
                             </Button>
                           </div>
-                        </div>
+                        </div> */}
+                        <CardComponent
+                          photo={`${BASE_URL}/public/uploads/${doc.photos}`}
+                          name={doc.name}
+                          specialist={doc.specialist}
+                          allData={doc}
+                        />
                       </Col>
                     );
                   })
