@@ -17,6 +17,7 @@ import {
   BiPlusMedical,
   BiSolidLeftArrow,
   BiSolidRightArrow,
+  BiTime,
   BiWallet,
 } from "react-icons/bi";
 import { HiOutlineReceiptTax } from "react-icons/hi";
@@ -50,7 +51,13 @@ const DashboardLayout = ({ children }) => {
       prefix: "all",
       onClick: (e) => navigation.push(e.key),
     },
-
+    {
+      key: "/dokter/dashboard/jam-kerja",
+      icon: <BiTime />,
+      label: "Jam Kerja",
+      prefix: "dokter",
+      onClick: (e) => navigation.push(e.key),
+    },
     {
       key: "/dokter/dashboard/booking",
       icon: <SubnodeOutlined />,
