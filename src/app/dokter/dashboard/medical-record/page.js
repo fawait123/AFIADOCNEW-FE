@@ -1,18 +1,39 @@
 "use client";
+import API from "@/API";
 import LayoutApp from "@/component/app_component/LayoutApp";
 import { Button, Card, Col, Form, Input, Row, Select } from "antd";
 import React, { useState } from "react";
+import { useEffect } from "react";
 
-const PasienPages = () => {
+const Page = () => {
+  const [dataAntrian, setDataAntrian] = useState([]);
+  const [rekamMedis, setRekamMedis] = useState(null);
   const [listInputs, setListInputs] = useState([
     {
       tindakan: "",
       hasil: "",
     },
   ]);
+
+  const getAntrian = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    await API({
+      method: "GET",
+      url: "/admin/registration",
+      params: {
+        doctorID: user.prefixID,
+      },
+    }).then((response) => {
+      setDataAntrian(response.data.results.data);
+    });
+  };
+
+  useEffect(() => {
+    getAntrian();
+  }, []);
   return (
     <Row gutter={[10, 10]}>
-      <Col span={18}>
+      <Col span={16}>
         <Row gutter={[10, 10]}>
           <Col span={24}>
             <Card>
@@ -21,9 +42,16 @@ const PasienPages = () => {
                   <Col span={24}>
                     <Form.Item style={{ width: "100%" }} label={"Pilih Pasien"}>
                       <Select>
-                        <Select.Option value={"gigih prasetia"}>
-                          gigih prasetia
-                        </Select.Option>
+                        {dataAntrian.map((item, index) => {
+                          return (
+                            <Select.Option
+                              value={item?.patient?.id}
+                              key={index}
+                            >
+                              {item?.patient?.name}
+                            </Select.Option>
+                          );
+                        })}
                       </Select>
                     </Form.Item>
                   </Col>
@@ -109,30 +137,34 @@ const PasienPages = () => {
           </Col>
         </Row>
       </Col>
-      <Col span={6}>
+      <Col span={8}>
         <Row gutter={[10, 10]}>
           <Col span={24}>
             <Card>
-              <p style={{ fontWeight: 500 }}>Tindakan</p>
-              {[1, 2, 3].map((va) => {
-                return (
-                  <div
-                    key={va}
-                    style={{
-                      display: "flex",
-                      padding: 10,
-                      justifyContent: "space-between",
-                      // width: "100%",
-                      border: "1px solid gray",
-                      margin: "10px 0px",
-                      borderRadius: 5,
-                    }}
-                  >
-                    <p>Burhans</p>
-                    <p>RGS-02201293</p>
-                  </div>
-                );
-              })}
+              <p style={{ fontWeight: 500 }}>List Antrian</p>
+              {dataAntrian.length > 0 ? (
+                dataAntrian.map((va) => {
+                  return (
+                    <div
+                      key={va}
+                      style={{
+                        display: "flex",
+                        padding: 10,
+                        justifyContent: "space-between",
+                        // width: "100%",
+                        border: "1px solid gray",
+                        margin: "10px 0px",
+                        borderRadius: 5,
+                      }}
+                    >
+                      <p>{va?.patient?.name}</p>
+                      <p>{va?.registrationID}</p>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>Tidak ada data antrian</p>
+              )}
               <div
                 style={{
                   display: "flex",
@@ -144,39 +176,41 @@ const PasienPages = () => {
                 }}
               >
                 <p>Total Pasien</p>
-                <p>20</p>
+                <p>{dataAntrian.length}</p>
               </div>
             </Card>
           </Col>
-          <Col span={24}>
-            <Card>
-              <p style={{ fontWeight: 500, marginBottom: 10 }}>
-                History Rekam Medis Pasien
-              </p>
+          {rekamMedis ? (
+            <Col span={24}>
+              <Card>
+                <p style={{ fontWeight: 500, marginBottom: 10 }}>
+                  History Rekam Medis Pasien
+                </p>
 
-              <Row gutter={[0, 10]}>
-                <Col span={12}>
-                  <p style={{ fontWeight: 500 }}>Keluhan</p>
-                  <p>- Sakit Kepala</p>
-                  <p>- Sakit Perut</p>
-                </Col>
-                <Col span={12}>
-                  <p style={{ fontWeight: 500 }}>Diagnosa</p>
-                  <p>- Sakit Kepala</p>
-                  <p>- Sakit Perut</p>
-                </Col>
-                <Col span={12}>
-                  <p style={{ fontWeight: 500 }}>Tindakan</p>
-                  <p>- Sakit Kepala</p>
-                  <p>- Sakit Perut</p>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
+                <Row gutter={[0, 10]}>
+                  <Col span={12}>
+                    <p style={{ fontWeight: 500 }}>Keluhan</p>
+                    <p>- Sakit Kepala</p>
+                    <p>- Sakit Perut</p>
+                  </Col>
+                  <Col span={12}>
+                    <p style={{ fontWeight: 500 }}>Diagnosa</p>
+                    <p>- Sakit Kepala</p>
+                    <p>- Sakit Perut</p>
+                  </Col>
+                  <Col span={12}>
+                    <p style={{ fontWeight: 500 }}>Tindakan</p>
+                    <p>- Sakit Kepala</p>
+                    <p>- Sakit Perut</p>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+          ) : null}
         </Row>
       </Col>
     </Row>
   );
 };
 
-export default PasienPages;
+export default Page;

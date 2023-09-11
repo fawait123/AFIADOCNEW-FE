@@ -26,7 +26,7 @@ const Login = () => {
           navigation.push("/");
         } else if (user.role.name === "dokter") {
           navigation.push("/dokter/dashboard");
-          // window.location.href = "/dashboard";
+          // window.location.href = "/dokter/dashboard";
         } else if (user.role.name === "admin") {
           navigation.push("/admin/dashboard");
         }

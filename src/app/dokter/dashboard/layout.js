@@ -14,6 +14,7 @@ import {
 import { FaUserDoctor, FaHospital } from "react-icons/fa6";
 import {
   BiMoneyWithdraw,
+  BiPlusMedical,
   BiSolidLeftArrow,
   BiSolidRightArrow,
   BiWallet,
@@ -31,6 +32,7 @@ import { MdOutlineManageAccounts } from "react-icons/md";
 
 import { BsKey, BsKeyFill } from "react-icons/bs";
 import { getWallet } from "@/API/wallet";
+import { IoMedical } from "react-icons/io5";
 
 const { Header, Sider, Content } = Layout;
 const DashboardLayout = ({ children }) => {
@@ -52,17 +54,24 @@ const DashboardLayout = ({ children }) => {
     {
       key: "/dokter/dashboard/booking",
       icon: <SubnodeOutlined />,
-      label: "Booking",
+      label: "Janji Temu",
       prefix: "dokter",
       onClick: (e) => navigation.push(e.key),
     },
     {
-      key: "/dokter/dashboard/chat",
-      icon: <SubnodeOutlined />,
-      label: "Chat",
+      key: "/dokter/dashboard/medical-record",
+      icon: <BiPlusMedical />,
+      label: "Rekam Medis",
       prefix: "dokter",
       onClick: (e) => navigation.push(e.key),
     },
+    // {
+    //   key: "/dokter/dashboard/chat",
+    //   icon: <SubnodeOutlined />,
+    //   label: "Chat",
+    //   prefix: "dokter",
+    //   onClick: (e) => navigation.push(e.key),
+    // },
   ]);
   const [wallet, setWallet] = useState(0);
   const [user, setUser] = useState(null);
