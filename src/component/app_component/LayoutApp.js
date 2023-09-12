@@ -188,7 +188,15 @@ const LayoutApp = ({ children }) => {
             user?.role?.name !== "pengguna" ? (
               <Button
                 onClick={() => {
-                  navigation.push("/dashboard");
+                  const Entitiy = JSON.parse(localStorage.getItem("user"))?.role
+                    ?.name;
+
+                  if (Entitiy === "dokter") {
+                    navigation.push("/dokter/dashboard");
+                  } else if (Entitiy === "admin") {
+                    navigation.push("/admin/dashboard");
+                  }
+                  // console.log(Entut)
                 }}
                 type="primary"
               >
