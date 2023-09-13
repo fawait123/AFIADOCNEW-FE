@@ -25,9 +25,9 @@ const ProsesAntrian = () => {
   ];
 
   useEffect(() => {
-    gettableProcess("process", (res) => setDataProcess(res));
-    gettableProcess("reschedule", (res) => setDataReschedule(res));
-    gettableProcess("done", (res) => setDataSelesai(res));
+    gettableProcess(["process"], (res) => setDataProcess(res));
+    gettableProcess(["reschedule"], (res) => setDataReschedule(res));
+    gettableProcess(["done"], (res) => setDataSelesai(res));
   }, []);
 
   const gettableProcess = async (status, next) => {

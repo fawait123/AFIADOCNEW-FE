@@ -33,6 +33,7 @@ const TabUser = ({
   const [open, setOpen] = useState(false);
   const [statusModal, setStatusModal] = useState("");
   const [formValue] = useForm();
+  const [detail, setDetail] = useState(null);
 
   return (
     <div>
@@ -72,7 +73,11 @@ const TabUser = ({
                 setOpen(false);
                 setStatusModal("");
               } else if (statusModal === "Edit") {
-                EditUser(value, "id", (res) => console.log(res));
+                EditUser(value, detail?.id, (res) => {
+                  setDetail(false);
+                  setOpen(false);
+                  setStatusModal("");
+                });
               }
             });
           }}
@@ -143,7 +148,7 @@ const TabUser = ({
                   name="password"
                   rules={[
                     {
-                      required: true,
+                      required: statusModal == "Edit" ? false : true,
                       min: 8,
                       message: "Password harus di isi!",
                     },
@@ -278,7 +283,7 @@ const TabUser = ({
                   onClick={() => {
                     setOpen(true);
                     setStatusModal("Edit");
-                    // console.log(record);
+                    setDetail(record);
                     formValue.setFieldValue("name", record.name);
                     formValue.setFieldValue("password", "");
                     formValue.setFieldValue("email", record.email);

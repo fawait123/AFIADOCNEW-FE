@@ -20,12 +20,13 @@ const ListPage = () => {
   const [dataPatients, setDataPatients] = useState([]);
   const [dataDoctor, setDataDoctor] = useState([]);
   const [dataAntrian, setDataAntrian] = useState([]);
-  // console.log(params);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     getAntrian();
     getDataTablePatient();
     getDokter();
+    setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
   const getAntrian = async () => {
     await API({
@@ -61,7 +62,6 @@ const ListPage = () => {
       setDataPatients(result);
     });
   };
-  console.log(dataAntrian);
 
   return (
     <LayoutApp>
@@ -71,23 +71,38 @@ const ListPage = () => {
           <div style={{ minHeight: "90vh", padding: "10px 0px" }}>
             <Row justify={"center"} gutter={[0, 20]}>
               <Col span={22}>
-                <p>
+                <p
+                  style={{ fontSize: 18, fontWeight: "bold", color: "#213555" }}
+                >
                   {" "}
-                  Antrian{" "}
-                  {`${dataDoctor?.name} | ${moment().format("MM-DD-YYYY")}`}
+                  ANTRIAN{" "}
+                  {`${dataDoctor?.name?.toUpperCase()} | ${moment().format(
+                    "MM-DD-YYYY"
+                  )}`}
                 </p>
               </Col>
               <Col span={22}>
                 <Card>
                   <Row
-                    style={{ height: 500, overflow: "auto" }}
-                    gutter={[0, 10]}
+                    style={{
+                      height: 500,
+                      overflow: "auto",
+                    }}
                   >
                     {dataAntrian.length > 0 ? (
                       dataAntrian?.map((val, index) => {
                         return (
                           <Col span={24} key={index}>
-                            <Card>
+                            <Card
+                              style={{
+                                background:
+                                  user?.id == val?.userID
+                                    ? "#213555"
+                                    : "#F0F0F0",
+                                color:
+                                  user?.id == val?.userID ? "white" : "black",
+                              }}
+                            >
                               <div
                                 style={{
                                   display: "flex",
@@ -95,10 +110,9 @@ const ListPage = () => {
                                 }}
                               >
                                 <p>{val?.registrationID}</p>
-                                <p>{val?.patient?.name}</p>
-                                {/* <p>Dr hesemeleh</p> */}
+                                <p>{val?.patient?.name?.toUpperCase()}</p>
                                 <p>{(index + 1) * 7} menit</p>
-                                <p>{index + 1}</p>
+                                <p>{"ANTRIAN " + ++index}</p>
                               </div>
                             </Card>
                           </Col>
@@ -121,16 +135,16 @@ const ListPage = () => {
                   </Row>
                   <div
                     style={{
-                      // maxWidth: "100%",
-                      // backgroundColor: "red",
-                      // padding: "20px 0px",
-                      // padding: "10px 15px",
                       marginTop: 30,
                       display: "flex",
                       justifyContent: "space-around",
+                      background: "#7091F5",
+                      color: "white",
+                      padding: 10,
+                      borderRadius: 5,
                     }}
                   >
-                    <p>Total Pasien</p>
+                    <p>TOTAL PASIEN</p>
                     <p>
                       {moment()
                         .add(7 * dataAntrian.length, "minute")
