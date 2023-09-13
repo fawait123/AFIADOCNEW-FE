@@ -83,7 +83,7 @@ export const AddUser = async (input, next) => {
 };
 export const EditUser = async (input, id, next) => {
   const res = await API({
-    baseURL: "/admin/user",
+    url: "/admin/user",
     method: "put",
     params: {
       id,
