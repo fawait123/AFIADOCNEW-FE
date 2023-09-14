@@ -96,7 +96,7 @@ export const EditUser = async (input, id, next) => {
 
 export const DeleteUser = async (id, next) => {
   const res = await API({
-    baseURL: "/admin/user",
+    url: "/admin/user",
     method: "delete",
     params: {
       id,

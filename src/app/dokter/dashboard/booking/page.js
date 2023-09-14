@@ -37,30 +37,6 @@ const Booking = () => {
     getData([key]);
   };
 
-  const items = [
-    {
-      key: "process",
-      label: "Proses",
-      children: (
-        <TableComponent datas={data} loading={loadingTable} type="process" />
-      ),
-    },
-    {
-      key: "reschedule",
-      label: "Reschedule",
-      children: (
-        <TableComponent datas={data} loading={loadingTable} type="reschedule" />
-      ),
-    },
-    {
-      key: "done",
-      label: "Selesai",
-      children: (
-        <TableComponent datas={data} loading={loadingTable} type="done" />
-      ),
-    },
-  ];
-
   const getData = (status = null) => {
     setLoadingTable(true);
     let user = JSON.parse(window.localStorage.getItem("user"));
@@ -85,6 +61,44 @@ const Booking = () => {
       });
   };
 
+  const items = [
+    {
+      key: "process",
+      label: "Proses",
+      children: (
+        <TableComponent
+          datas={data}
+          getData={getData}
+          loading={loadingTable}
+          type="process"
+        />
+      ),
+    },
+    {
+      key: "reschedule",
+      label: "Reschedule",
+      children: (
+        <TableComponent
+          datas={data}
+          getData={getData}
+          loading={loadingTable}
+          type="reschedule"
+        />
+      ),
+    },
+    {
+      key: "done",
+      label: "Selesai",
+      children: (
+        <TableComponent
+          datas={data}
+          getData={getData}
+          loading={loadingTable}
+          type="done"
+        />
+      ),
+    },
+  ];
   const reschedule = () => {
     setLoading(true);
     form
