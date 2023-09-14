@@ -98,21 +98,19 @@ const Home = () => {
       setIsLogin(true);
     }
     let Entitiy = JSON.parse(localStorage.getItem("user"))?.role?.name;
-    // console.log(Entitiy);
     setNameEntitiy(isUndefined(Entitiy) ? "pengguna" : Entitiy);
   }, []);
-  // console.log(screens, "context");
   return (
     <div>
       {/* CONTENT */}
       <LayoutApp>
-        <Row justify={"space-between"} align={"middle"}>
+        <Row
+          justify={"space-between"}
+          align={"middle"}
+          // style={{ background: "blue" }}
+        >
           <Col
-            // md={{
-            //   span: 24,
-            // }}
-            // lg={{ span: 12 }}
-            span={12}
+            span={screens.xs ? 24 : 12}
             style={{
               display: "flex",
               justifyContent: "center",
@@ -120,7 +118,7 @@ const Home = () => {
               alignItems: "center",
             }}
           >
-            <div style={{ width: "50%" }}>
+            <div style={{ width: "80%" }}>
               <p style={{ fontWeight: 600, fontSize: fontSize.xl }}>AFIA DOC</p>
               <p style={{ fontSize: fontSize.md, marginBottom: 30 }}>
                 Konsultasikan Kesehatan Anda.
@@ -129,7 +127,7 @@ const Home = () => {
                 style={{
                   textAlign: "justify",
                   color: "gray",
-                  display: screens.xs ? "none" : "block",
+                  // display: screens.xs ? "none" : "block",
                 }}
               >
                 Consequat Lorem commodo mollit ut enim do ipsum. Nulla cillum
@@ -145,12 +143,17 @@ const Home = () => {
                       navigation.push("/tanyadokter");
                     }}
                     type="primary"
+                    size={screens.xs ? "small" : "middle"}
                   >
                     <p style={{ fontSize: fontSize.sm }}>Chat Dokter</p>
                   </Button>
                 </Col>
                 <Col>
-                  <Button type="default" style={{ border: "1px solid blue" }}>
+                  <Button
+                    type="default"
+                    style={{ border: "1px solid blue" }}
+                    size={screens.xs ? "small" : "middle"}
+                  >
                     <p style={{ fontSize: fontSize.sm }}>Cari Obat</p>
                   </Button>
                 </Col>
@@ -158,13 +161,7 @@ const Home = () => {
             </div>
           </Col>
 
-          <Col
-            span={12}
-            // md={{
-            //   span: 24,
-            // }}
-            // lg={{ span: 12 }}
-          >
+          <Col span={screens.xs ? 24 : 12}>
             <Image
               alt="doctor"
               src={"/assets/doctor.svg"}
@@ -183,7 +180,11 @@ const Home = () => {
               <p style={{ margin: "10px 0px 40px 0px", fontSize: fontSize.md }}>
                 Pilih kategori dokter sesuai dengan kebutuhan anda
               </p>
-              <Row justify={"center"} style={{ margin: "20px 0px" }}>
+              <Row
+                gutter={[15, 15]}
+                justify={"center"}
+                style={{ margin: "20px 0px" }}
+              >
                 {loadingSpecialist ? (
                   <div
                     style={{
@@ -198,11 +199,13 @@ const Home = () => {
                 ) : (
                   specialistData.map((val, i) => {
                     return (
-                      <Col span={6} key={i}>
+                      <Col span={screens.xs ? 24 : 6} key={i}>
                         <Card
-                          style={{ cursor: "pointer" }}
+                          style={{
+                            cursor: "pointer",
+                            border: "1px solid #B4B4B3",
+                          }}
                           onClick={() => {
-                            // console.log(val.id);
                             navigation.push(`/specialist/${val.id}`);
                           }}
                         >
@@ -248,11 +251,7 @@ const Home = () => {
               <p style={{ margin: "10px 0px 40px 0px", fontSize: fontSize.md }}>
                 Pilih dokter untuk konsultasi kesehatan anda
               </p>
-              <Row
-                // justify={"space-evenly"}
-                gutter={[20, 20]}
-                // style={{ margin: "20px 0px" }}
-              >
+              <Row justify={"space-around"} gutter={[20, 20]}>
                 {loadingDoctor ? (
                   <div
                     style={{
@@ -267,8 +266,7 @@ const Home = () => {
                 ) : (
                   DoctorData.map((doc, i) => {
                     return (
-                  
-                      <Col xs={{ span: 8 }} md={{ span: 5 }} key={i}>
+                      <Col xs={{ span: 24 }} md={{ span: 5 }} key={i}>
                         <CardComponent
                           photo={`${BASE_URL}/public/uploads/${doc.photos}`}
                           name={doc.name}

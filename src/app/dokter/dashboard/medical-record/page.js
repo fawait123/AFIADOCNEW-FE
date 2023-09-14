@@ -28,6 +28,7 @@ const Page = () => {
         status: ["process", "reschedule"],
       },
     }).then((response) => {
+      console.log(response);
       setDataAntrian(response.data.results.data);
     });
   };

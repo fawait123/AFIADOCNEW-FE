@@ -102,32 +102,31 @@ const DashboardLayout = ({ children }) => {
   } = theme.useToken();
 
   const items = [
-    {
-      key: "1",
-      label: (
-        <div
-          style={{ width: 200 }}
-          onClick={() => {
-            navigation.push("/dokter/account_balance_dokter");
-          }}
-        >
-          <p>AFIA WALLET</p>
-          <div
-            style={{
-              display: "flex",
-              justifyItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <p style={{ color: "green", fontWeight: 700 }}>
-              Rp {wallet.toLocaleString("id", "ID")}
-            </p>
-            <BiWallet size={20} />
-          </div>
-        </div>
-      ),
-      // icon: <SmileOutlined />,
-    },
+    // {
+    //   key: "1",
+    //   label: (
+    //     <div
+    //       style={{ width: 200 }}
+    //       onClick={() => {
+    //         navigation.push("/dokter/account_balance_dokter");
+    //       }}
+    //     >
+    //       <p>AFIA WALLET</p>
+    //       <div
+    //         style={{
+    //           display: "flex",
+    //           justifyItems: "center",
+    //           justifyContent: "space-between",
+    //         }}
+    //       >
+    //         <p style={{ color: "green", fontWeight: 700 }}>
+    //           Rp {wallet.toLocaleString("id", "ID")}
+    //         </p>
+    //         <BiWallet size={20} />
+    //       </div>
+    //     </div>
+    //   ),
+    // },
     // {
     //   key: "2",
     //   label: (

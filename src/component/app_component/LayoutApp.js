@@ -14,7 +14,7 @@ import {
 import { BiBookAdd, BiWallet } from "react-icons/bi";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { HiOutlineReceiptTax } from "react-icons/hi";
-import { FaUsers } from "react-icons/fa";
+import { FaAppStore, FaArchive, FaBlog, FaHome, FaUsers } from "react-icons/fa";
 import { getWallet } from "@/API/wallet";
 import { Grid } from "antd";
 import { FaPerson } from "react-icons/fa6";
@@ -60,96 +60,134 @@ const LayoutApp = ({ children }) => {
 
   useEffect(() => {
     getLogin();
-    // if (user) {
-    getDataWallet();
-    // }
-    // console.log("aka");
+    if (user) {
+      getDataWallet();
+    }
   }, []);
 
-  // console.log(screens);
-  const items = [
-    {
-      key: "0",
-      // icon: <FaPerson />,
-      label: (
-        <div
-          style={{
-            width: 200,
-            color: colorPallate.blue,
-            display: screens.xs ? "block" : "none",
-          }}
-        >
-          <h3>{user?.name}</h3>
-        </div>
-      ),
-      // icon: <SmileOutlined />,
-    },
-    {
-      key: "1",
+  const items = screens.xs
+    ? [
+        {
+          key: "0",
+          label: (
+            <div
+              style={{
+                width: 200,
+                color: colorPallate.blue,
+                display: screens.xs ? "block" : "none",
+              }}
+            >
+              <h3>{user?.name}</h3>
+            </div>
+          ),
+        },
 
-      label: (
-        <div
-          style={{ width: 200 }}
-          onClick={() => navigation.push("/account_balance")}
-        >
-          <p>AFIA WALLET</p>
-          <div
-            style={{
-              display: "flex",
-              justifyItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <p style={{ color: "green", fontWeight: 700 }}>
-              Rp {wallet.toLocaleString("id", "ID")}
-            </p>
-            <BiWallet size={20} />
-          </div>
-        </div>
-      ),
-      // icon: <SmileOutlined />,
-    },
-    {
-      key: "2",
-      label: <div>Account Details</div>,
-      icon: <MdOutlineManageAccounts />,
-      disabled: false,
-    },
-    {
-      key: "3",
-      label: (
-        <div onClick={() => navigation.push("/user/booking")}>Booking</div>
-      ),
-      icon: <BiBookAdd />,
-      disabled: false,
-    },
-    {
-      key: "4",
-      label: <div>Tax Information</div>,
-      icon: <HiOutlineReceiptTax />,
-      disabled: false,
-    },
-    {
-      key: "5",
-      label: (
-        <div onClick={() => navigation.push("/pengguna/pasien")}>Pasien</div>
-      ),
-      icon: <FaUsers />,
-      disabled: false,
-    },
-    {
-      key: "6",
-      label: <div onClick={() => logout()}>Logout</div>,
-      icon: <AiOutlinePoweroff />,
-      disabled: false,
-    },
-  ];
+        {
+          key: "3",
+          label: (
+            <div onClick={() => navigation.push("/user/booking")}>Booking</div>
+          ),
+          icon: <BiBookAdd />,
+          disabled: false,
+        },
+
+        {
+          key: "5",
+          label: (
+            <div onClick={() => navigation.push("/pengguna/pasien")}>
+              Pasien
+            </div>
+          ),
+          icon: <FaUsers />,
+          disabled: false,
+        },
+        {
+          key: "6",
+          label: <div onClick={() => navigation.push("/")}>Beranda</div>,
+          icon: <FaHome />,
+          disabled: false,
+        },
+        {
+          key: "6",
+          label: <div onClick={() => navigation.push("/")}>Artikel</div>,
+          icon: <FaArchive />,
+          disabled: false,
+        },
+        {
+          key: "6",
+          label: <div onClick={() => navigation.push("/")}>Aplikasi</div>,
+          icon: <FaAppStore />,
+          disabled: false,
+        },
+        {
+          key: "6",
+          label: <div onClick={() => navigation.push("/")}>Riwayat</div>,
+          icon: <FaBlog />,
+          disabled: false,
+        },
+        {
+          key: "6",
+          label: <div onClick={() => logout()}>Logout</div>,
+          icon: <AiOutlinePoweroff />,
+          disabled: false,
+        },
+      ]
+    : [
+        {
+          key: "0",
+          label: (
+            <div
+              style={{
+                width: 200,
+                color: colorPallate.blue,
+                display: screens.xs ? "block" : "none",
+              }}
+            >
+              <h3>{user?.name}</h3>
+            </div>
+          ),
+        },
+
+        {
+          key: "3",
+          label: (
+            <div onClick={() => navigation.push("/user/booking")}>Booking</div>
+          ),
+          icon: <BiBookAdd />,
+          disabled: false,
+        },
+
+        {
+          key: "5",
+          label: (
+            <div onClick={() => navigation.push("/pengguna/pasien")}>
+              Pasien
+            </div>
+          ),
+          icon: <FaUsers />,
+          disabled: false,
+        },
+        {
+          key: "6",
+          label: <div onClick={() => logout()}>Logout</div>,
+          icon: <AiOutlinePoweroff />,
+          disabled: false,
+        },
+      ];
+
   return (
     <div>
       {/* Header */}
       <Row
         justify={"space-between"}
-        style={{ padding: screens.xs ? "10px 0px" : "10px 30px" }}
+        style={{
+          padding: screens.xs ? "10px 0px" : "10px 30px",
+          borderBottom: "1px solid #F0F0F0",
+          position: "sticky",
+          top: 0,
+          zIndex: 99,
+          background: "white",
+        }}
         align={"middle"}
       >
         <Col span={1}>
@@ -165,7 +203,7 @@ const LayoutApp = ({ children }) => {
             preview={false}
           />
         </Col>
-        <Col xs={{ span: 0 }} md={{ span: 8 }} xl={{ span: 5 }}>
+        <Col xs={{ span: 0 }} md={{ span: 8 }} xl={{ span: 15 }}>
           <Row gutter={20}>
             {["Beranda", "Artikel", "Aplikasi", "Riwayat"].map((val, i) => {
               return (
@@ -203,11 +241,7 @@ const LayoutApp = ({ children }) => {
                 Dashboard
               </Button>
             ) : (
-              <Dropdown
-                menu={{
-                  items,
-                }}
-              >
+              <Dropdown menu={{ items }}>
                 <a
                   onClick={(e) => e.preventDefault()}
                   style={{
@@ -248,7 +282,12 @@ const LayoutApp = ({ children }) => {
         </Col>
       </Row>
       {/* CONTENT*/}
-      <div style={{ marginTop: screens.xs ? 0 : 30, width: "100%" }}>
+      <div
+        style={{
+          marginTop: screens.xs ? 0 : 30,
+          width: "100%",
+        }}
+      >
         {children}
       </div>
       {/* FOOTER */}
@@ -264,7 +303,7 @@ const LayoutApp = ({ children }) => {
         </div>
         <Row justify={"space-between"} align={"top"} style={{ marginTop: 20 }}>
           <Col
-            span={8}
+            span={screens.xs ? 24 : 8}
             style={{
               display: "flex",
               justifyContent: "center",
@@ -298,7 +337,7 @@ const LayoutApp = ({ children }) => {
             </div>
           </Col>
           <Col
-            span={8}
+            span={screens.xs ? 24 : 8}
             style={{
               display: "flex",
               justifyContent: "center",
@@ -332,7 +371,7 @@ const LayoutApp = ({ children }) => {
             </div>
           </Col>
           <Col
-            span={8}
+            span={screens.xs ? 24 : 8}
             style={{
               display: "flex",
               justifyContent: "center",
