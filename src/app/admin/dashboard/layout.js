@@ -25,8 +25,8 @@ import { Dropdown, message, Space, Tooltip } from "antd";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { colorPallate } from "@/utils/colorpallate";
-import { AiOutlinePoweroff } from "react-icons/ai";
-import { FaMoneyBill, FaUsers } from "react-icons/fa";
+import { AiOutlineClose, AiOutlinePoweroff } from "react-icons/ai";
+import { FaMoneyBill, FaUsers, FaWindowClose } from "react-icons/fa";
 import { MdOutlineManageAccounts } from "react-icons/md";
 
 import { BsKey, BsKeyFill } from "react-icons/bs";
@@ -108,37 +108,36 @@ const DashboardLayout = ({ children }) => {
   } = theme.useToken();
 
   const items = [
-    {
-      key: "1",
-      label: (
-        <div style={{ width: 200 }}>
-          <p>AFIA WALLET</p>
-          <div
-            style={{
-              display: "flex",
-              justifyItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <p style={{ color: "green", fontWeight: 700 }}>
-              Rp {wallet.toLocaleString("id", "ID")}
-            </p>
-            <BiWallet size={20} />
-          </div>
-        </div>
-      ),
-      // icon: <SmileOutlined />,
-    },
-    {
-      key: "2",
-      label: (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <MdOutlineManageAccounts />
-          <div style={{ marginLeft: 10 }}>Notifikasi</div>
-        </div>
-      ),
-      disabled: false,
-    },
+    // {
+    //   key: "1",
+    //   label: (
+    //     <div style={{ width: 200 }}>
+    //       <p>AFIA WALLET</p>
+    //       <div
+    //         style={{
+    //           display: "flex",
+    //           justifyItems: "center",
+    //           justifyContent: "space-between",
+    //         }}
+    //       >
+    //         <p style={{ color: "green", fontWeight: 700 }}>
+    //           Rp {wallet.toLocaleString("id", "ID")}
+    //         </p>
+    //         <BiWallet size={20} />
+    //       </div>
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   key: "2",
+    //   label: (
+    //     <div style={{ display: "flex", alignItems: "center" }}>
+    //       <MdOutlineManageAccounts />
+    //       <div style={{ marginLeft: 10 }}>Notifikasi</div>
+    //     </div>
+    //   ),
+    //   disabled: false,
+    // },
     // {
     //   key: "3",
     //   label: (
@@ -231,18 +230,23 @@ const DashboardLayout = ({ children }) => {
             alt="logo"
           />
           {responsiveLayout.breakpoint ? (
-            <Button
+            <AiOutlineClose
               onClick={() =>
                 setResponsiveLayout({
                   ...responsiveLayout,
                   collapse: !responsiveLayout.collapse,
                 })
               }
-              type="primary"
-              style={{ width: "97%", borderRadius: 5, marginBottom: 10 }}
-            >
-              <BiSolidLeftArrow />
-            </Button>
+              // type="primary"
+              style={{
+                // width: "97%",
+                borderRadius: 5,
+                marginBottom: 10,
+                position: "absolute",
+                top: 10,
+                right: 10,
+              }}
+            />
           ) : null}
         </div>
         <Menu

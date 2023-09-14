@@ -19,7 +19,7 @@ const CardComponent = ({ photo, name, specialist, allData }) => {
         borderRadius: "10px 10px 10px 10px",
         backgroundColor: "#f0f0f0",
         paddingBottom: 10,
-        width: screens.xs ? "100%" : "80%",
+        width: screens.xs ? "100%" : "100%",
         margin: "0px auto",
       }}
     >

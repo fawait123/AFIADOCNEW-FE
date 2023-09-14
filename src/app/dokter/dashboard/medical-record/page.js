@@ -1,17 +1,20 @@
 "use client";
 import API from "@/API";
 import LayoutApp from "@/component/app_component/LayoutApp";
-import { Button, Card, Col, Form, Input, Row, Select } from "antd";
+import { Button, Card, Col, Form, Input, Row, Select, Tag } from "antd";
+import { useForm } from "antd/es/form/Form";
+import moment from "moment";
 import React, { useState } from "react";
 import { useEffect } from "react";
 
 const Page = () => {
+  const [form] = useForm();
   const [dataAntrian, setDataAntrian] = useState([]);
   const [rekamMedis, setRekamMedis] = useState(null);
   const [listInputs, setListInputs] = useState([
     {
-      tindakan: "",
-      hasil: "",
+      action: "",
+      result: "",
     },
   ]);
 
@@ -22,10 +25,39 @@ const Page = () => {
       url: "/admin/registration",
       params: {
         doctorID: user.prefixID,
-        status: ["process"],
+        status: ["process", "reschedule"],
       },
     }).then((response) => {
+      console.log(response);
       setDataAntrian(response.data.results.data);
+    });
+  };
+
+  const getRekamMedis = async (e) => {
+    await API({
+      url: "/admin/medical-record",
+      method: "get",
+      params: {
+        limit: 5,
+        patientID: e,
+      },
+    }).then((response) => {
+      setRekamMedis(response.data.results.data);
+    });
+  };
+
+  const handleClick = async () => {
+    form.validateFields().then(async () => {
+      const fieldValue = form.getFieldsValue();
+      await API({
+        url: "/admin/medical-record",
+        method: "post",
+        data: fieldValue,
+      }).then((response) => {
+        getAntrian();
+        form.resetFields();
+        setRekamMedis(null);
+      });
     });
   };
 
@@ -34,15 +66,24 @@ const Page = () => {
   }, []);
   return (
     <Row gutter={[10, 10]}>
-      <Col span={16}>
+      <Col span={14}>
         <Row gutter={[10, 10]}>
           <Col span={24}>
             <Card>
-              <Form layout="vertical" name="formpasien">
+              <Form layout="vertical" name="formpasien" form={form}>
                 <Row>
                   <Col span={24}>
-                    <Form.Item style={{ width: "100%" }} label={"Pilih Pasien"}>
-                      <Select>
+                    <Form.Item
+                      style={{ width: "100%" }}
+                      label={"Pilih Pasien"}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                      name="patientID"
+                    >
+                      <Select onChange={(e) => getRekamMedis(e)}>
                         {dataAntrian.map((item, index) => {
                           return (
                             <Select.Option
@@ -57,7 +98,16 @@ const Page = () => {
                     </Form.Item>
                   </Col>
                   <Col span={24}>
-                    <Form.Item style={{ width: "100%" }} label={"Keluhan"}>
+                    <Form.Item
+                      style={{ width: "100%" }}
+                      label={"Keluhan"}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                      name="complaint"
+                    >
                       <Input.TextArea
                         style={{
                           height: 120,
@@ -66,7 +116,16 @@ const Page = () => {
                     </Form.Item>
                   </Col>
                   <Col span={24}>
-                    <Form.Item style={{ width: "100%" }} label={"Diagnosa"}>
+                    <Form.Item
+                      style={{ width: "100%" }}
+                      label={"Diagnosa"}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                      name="diagnosis"
+                    >
                       <Input.TextArea
                         style={{
                           height: 120,
@@ -75,26 +134,35 @@ const Page = () => {
                     </Form.Item>
                   </Col>
                   <Col span={24}>
-                    <Form.List name="names" initialValue={listInputs}>
+                    <Form.List name="detail" initialValue={listInputs}>
                       {(fields, { add, remove }, { errors }) => (
                         <Row gutter={[10, 10]}>
                           {fields.map((field, index) => {
-                            // console.log(field);
                             return (
                               <>
-                                <Col span={11}>
+                                <Col span={11} key={index + "action"}>
                                   <Form.Item
+                                    rules={[
+                                      {
+                                        required: true,
+                                      },
+                                    ]}
                                     label="Tindakan"
-                                    name={index + "tindakan"}
+                                    name={[field.name, "action"]}
                                   >
                                     <Input />
                                   </Form.Item>
                                 </Col>
 
-                                <Col span={11}>
+                                <Col span={11} key={index + "result"}>
                                   <Form.Item
+                                    rules={[
+                                      {
+                                        required: true,
+                                      },
+                                    ]}
                                     label="Hasil"
-                                    name={index + "hasil"}
+                                    name={[field.name, "result"]}
                                   >
                                     <Input />
                                   </Form.Item>
@@ -132,13 +200,13 @@ const Page = () => {
             </Card>
           </Col>
           <Col span={24}>
-            <Card>
-              <p>span</p>
-            </Card>
+            <Button type="primary" onClick={() => handleClick()}>
+              Simpan
+            </Button>
           </Col>
         </Row>
       </Col>
-      <Col span={8}>
+      <Col span={10}>
         <Row gutter={[10, 10]}>
           <Col span={24}>
             <Card>
@@ -188,23 +256,41 @@ const Page = () => {
                   History Rekam Medis Pasien
                 </p>
 
-                <Row gutter={[0, 10]}>
-                  <Col span={12}>
-                    <p style={{ fontWeight: 500 }}>Keluhan</p>
-                    <p>- Sakit Kepala</p>
-                    <p>- Sakit Perut</p>
-                  </Col>
-                  <Col span={12}>
-                    <p style={{ fontWeight: 500 }}>Diagnosa</p>
-                    <p>- Sakit Kepala</p>
-                    <p>- Sakit Perut</p>
-                  </Col>
-                  <Col span={12}>
-                    <p style={{ fontWeight: 500 }}>Tindakan</p>
-                    <p>- Sakit Kepala</p>
-                    <p>- Sakit Perut</p>
-                  </Col>
-                </Row>
+                {rekamMedis.map((item) => {
+                  return (
+                    <Card style={{ marginBottom: 4 }}>
+                      <Tag color="blue" style={{ marginBottom: 4 }}>
+                        Pemeriksaan Tanggal{" "}
+                        {moment(item?.createdAt).format("DD MMMM YYYY")}
+                      </Tag>
+                      <p style={{ fontWeight: "bold", margin: 4 }}>
+                        Dokter {item?.doctor?.name}
+                      </p>
+                      <Row gutter={[0, 10]} style={{ marginBottom: 7 }}>
+                        <Col span={12}>
+                          <p style={{ fontWeight: 500 }}>Keluhan</p>
+                          <p>{item?.complaint}</p>
+                        </Col>
+                        <Col span={12}>
+                          <p style={{ fontWeight: 500 }}>Diagnosa</p>
+                          <p>{item?.diagnosis}</p>
+                        </Col>
+                        <Col span={24}>
+                          <p style={{ fontWeight: 500 }}>Tindakan</p>
+                          {JSON.parse(item?.detail).map((det) => {
+                            return (
+                              <>
+                                <p>
+                                  {det?.action}, {det?.result}
+                                </p>
+                              </>
+                            );
+                          })}
+                        </Col>
+                      </Row>
+                    </Card>
+                  );
+                })}
               </Card>
             </Col>
           ) : null}

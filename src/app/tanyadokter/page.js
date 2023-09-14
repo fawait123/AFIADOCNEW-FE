@@ -200,7 +200,7 @@ const TanyaDokter = () => {
                 Pilih dokter untuk konsultasi kesehatan anda
               </p>
               <Row
-                gutter={[10, 10]}
+                gutter={[30, 30]}
                 justify={"start"}
                 style={{ marginTop: 10 }}
                 wrap={true}
@@ -393,7 +393,10 @@ const TanyaDokter = () => {
                 ) : (
                   SpecialistData.map((spec) => {
                     return (
-                      <Col span={12} style={{ cursor: "pointer" }}>
+                      <Col
+                        span={screen.xs ? 24 : 12}
+                        style={{ cursor: "pointer" }}
+                      >
                         <div
                           // name="parent"
                           id="parent1"
@@ -417,14 +420,14 @@ const TanyaDokter = () => {
                               objectPosition: "top",
                             }}
                             alt="afia-docs"
-                            src={`${PATH_IMAGE}/${spec.picture}`}
+                            src={`${BASE_URL}/public/uploads/${spec?.picture}`}
                             width={70}
                             preview={false}
                             height={70}
                           />
                           <div style={{ flex: 1, marginLeft: 10 }}>
                             <p style={{ marginTop: 10, fontWeight: 500 }}>
-                              {spec.name}
+                              {spec?.name}
                             </p>
                           </div>
                         </div>

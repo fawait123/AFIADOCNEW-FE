@@ -126,9 +126,9 @@ const JamKerja = () => {
         };
       });
       let soort = ValueState.sort((a, b) => parseInt(a.day) - parseInt(b.day));
-
-      // console.log(soort);
-      setValueDay(soort);
+      if (soort.length > 0) {
+        setValueDay(soort);
+      }
     });
   };
 
@@ -215,15 +215,6 @@ const JamKerja = () => {
           alignItems: "center",
         }}
       >
-        <Button
-          style={{
-            width: "20%",
-            backgroundColor: colorPallate.red,
-            color: "white",
-          }}
-        >
-          Kembali
-        </Button>
         <Button
           onClick={async () => {
             const dataPost = valueDay.map((data) => {
