@@ -1,5 +1,6 @@
 import API from "@/API";
 import { Button, Checkbox, Col, Row, Table } from "antd";
+import moment from "moment";
 import React, { useState } from "react";
 
 export const TableComponent = ({ datas, loading, type, getData }) => {
@@ -7,9 +8,10 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
 
   return (
     <Row gutter={[10, 10]}>
-      {type == "process" ? (
+      {type == "process" || type == "reschedule" ? (
         <Col span={24}>
           <Button
+            disabled={datas.length > 0 ? false : true}
             onClick={async () => {
               const dataPost = reschedule.map((vls) => {
                 return vls.id;
@@ -34,7 +36,7 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
       ) : null}
       <Col span={24}>
         <Table rowKey={"id"} dataSource={datas} loading={loading}>
-          {type == "process" ? (
+          {type == "process" || type == "reschedule" ? (
             <Table.Column
               render={(_, rec, index) => {
                 return (
@@ -82,6 +84,22 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
             align="center"
             title="Nama Pasien"
           />
+          <Table.Column
+            render={(_, rec) => {
+              return moment(rec?.date).format("DD MMMM YYYY");
+            }}
+            align="center"
+            title="Tanggal Daftar"
+          />
+          {type == "reschedule" ? (
+            <Table.Column
+              render={(_, rec) => {
+                return moment(rec?.due_date).format("DD MMMM YYYY");
+              }}
+              align="center"
+              title="Tanggal Shedule"
+            />
+          ) : null}
           <Table.Column
             render={(_, rec) => {
               return rec.registrationID?.split(".")[1];

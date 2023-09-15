@@ -27,7 +27,7 @@ import { Dropdown, message, Space, Tooltip } from "antd";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { colorPallate } from "@/utils/colorpallate";
-import { AiOutlinePoweroff } from "react-icons/ai";
+import { AiOutlineClose, AiOutlinePoweroff } from "react-icons/ai";
 import { FaMoneyBill, FaUsers } from "react-icons/fa";
 import { MdOutlineManageAccounts } from "react-icons/md";
 
@@ -179,91 +179,9 @@ const DashboardLayout = ({ children }) => {
     },
   ];
 
-  // console.log(user, "user");
-
   useEffect(() => {
-    // const roleManagement = JSON.parse(window.localStorage.getItem("user"));
-    // if (roleManagement?.role?.name === "pengguna") {
-    //   navigation.push("/");
-    // }
-
     getDataWallet();
     getUser();
-
-    // let TemplateMenu = [
-    //   {
-    //     key: "/dashboard",
-    //     icon: <HomeOutlined />,
-    //     label: "Dashboard",
-    //     prefix: "all",
-    //     onClick: (e) => navigation.push(e.key),
-    //   },
-    //   {
-    //     key: "/dashboard/user",
-    //     icon: <UserOutlined />,
-    //     label: "Pengguna",
-    //     prefix: "admin",
-    //     onClick: (e) => navigation.push(e.key),
-    //   },
-    //   {
-    //     key: "/dashboard/doctors",
-    //     icon: <FaUserDoctor />,
-    //     label: "Dokter",
-    //     prefix: "admin",
-    //     onClick: (e) => navigation.push(e.key),
-    //   },
-    //   {
-    //     key: "/dashboard/validation",
-    //     icon: <BsKeyFill />,
-    //     label: "Validasi Dokter",
-    //     prefix: "admin",
-    //     onClick: (e) => navigation.push(e.key),
-    //   },
-    //   {
-    //     key: "/dashboard/specialist",
-    //     icon: <SubnodeOutlined />,
-    //     label: "Spesialis",
-    //     prefix: "admin",
-    //     onClick: (e) => navigation.push(e.key),
-    //   },
-    //   {
-    //     key: "/dashboard/booking",
-    //     icon: <SubnodeOutlined />,
-    //     label: "Booking",
-    //     prefix: "dokter",
-    //     onClick: (e) => navigation.push(e.key),
-    //   },
-    //   {
-    //     key: "/dashboard/chat",
-    //     icon: <SubnodeOutlined />,
-    //     label: "Chat",
-    //     prefix: "dokter",
-    //     onClick: (e) => navigation.push(e.key),
-    //   },
-    //   {
-    //     key: "/dashboard/wallet",
-    //     icon: <FaMoneyBill />,
-    //     label: "Wallet",
-    //     onClick: (e) => navigation.push(e.key),
-    //     prefix: "admin",
-    //   },
-    //   {
-    //     key: "/dashboard/payout",
-    //     icon: <BiMoneyWithdraw />,
-    //     label: "Payout",
-    //     onClick: (e) => navigation.push(e.key),
-    //     prefix: "admin",
-    //   },
-    // ];
-
-    // let menusManagement = TemplateMenu.filter((items) => {
-    //   return (
-    //     items.prefix === roleManagement?.role?.name || items.prefix === "all"
-    //   );
-    // });
-
-    // // console.log(menusManagement);
-    // setMenu(menusManagement);
   }, []);
 
   return (
@@ -309,18 +227,23 @@ const DashboardLayout = ({ children }) => {
             alt="logo"
           />
           {responsiveLayout.breakpoint ? (
-            <Button
+            <AiOutlineClose
               onClick={() =>
                 setResponsiveLayout({
                   ...responsiveLayout,
                   collapse: !responsiveLayout.collapse,
                 })
               }
-              type="primary"
-              style={{ width: "97%", borderRadius: 5, marginBottom: 10 }}
-            >
-              <BiSolidLeftArrow />
-            </Button>
+              // type="primary"
+              style={{
+                // width: "97%",
+                borderRadius: 5,
+                marginBottom: 10,
+                position: "absolute",
+                top: 10,
+                right: 10,
+              }}
+            />
           ) : null}
         </div>
         <Menu
