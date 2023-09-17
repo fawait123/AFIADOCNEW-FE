@@ -26,6 +26,7 @@ const Page = () => {
       params: {
         doctorID: user.prefixID,
         status: ["process", "reschedule"],
+        date: moment().format("YYYY-MM-DD"),
       },
     }).then((response) => {
       console.log(response);

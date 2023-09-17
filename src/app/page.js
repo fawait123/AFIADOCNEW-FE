@@ -29,6 +29,7 @@ import { isUndefined } from "lodash";
 import Screens from "@/utils/Screens";
 import Texting from "@/utils/Texting";
 import CardComponent from "@/component/CardComponent";
+import API from "@/API";
 // import {useBrea}
 const { useBreakpoint } = Grid;
 const Home = () => {
@@ -66,10 +67,16 @@ const Home = () => {
     });
   };
 
-  const getDataDoctor = () => {
+  const getDataDoctor = async () => {
     setLoadingDoctor(true);
-    publicDashboardDoctor({ isActive: 1 }, (res) => {
-      setDoctorData(res);
+    await API({
+      url: "/public/doctor/nearest",
+      method: "get",
+      params: {
+        distance: 10,
+      },
+    }).then((response) => {
+      setDoctorData(response?.data?.results?.data?.rows);
       setLoadingDoctor(false);
     });
   };
@@ -249,7 +256,7 @@ const Home = () => {
                 Dokter
               </p>
               <p style={{ margin: "10px 0px 40px 0px", fontSize: fontSize.md }}>
-                Pilih dokter untuk konsultasi kesehatan anda
+                Rekomendasi Dokter yang terdekat dengan anda
               </p>
               <Row justify={"space-around"} gutter={[20, 20]}>
                 {loadingDoctor ? (
@@ -263,7 +270,7 @@ const Home = () => {
                   >
                     <Spin />
                   </div>
-                ) : (
+                ) : DoctorData.length > 0 ? (
                   DoctorData.map((doc, i) => {
                     return (
                       <Col xs={{ span: 24 }} md={{ span: 5 }} key={i}>
@@ -276,6 +283,14 @@ const Home = () => {
                       </Col>
                     );
                   })
+                ) : (
+                  <>
+                    <Image
+                      src="/assets/Oops.svg"
+                      alt="not found"
+                      preview={false}
+                    />
+                  </>
                 )}
               </Row>
             </Col>

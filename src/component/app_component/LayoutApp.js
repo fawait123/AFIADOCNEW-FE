@@ -85,7 +85,13 @@ const LayoutApp = ({ children }) => {
         {
           key: "3",
           label: (
-            <div onClick={() => navigation.push("/user/booking")}>Booking</div>
+            <div
+              onClick={() =>
+                navigation.push("/pengguna/antrian_booking/process_antrian")
+              }
+            >
+              Booking
+            </div>
           ),
           icon: <BiBookAdd />,
           disabled: false,
@@ -151,7 +157,13 @@ const LayoutApp = ({ children }) => {
         {
           key: "3",
           label: (
-            <div onClick={() => navigation.push("/user/booking")}>Booking</div>
+            <div
+              onClick={() =>
+                navigation.push("/pengguna/antrian_booking/process_antrian")
+              }
+            >
+              Booking
+            </div>
           ),
           icon: <BiBookAdd />,
           disabled: false,
@@ -195,7 +207,7 @@ const LayoutApp = ({ children }) => {
             onClick={() => {
               navigation.push("/");
             }}
-            style={{ objectFit: "contain" }}
+            style={{ objectFit: "contain", cursor: "pointer" }}
             alt="afia-docs"
             src={"/assets/logo.png"}
             width={60}
@@ -207,7 +219,7 @@ const LayoutApp = ({ children }) => {
           <Row gutter={20}>
             {["Beranda", "Artikel", "Aplikasi", "Riwayat"].map((val, i) => {
               return (
-                <Col key={i}>
+                <Col key={i} style={{ cursor: "pointer" }}>
                   {" "}
                   <p
                     onClick={() => navigation.push("/")}
