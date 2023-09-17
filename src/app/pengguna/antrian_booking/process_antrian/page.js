@@ -1,10 +1,12 @@
 "use client";
 import LayoutApp from "@/component/app_component/LayoutApp";
 import React, { useState } from "react";
-import { Button, Card, Col, Modal, Row, Table, Tabs } from "antd";
+import { Button, Card, Col, Modal, Row, Table, Tabs, Tag } from "antd";
 import { useRouter } from "next/navigation";
 import API from "@/API";
 import { useEffect } from "react";
+import { FaEye } from "react-icons/fa";
+import moment from "moment";
 const ProsesAntrian = () => {
   const navigation = useRouter();
   const [modalDetailPemeriksaan, setModalDetailPemeriksaan] = useState({
@@ -14,15 +16,6 @@ const ProsesAntrian = () => {
   const [dataProcess, setDataProcess] = useState([]);
   const [dataReschedule, setDataReschedule] = useState([]);
   const [dataSelesai, setDataSelesai] = useState([]);
-  const datadummy = [
-    {
-      no: 1,
-      namadokter: "fawait",
-      status: "Proses",
-      no_register: "ABSK09999",
-      no_register: "active",
-    },
-  ];
 
   useEffect(() => {
     gettableProcess(["process"], (res) => setDataProcess(res));
@@ -42,7 +35,20 @@ const ProsesAntrian = () => {
     });
   };
 
-  console.log(modalDetailPemeriksaan);
+  const getDetailRekamMedis = async (id) => {
+    await API({
+      method: "get",
+      url: "/admin/medical-record",
+      params: {
+        registrationID: id,
+      },
+    }).then((response) => {
+      setModalDetailPemeriksaan({
+        dataContext: response?.data?.results?.data[0],
+        status: true,
+      });
+    });
+  };
   return (
     <LayoutApp>
       <div style={{ width: "100%", minHeight: "90vh" }}>
@@ -154,6 +160,13 @@ const ProsesAntrian = () => {
                   />
                   <Table.Column
                     render={(_, rec) => {
+                      return moment(rec?.due_date).format("DD MMMM YYYY");
+                    }}
+                    align="center"
+                    title="Tanggal Reshedule"
+                  />
+                  <Table.Column
+                    render={(_, rec) => {
                       return rec.registrationID?.split(".")[1];
                     }}
                     align="center"
@@ -204,17 +217,12 @@ const ProsesAntrian = () => {
                   <Table.Column
                     render={(_, rec) => {
                       return (
-                        <p
-                          style={{ color: "gray", cursor: "pointer" }}
+                        <FaEye
                           onClick={() => {
-                            setModalDetailPemeriksaan({
-                              status: true,
-                              dataContext: rec,
-                            });
+                            getDetailRekamMedis(rec?.id);
                           }}
-                        >
-                          LIHAT
-                        </p>
+                          style={{ cursor: "pointer" }}
+                        />
                       );
                     }}
                     align="center"
@@ -238,6 +246,24 @@ const ProsesAntrian = () => {
         open={modalDetailPemeriksaan.status}
       >
         <Row gutter={[10, 10]}>
+          <Col span={24}>
+            <p>
+              Berikut merupakan detail rekam medis dari pasien untuk nomor
+              registrasi{" "}
+              <Tag color="blue">
+                {
+                  modalDetailPemeriksaan?.dataContext?.registration
+                    ?.registrationID
+                }
+              </Tag>{" "}
+              pada tanggal{" "}
+              <Tag color="blue">
+                {moment(modalDetailPemeriksaan?.dataContext?.createdAt).format(
+                  "DD MMMM YYYY"
+                )}
+              </Tag>
+            </p>
+          </Col>
           <Col span={12}>
             <Card>
               <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
@@ -274,21 +300,7 @@ const ProsesAntrian = () => {
               <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
                 Keluhan
               </p>
-              <p>- example content</p>
-              <p>- example content</p>
-              <p>- example content</p>
-              <p>- example content</p>
-            </Card>
-          </Col>
-          <Col span={12}>
-            <Card>
-              <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
-                Pemeriksaan
-              </p>
-              <p>- example content</p>
-              <p>- example content</p>
-              <p>- example content</p>
-              <p>- example content</p>
+              <p>{modalDetailPemeriksaan?.dataContext?.complaint}</p>
             </Card>
           </Col>
           <Col span={12}>
@@ -296,35 +308,26 @@ const ProsesAntrian = () => {
               <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
                 Diagnosa
               </p>
-              <p>- example content</p>
-              <p>- example content</p>
-              <p>- example content</p>
-              <p>- example content</p>
+              <p>{modalDetailPemeriksaan?.dataContext?.diagnosis}</p>
             </Card>
           </Col>
-          <Col span={24}>
-            <p style={{ textAlign: "right" }}>
-              {modalDetailPemeriksaan?.dataContext?.date}
-            </p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: 20,
-              }}
-            >
-              <Button
-                onClick={() => {
-                  setModalDetailPemeriksaan({
-                    status: false,
-                  });
-                }}
-                style={{ width: 200 }}
-              >
-                Kembali
-              </Button>
-              <p>{modalDetailPemeriksaan?.dataContext?.doctor?.name}</p>
-            </div>
+          <Col span={12}>
+            <Card>
+              <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
+                Tindakan
+              </p>
+              {modalDetailPemeriksaan?.dataContext?.detail == null
+                ? null
+                : JSON.parse(modalDetailPemeriksaan?.dataContext?.detail).map(
+                    (item) => {
+                      return (
+                        <p>
+                          {item?.action} {item?.result}
+                        </p>
+                      );
+                    }
+                  )}
+            </Card>
           </Col>
         </Row>
       </Modal>

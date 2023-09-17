@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { FaEye } from "react-icons/fa6";
 import moment from "moment";
+import { FaTrash } from "react-icons/fa";
 
 const PasienPage = () => {
   let [formTambah] = Form.useForm();
@@ -158,22 +159,17 @@ const PasienPage = () => {
               <Table.Column
                 render={(_, rec) => {
                   return (
-                    // <p
-                    //   onClick={() => {
-                    //     setModalDetailPasien({ status: true });
-                    //   }}
-                    //   style={{ color: "gray", cursor: "pointer" }}
-                    // >
-                    //   LIHAT
-                    // </p>
-                    <FaEye
-                      onClick={() => {
-                        setModalDetailPasien({
-                          status: true,
-                          dataContext: rec,
-                        });
-                      }}
-                    />
+                    <>
+                      <FaEye
+                        onClick={() => {
+                          setModalDetailPasien({
+                            status: true,
+                            dataContext: rec,
+                          });
+                        }}
+                        style={{ cursor: "pointer" }}
+                      />
+                    </>
                   );
                 }}
                 align="center"
@@ -236,7 +232,11 @@ const PasienPage = () => {
                 <div style={{ display: "flex" }}>
                   <p style={{ width: 100 }}>Kelamin</p>
                   <p style={{ width: 50, textAlign: "center" }}>:</p>
-                  <p>{modalDetailPasien?.dataContext?.gender}</p>
+                  <p>
+                    {modalDetailPasien?.dataContext?.gender == "L"
+                      ? "Laki Laki"
+                      : "Perempuan"}
+                  </p>
                 </div>
               </Col>
               <Col span={24}>
@@ -360,13 +360,6 @@ const PasienPage = () => {
                   <input
                     ref={uploadphoto}
                     onChange={(e) => {
-                      // formTambah.photo = e.target.files[0];
-                      // formTambah.setFieldsValue({
-                      //   photo: e.target.files[0],
-                      // });
-
-                      // console.log(e.target.files[0]);
-
                       const reader = new FileReader();
                       reader.addEventListener("load", () => {
                         // callback(reader.result)
@@ -392,8 +385,8 @@ const PasienPage = () => {
                     label: "Jenis Kelamin",
                     type: "select",
                     options: [
-                      { name: "Laki-laki", value: "l" },
-                      { name: "Perempuan", value: "p" },
+                      { name: "Laki-laki", value: "L" },
+                      { name: "Perempuan", value: "P" },
                     ],
                   },
                   {
