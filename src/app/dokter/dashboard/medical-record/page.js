@@ -54,11 +54,18 @@ const Page = () => {
         url: "/admin/medical-record",
         method: "post",
         data: fieldValue,
-      }).then((response) => {
-        getAntrian();
-        form.resetFields();
-        setRekamMedis(null);
-      });
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          getAntrian();
+          form.resetFields();
+          setRekamMedis(null);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
   };
 
@@ -257,41 +264,45 @@ const Page = () => {
                   History Rekam Medis Pasien
                 </p>
 
-                {rekamMedis.map((item) => {
-                  return (
-                    <Card style={{ marginBottom: 4 }}>
-                      <Tag color="blue" style={{ marginBottom: 4 }}>
-                        Pemeriksaan Tanggal{" "}
-                        {moment(item?.createdAt).format("DD MMMM YYYY")}
-                      </Tag>
-                      <p style={{ fontWeight: "bold", margin: 4 }}>
-                        Dokter {item?.doctor?.name}
-                      </p>
-                      <Row gutter={[0, 10]} style={{ marginBottom: 7 }}>
-                        <Col span={12}>
-                          <p style={{ fontWeight: 500 }}>Keluhan</p>
-                          <p>{item?.complaint}</p>
-                        </Col>
-                        <Col span={12}>
-                          <p style={{ fontWeight: 500 }}>Diagnosa</p>
-                          <p>{item?.diagnosis}</p>
-                        </Col>
-                        <Col span={24}>
-                          <p style={{ fontWeight: 500 }}>Tindakan</p>
-                          {JSON.parse(item?.detail).map((det) => {
-                            return (
-                              <>
-                                <p>
-                                  {det?.action}, {det?.result}
-                                </p>
-                              </>
-                            );
-                          })}
-                        </Col>
-                      </Row>
-                    </Card>
-                  );
-                })}
+                {rekamMedis.length > 0 ? (
+                  rekamMedis.map((item) => {
+                    return (
+                      <Card style={{ marginBottom: 4 }}>
+                        <Tag color="blue" style={{ marginBottom: 4 }}>
+                          Pemeriksaan Tanggal{" "}
+                          {moment(item?.createdAt).format("DD MMMM YYYY")}
+                        </Tag>
+                        <p style={{ fontWeight: "bold", margin: 4 }}>
+                          Dokter {item?.doctor?.name}
+                        </p>
+                        <Row gutter={[0, 10]} style={{ marginBottom: 7 }}>
+                          <Col span={12}>
+                            <p style={{ fontWeight: 500 }}>Keluhan</p>
+                            <p>{item?.complaint}</p>
+                          </Col>
+                          <Col span={12}>
+                            <p style={{ fontWeight: 500 }}>Diagnosa</p>
+                            <p>{item?.diagnosis}</p>
+                          </Col>
+                          <Col span={24}>
+                            <p style={{ fontWeight: 500 }}>Tindakan</p>
+                            {JSON.parse(item?.detail).map((det) => {
+                              return (
+                                <>
+                                  <p>
+                                    {det?.action}, {det?.result}
+                                  </p>
+                                </>
+                              );
+                            })}
+                          </Col>
+                        </Row>
+                      </Card>
+                    );
+                  })
+                ) : (
+                  <p>Tidak ada data rekam medis</p>
+                )}
               </Card>
             </Col>
           ) : null}

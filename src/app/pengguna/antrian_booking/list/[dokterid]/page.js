@@ -34,6 +34,8 @@ const ListPage = () => {
       url: "admin/registration",
       params: {
         doctorID: params.dokterid,
+        status: ["process", "reschedule"],
+        date: moment().format("YYYY-MM-DD"),
       },
     }).then((res) => {
       setDataAntrian(res.data.results.data);

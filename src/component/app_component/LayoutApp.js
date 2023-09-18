@@ -14,7 +14,14 @@ import {
 import { BiBookAdd, BiWallet } from "react-icons/bi";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { HiOutlineReceiptTax } from "react-icons/hi";
-import { FaAppStore, FaArchive, FaBlog, FaHome, FaUsers } from "react-icons/fa";
+import {
+  FaAppStore,
+  FaArchive,
+  FaBlog,
+  FaHome,
+  FaMap,
+  FaUsers,
+} from "react-icons/fa";
 import { getWallet } from "@/API/wallet";
 import { Grid } from "antd";
 import { FaPerson } from "react-icons/fa6";
@@ -214,6 +221,9 @@ const LayoutApp = ({ children }) => {
             height={60}
             preview={false}
           />
+          {/* <div style={{  }}>
+            <FaMap /> Jl. Pandega rini sinduadi, sleman yogyakarta
+          </div> */}
         </Col>
         <Col xs={{ span: 0 }} md={{ span: 8 }} xl={{ span: 15 }}>
           <Row gutter={20}>
