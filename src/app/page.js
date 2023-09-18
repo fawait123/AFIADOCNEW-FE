@@ -44,6 +44,10 @@ const Home = () => {
   const [detailDoctor, setDetailDoctor] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
   const [nameEntitiy, setNameEntitiy] = useState("");
+  const [position, setPosition] = useState({
+    latitude: null,
+    longitude: null,
+  });
   const [form] = useForm();
   const screens = useContext(Screens);
   const fontSize = useContext(Texting);
@@ -67,17 +71,31 @@ const Home = () => {
     });
   };
 
+  const getCurrentPosition = async () => {};
+
   const getDataDoctor = async () => {
     setLoadingDoctor(true);
-    await API({
-      url: "/public/doctor/nearest",
-      method: "get",
-      params: {
-        distance: 10,
-      },
-    }).then((response) => {
-      setDoctorData(response?.data?.results?.data?.rows);
-      setLoadingDoctor(false);
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      await API({
+        url: "/public/doctor/nearest",
+        method: "get",
+        params: {
+          distance: 10,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        },
+      })
+        .then((response) => {
+          setPosition({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          setDoctorData(response?.data?.results?.data?.rows);
+          setLoadingDoctor(false);
+        })
+        .catch((err) => {
+          setLoadingDoctor(false);
+        });
     });
   };
 
@@ -106,6 +124,7 @@ const Home = () => {
     }
     let Entitiy = JSON.parse(localStorage.getItem("user"))?.role?.name;
     setNameEntitiy(isUndefined(Entitiy) ? "pengguna" : Entitiy);
+    getCurrentPosition();
   }, []);
   return (
     <div>
@@ -284,13 +303,30 @@ const Home = () => {
                     );
                   })
                 ) : (
-                  <>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <Image
                       src="/assets/Oops.svg"
                       alt="not found"
                       preview={false}
                     />
-                  </>
+                    <p
+                      style={{
+                        fontSize: 20,
+                        color: "#B4B4B3",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Tidak ada dokter terdekat dari lokasi anda, titik
+                      koordinat {position.latitude} {position.longitude}
+                    </p>
+                  </div>
                 )}
               </Row>
             </Col>
