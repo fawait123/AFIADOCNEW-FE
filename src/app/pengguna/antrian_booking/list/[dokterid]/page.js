@@ -16,7 +16,7 @@ const ListPage = () => {
   const params = useParams();
   const [form] = Form.useForm();
   const fontSize = useContext(Texting);
-  const [selenjutnya, setSelanjutnya] = useState(false);
+  const [selenjutnya, setSelanjutnya] = useState(true);
   const [dataPatients, setDataPatients] = useState([]);
   const [dataDoctor, setDataDoctor] = useState([]);
   const [dataAntrian, setDataAntrian] = useState([]);
@@ -28,14 +28,17 @@ const ListPage = () => {
     getDokter();
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
-  const getAntrian = async () => {
+  const getAntrian = async (date = null) => {
     await API({
       method: "get",
       url: "admin/registration",
       params: {
         doctorID: params.dokterid,
         status: ["process", "reschedule"],
-        date: moment().format("YYYY-MM-DD"),
+        date:
+          date == null
+            ? moment().format("YYYY-MM-DD")
+            : moment(date).format("YYYY-MM-DD"),
       },
     }).then((res) => {
       setDataAntrian(res.data.results.data);
@@ -160,14 +163,34 @@ const ListPage = () => {
                 span={22}
                 style={{ display: "flex", justifyContent: "space-between" }}
               >
-                <Button style={{ maxWidth: 300, width: 300 }}>Batal</Button>
+                <Button
+                  style={{ maxWidth: 300, width: 300 }}
+                  onClick={() => setSelanjutnya(true)}
+                >
+                  Kembali
+                </Button>
                 <Button
                   style={{ maxWidth: 300, width: 300 }}
                   onClick={() => {
-                    setSelanjutnya(true);
+                    const field = form.getFieldValue();
+                    API({
+                      url: "/admin/registration",
+                      method: "post",
+                      data: {
+                        patientID: field.patientID,
+                        doctorID: params.dokterid,
+                        price: dataDoctor?.prices?.find((value) => {
+                          return value.type === "booking";
+                        })?.price,
+                      },
+                    }).then((resp) =>
+                      navigation.push(
+                        "/pengguna/antrian_booking/process_antrian"
+                      )
+                    );
                   }}
                 >
-                  Selenjutnya
+                  Proses
                 </Button>
               </Col>
             </Row>
@@ -216,6 +239,16 @@ const ListPage = () => {
                         })}
                       </Select>
                     </Form.Item>
+                    <Form.Item
+                      name={"date"}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <Input placeholder="tanggal" type="date" />
+                    </Form.Item>
                   </Form>
                   <div>
                     {dataDoctor?.prices
@@ -236,33 +269,22 @@ const ListPage = () => {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <Button style={{ maxWidth: 300, width: 300 }}>Batal</Button>
+                  <Button
+                    style={{ maxWidth: 300, width: 300 }}
+                    onClick={() => navigation.back()}
+                  >
+                    Batal
+                  </Button>
                   <Button
                     style={{ maxWidth: 300, width: 300 }}
                     onClick={() => {
-                      form.validateFields().then(async (res) => {
-                        API({
-                          url: "/admin/registration",
-                          method: "post",
-                          data: {
-                            patientID: res.patientID,
-                            doctorID: params.dokterid,
-                            price: dataDoctor?.prices?.find((value) => {
-                              return value.type === "booking";
-                            })?.price,
-                          },
-                        }).then((resp) =>
-                          navigation.push(
-                            "/pengguna/antrian_booking/process_antrian"
-                          )
-                        );
+                      form.validateFields().then((response) => {
+                        setSelanjutnya(false);
+                        getAntrian(response?.date);
                       });
-                      // navigation.push(
-                      //   "/pengguna/antrian_booking/process_antrian"
-                      // );
                     }}
                   >
-                    Proses
+                    Selanjutnya
                   </Button>
                 </div>
               </Col>
