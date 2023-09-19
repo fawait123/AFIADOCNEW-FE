@@ -13,8 +13,8 @@ const Page = () => {
   const [rekamMedis, setRekamMedis] = useState(null);
   const [listInputs, setListInputs] = useState([
     {
-      action: "",
-      result: "",
+      action: null,
+      result: null,
     },
   ]);
 
@@ -29,7 +29,6 @@ const Page = () => {
         date: moment().format("YYYY-MM-DD"),
       },
     }).then((response) => {
-      console.log(response);
       setDataAntrian(response.data.results.data);
     });
   };
@@ -142,8 +141,16 @@ const Page = () => {
                     </Form.Item>
                   </Col>
                   <Col span={24}>
-                    <Form.List name="detail" initialValue={listInputs}>
-                      {(fields, { add, remove }, { errors }) => (
+                    <Form.List
+                      name="detail"
+                      initialValue={[
+                        {
+                          action: null,
+                          result: null,
+                        },
+                      ]}
+                    >
+                      {(fields, { add, remove }) => (
                         <Row gutter={[10, 10]}>
                           {fields.map((field, index) => {
                             return (
@@ -156,7 +163,7 @@ const Page = () => {
                                       },
                                     ]}
                                     label="Tindakan"
-                                    name={[field.name, "action"]}
+                                    name={[index, "action"]}
                                   >
                                     <Input />
                                   </Form.Item>
@@ -170,30 +177,40 @@ const Page = () => {
                                       },
                                     ]}
                                     label="Hasil"
-                                    name={[field.name, "result"]}
+                                    name={[index, "result"]}
                                   >
                                     <Input />
                                   </Form.Item>
                                 </Col>
                                 {index === 0 ? (
-                                  <Col span={2}>
-                                    <Form.Item label=" ">
-                                      <Button onClick={add}>+</Button>
-                                    </Form.Item>
+                                  <Col
+                                    span={2}
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <Button onClick={() => add()}>+</Button>
                                   </Col>
                                 ) : (
-                                  <Col span={2}>
-                                    <Form.Item label=" ">
-                                      <Button
-                                        style={{
-                                          backgroundColor: "red",
-                                          color: "white",
-                                        }}
-                                        onClick={() => remove(field.name)}
-                                      >
-                                        -
-                                      </Button>
-                                    </Form.Item>
+                                  <Col
+                                    span={2}
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <Button
+                                      style={{
+                                        backgroundColor: "red",
+                                        color: "white",
+                                      }}
+                                      onClick={() => remove(field.name)}
+                                    >
+                                      -
+                                    </Button>
                                   </Col>
                                 )}
                               </>
@@ -265,7 +282,7 @@ const Page = () => {
                 </p>
 
                 {rekamMedis.length > 0 ? (
-                  rekamMedis.map((item) => {
+                  rekamMedis?.map((item) => {
                     return (
                       <Card style={{ marginBottom: 4 }}>
                         <Tag color="blue" style={{ marginBottom: 4 }}>

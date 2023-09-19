@@ -182,6 +182,7 @@ const ListPage = () => {
                         price: dataDoctor?.prices?.find((value) => {
                           return value.type === "booking";
                         })?.price,
+                        date: field.date,
                       },
                     }).then((resp) =>
                       navigation.push(
@@ -247,7 +248,11 @@ const ListPage = () => {
                         },
                       ]}
                     >
-                      <Input placeholder="tanggal" type="date" />
+                      <Input
+                        placeholder="tanggal"
+                        min={moment().format("YYYY-MM-DD")}
+                        type="date"
+                      />
                     </Form.Item>
                   </Form>
                   <div>

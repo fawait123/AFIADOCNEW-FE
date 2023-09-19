@@ -107,7 +107,7 @@ const Login = () => {
           <p style={{ fontSize: "10pt" }}>
             Belum punya account?{" "}
             <span
-              onClick={() => navigation.push("/register")}
+              onClick={() => navigation.push("/pengguna/register")}
               style={{ color: colorPallate.blue, cursor: "pointer" }}
             >
               Register

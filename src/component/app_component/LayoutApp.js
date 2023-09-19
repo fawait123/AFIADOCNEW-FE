@@ -430,7 +430,9 @@ const LayoutApp = ({ children }) => {
                       </p>
                       <Button
                         style={{ borderRadius: 2 }}
-                        onClick={() => navigation.push("/doctor_register")}
+                        onClick={() =>
+                          navigation.push("/dokter/doctor_register")
+                        }
                       >
                         Daftar
                       </Button>
