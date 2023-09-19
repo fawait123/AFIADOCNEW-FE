@@ -171,7 +171,7 @@ const Home = () => {
                     type="primary"
                     size={screens.xs ? "small" : "middle"}
                   >
-                    <p style={{ fontSize: fontSize.sm }}>Chat Dokter</p>
+                    <p style={{ fontSize: fontSize.sm }}>Cari Dokter</p>
                   </Button>
                 </Col>
                 <Col>

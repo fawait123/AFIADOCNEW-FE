@@ -1,10 +1,21 @@
+"use client";
 import API from "@/API";
-import { Button, Checkbox, Col, Row, Table } from "antd";
+import { Button, Checkbox, Col, Form, Modal, Row, Table } from "antd";
+import { useForm } from "antd/es/form/Form";
+import TextArea from "antd/es/input/TextArea";
 import moment from "moment";
 import React, { useState } from "react";
+import { AiFillCloseCircle } from "react-icons/ai";
+import { FaEye } from "react-icons/fa";
 
 export const TableComponent = ({ datas, loading, type, getData }) => {
   const [reschedule, setReschedule] = useState([]);
+  const [modalCancel, setModalCancel] = useState({
+    status: false,
+    dataContext: {},
+  });
+  const [loadingCancel, setLoadingCancel] = useState(false);
+  const [formCancel] = useForm();
 
   return (
     <Row gutter={[10, 10]}>
@@ -100,33 +111,104 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
               title="Tanggal Shedule"
             />
           ) : null}
-          <Table.Column
-            render={(_, rec) => {
-              return rec.registrationID?.split(".")[1];
-            }}
-            align="center"
-            title="Nomor Antrian"
-          />
-          {/* <Table.Column
-        render={(_, rec) => {
-          return (
-            <p
-              style={{ color: "gray", cursor: "pointer" }}
-              onClick={() => {
-                navigation.push(
-                  `/pengguna/antrian_booking/detail/${rec?.doctor?.id}`
+          {type == "cancel" ? (
+            <Table.Column
+              render={(_, rec) => {
+                return rec?.description;
+              }}
+              align="center"
+              title="Alasan"
+            />
+          ) : null}
+          {type == "process" || type == "reschedule" ? (
+            <Table.Column
+              render={(_, rec) => {
+                return (
+                  <AiFillCloseCircle
+                    style={{
+                      color: "red",
+                      cursor: "pointer",
+                      marginLeft: 10,
+                    }}
+                    onClick={() =>
+                      setModalCancel({ status: true, dataContext: rec })
+                    }
+                  />
                 );
               }}
-            >
-              LIHAT
-            </p>
-          );
-        }}
-        align="center"
-        title="Aksi"
-      /> */}
+              align="center"
+              title="Aksi"
+            />
+          ) : null}
         </Table>
       </Col>
+
+      <Modal
+        title={"Batalkan Registrasi"}
+        width={"80%"}
+        footer={null}
+        onCancel={() => {
+          setModalCancel({
+            status: false,
+            dataContext: {},
+          });
+        }}
+        open={modalCancel.status}
+      >
+        <Row gutter={[10, 10]}>
+          <Col span={24}>
+            <Form form={formCancel} layout="vertical">
+              <Form.Item
+                name="description"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+                label={"Keterangan"}
+              >
+                <TextArea />
+              </Form.Item>
+              <Button
+                type="primary"
+                loading={loadingCancel}
+                onClick={() => {
+                  setLoadingCancel(true);
+                  formCancel
+                    .validateFields()
+                    .then(async (field) => {
+                      await API({
+                        url: "admin/registration/cancel",
+                        method: "put",
+                        params: {
+                          id: modalCancel?.dataContext?.id,
+                        },
+                        data: field,
+                      })
+                        .then((response) => {
+                          formCancel.resetFields();
+                          setModalCancel({
+                            status: false,
+                            dataContext: {},
+                          });
+                          setLoadingCancel(false);
+                          getData();
+                        })
+                        .catch((err) => {
+                          setLoadingCancel(false);
+                        });
+                    })
+                    .catch((err) => {
+                      setLoadingCancel(false);
+                    });
+                }}
+              >
+                Batalkan
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      </Modal>
     </Row>
   );
 };

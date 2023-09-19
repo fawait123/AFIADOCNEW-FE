@@ -1,26 +1,40 @@
 "use client";
 import LayoutApp from "@/component/app_component/LayoutApp";
 import React, { useState } from "react";
-import { Button, Card, Col, Modal, Row, Table, Tabs, Tag } from "antd";
+import { Button, Card, Col, Form, Modal, Row, Table, Tabs, Tag } from "antd";
 import { useRouter } from "next/navigation";
 import API from "@/API";
 import { useEffect } from "react";
-import { FaEye } from "react-icons/fa";
+import { FaExclamationCircle, FaEye } from "react-icons/fa";
 import moment from "moment";
+import { FaX } from "react-icons/fa6";
+import { BsCalendarCheckFill } from "react-icons/bs";
+import { AiFillCloseCircle } from "react-icons/ai";
+import TextArea from "antd/es/input/TextArea";
+import { useForm } from "antd/es/form/Form";
 const ProsesAntrian = () => {
   const navigation = useRouter();
   const [modalDetailPemeriksaan, setModalDetailPemeriksaan] = useState({
     status: false,
     dataContext: {},
   });
+  const [modalCancel, setModalCancel] = useState({
+    status: false,
+    dataContext: {},
+  });
+
   const [dataProcess, setDataProcess] = useState([]);
   const [dataReschedule, setDataReschedule] = useState([]);
   const [dataSelesai, setDataSelesai] = useState([]);
+  const [dataCancel, setDataCancel] = useState([]);
+  const [formCancel] = useForm();
+  const [loadingCancel, setLoadingCancel] = useState(false);
 
   useEffect(() => {
     gettableProcess(["process"], (res) => setDataProcess(res));
     gettableProcess(["reschedule"], (res) => setDataReschedule(res));
     gettableProcess(["done"], (res) => setDataSelesai(res));
+    gettableProcess(["cancel"], (res) => setDataCancel(res));
   }, []);
 
   const gettableProcess = async (status, next) => {
@@ -102,16 +116,27 @@ const ProsesAntrian = () => {
                   <Table.Column
                     render={(_, rec) => {
                       return (
-                        <p
-                          style={{ color: "gray", cursor: "pointer" }}
-                          onClick={() => {
-                            navigation.push(
-                              `/pengguna/antrian_booking/detail/${rec?.doctor?.id}`
-                            );
-                          }}
-                        >
-                          LIHAT
-                        </p>
+                        <>
+                          <FaEye
+                            style={{ color: "gray", cursor: "pointer" }}
+                            onClick={() => {
+                              navigation.push(
+                                `/pengguna/antrian_booking/detail/${rec?.doctor?.id}`,
+                                { query: { date: "234" } }
+                              );
+                            }}
+                          />
+                          <AiFillCloseCircle
+                            style={{
+                              color: "red",
+                              cursor: "pointer",
+                              marginLeft: 10,
+                            }}
+                            onClick={() =>
+                              setModalCancel({ status: true, dataContext: rec })
+                            }
+                          />
+                        </>
                       );
                     }}
                     align="center"
@@ -172,6 +197,26 @@ const ProsesAntrian = () => {
                     align="center"
                     title="Nomor Antrian"
                   />
+                  <Table.Column
+                    render={(_, rec) => {
+                      return (
+                        <>
+                          <AiFillCloseCircle
+                            style={{
+                              color: "red",
+                              cursor: "pointer",
+                              marginLeft: 10,
+                            }}
+                            onClick={() =>
+                              setModalCancel({ status: true, dataContext: rec })
+                            }
+                          />
+                        </>
+                      );
+                    }}
+                    align="center"
+                    title="Aksi"
+                  />
                 </Table>
               </Card>
             </Tabs.TabPane>
@@ -227,6 +272,54 @@ const ProsesAntrian = () => {
                     }}
                     align="center"
                     title="Aksi"
+                  />
+                </Table>
+              </Card>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Cancel" key={"cancel"}>
+              <Card style={{ overflow: "auto" }}>
+                <Table rowKey={"id"} dataSource={dataCancel}>
+                  <Table.Column
+                    render={(_, rec, index) => {
+                      return index + 1;
+                    }}
+                    align="center"
+                    title="No"
+                  />
+                  <Table.Column
+                    render={(_, rec) => {
+                      return rec?.doctor?.name;
+                    }}
+                    align="center"
+                    title="Nama Dokter"
+                  />
+                  <Table.Column
+                    render={(_, rec) => {
+                      return "selesai";
+                    }}
+                    align="center"
+                    title="Status"
+                  />
+                  <Table.Column
+                    render={(_, rec) => {
+                      return rec.registrationID;
+                    }}
+                    align="center"
+                    title="No Registrasi"
+                  />
+                  <Table.Column
+                    render={(_, rec) => {
+                      return rec?.patient?.name;
+                    }}
+                    align="center"
+                    title="Nama Pasien"
+                  />
+                  <Table.Column
+                    render={(_, rec) => {
+                      return rec?.description;
+                    }}
+                    align="center"
+                    title="Alasan"
                   />
                 </Table>
               </Card>
@@ -328,6 +421,74 @@ const ProsesAntrian = () => {
                     }
                   )}
             </Card>
+          </Col>
+        </Row>
+      </Modal>
+      <Modal
+        title={"Batalkan Registrasi"}
+        width={"80%"}
+        footer={null}
+        onCancel={() => {
+          setModalCancel({
+            status: false,
+            dataContext: {},
+          });
+        }}
+        open={modalCancel.status}
+      >
+        <Row gutter={[10, 10]}>
+          <Col span={24}>
+            <Form form={formCancel} layout="vertical">
+              <Form.Item
+                name="description"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+                label={"Keterangan"}
+              >
+                <TextArea />
+              </Form.Item>
+              <Button
+                type="primary"
+                loading={loadingCancel}
+                onClick={() => {
+                  setLoadingCancel(true);
+                  formCancel
+                    .validateFields()
+                    .then(async (field) => {
+                      await API({
+                        url: "admin/registration/cancel",
+                        method: "put",
+                        params: {
+                          id: modalCancel?.dataContext?.id,
+                        },
+                        data: field,
+                      })
+                        .then((response) => {
+                          formCancel.resetFields();
+                          setModalCancel({
+                            status: false,
+                            dataContext: {},
+                          });
+                          setLoadingCancel(false);
+                          gettableProcess(["process"], (res) =>
+                            setDataProcess(res)
+                          );
+                        })
+                        .catch((err) => {
+                          setLoadingCancel(false);
+                        });
+                    })
+                    .catch((err) => {
+                      setLoadingCancel(false);
+                    });
+                }}
+              >
+                Batalkan
+              </Button>
+            </Form>
           </Col>
         </Row>
       </Modal>

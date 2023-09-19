@@ -98,6 +98,18 @@ const Booking = () => {
         />
       ),
     },
+    {
+      key: "cancel",
+      label: "Cancel",
+      children: (
+        <TableComponent
+          datas={data}
+          getData={getData}
+          loading={loadingTable}
+          type="cancel"
+        />
+      ),
+    },
   ];
   const reschedule = () => {
     setLoading(true);
