@@ -32,7 +32,12 @@ const BookingPage = () => {
         <Card style={{ marginBottom: 20 }}>
           <h3>BookingPage</h3>
         </Card>
-        <Table dataSource={dataBook.rows}>
+        <Table
+          pagination={{
+            pageSize: 10,
+          }}
+          dataSource={dataBook.rows}
+        >
           <Column
             title="Tanggal"
             dataIndex="date"

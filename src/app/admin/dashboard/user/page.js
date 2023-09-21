@@ -162,6 +162,16 @@ const User = () => {
       </Tabs.TabPane>
       <Tabs.TabPane tab="Pengguna" key="pengguna">
         <TabUser
+          getUser={() => {
+            getUser(paginateUser, (res) => {
+              setPaginateUser({
+                ...paginateUser,
+                total: res?.count,
+                loading: false,
+              });
+              setDataUser(res);
+            });
+          }}
           handleSearch={debouncedOnChange}
           handlePaginationUserLimit={(e) =>
             getUser({ limit: e, page: 1 }, (res) => {

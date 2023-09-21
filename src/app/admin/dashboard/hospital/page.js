@@ -227,6 +227,9 @@ const Hospital = () => {
         scroll={{
           x: 1500,
         }}
+        pagination={{
+          pageSize: 10,
+        }}
       >
         <Column
           title="First Name"

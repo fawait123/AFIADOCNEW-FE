@@ -70,7 +70,13 @@ const ProsesAntrian = () => {
           <Tabs defaultActiveKey="proses">
             <Tabs.TabPane tab="Proses" key={"proses"}>
               <Card style={{ overflow: "auto" }}>
-                <Table rowKey={"id"} dataSource={dataProcess}>
+                <Table
+                  pagination={{
+                    pageSize: 10,
+                  }}
+                  rowKey={"id"}
+                  dataSource={dataProcess}
+                >
                   <Table.Column
                     render={(_, rec, index) => {
                       return index + 1;
