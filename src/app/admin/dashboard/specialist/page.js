@@ -46,8 +46,8 @@ const Specialist = () => {
     setLoadingTable(true);
     getSpecialist(
       {
-        page: dataSpecialist.page,
-        limit: dataSpecialist.limit,
+        page: page,
+        limit: limit,
         search: search,
       },
       (res) => {
@@ -79,7 +79,8 @@ const Specialist = () => {
       await storeSpecialist(formData, (response) => {
         setOpen(false);
         formValue.resetFields();
-        getSpecialist((res) => setDataSpecialist(res));
+        // getSpecialist((res) => setDataSpecialist(res));
+        getData();
       });
     });
   };
@@ -96,7 +97,8 @@ const Specialist = () => {
       await updateSpecialist({ formData, id }, (res) => {
         setOpen(false);
         formValue.resetFields();
-        getSpecialist((res) => setDataSpecialist(res));
+        // getSpecialist((res) => setDataSpecialist(res));
+        getData();
       });
     });
   };
@@ -296,7 +298,8 @@ const Specialist = () => {
                       content: "Hapus data",
                       onOk() {
                         destroySpecialist({ id: record.id }, (res) => {
-                          getSpecialist((res) => setDataSpecialist(res));
+                          // getSpecialist((res) => setDataSpecialist(res));
+                          getData();
                         });
                       },
                       okText: "Hapus data",

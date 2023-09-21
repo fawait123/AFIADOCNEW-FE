@@ -125,9 +125,16 @@ export const getRole = async (
 //========================================== API GET SPECIALIST ==============================
 
 export const getSpecialist = async (params, next) => {
-  await API.get("/admin/specialist", {
+  // await API.get("/admin/specialist", {
+  //   params,
+  // }).then((response) => next(response.data.results.data));
+  //////////////////////////////////////////////
+  console.log(params, "params");
+  const res = await API({
+    url: "/admin/specialist",
     params,
   }).then((response) => next(response.data.results.data));
+  // console.log(params);
 };
 
 export const getPublicSpecialist = async (next) => {

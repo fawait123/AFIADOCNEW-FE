@@ -224,6 +224,9 @@ const Hospital = () => {
       {/* <div style={{ overflow: "auto" }}> */}
       <Table
         dataSource={data}
+        pagination={{
+          pageSize: 10,
+        }}
         scroll={{
           x: 1500,
         }}

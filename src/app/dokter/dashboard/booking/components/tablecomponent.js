@@ -21,6 +21,7 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
     status: false,
     dataContext: [],
   });
+  // console.log(reschedule);
 
   return (
     <Row gutter={[10, 10]}>
@@ -48,8 +49,13 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
           {type == "process" || type == "reschedule" ? (
             <Table.Column
               render={(_, rec, index) => {
+                const isChecked = reschedule.filter((v) => {
+                  return v.id === rec.id;
+                });
+                // console.log();
                 return (
                   <Checkbox
+                    checked={isChecked.length === 0 ? false : true}
                     onChange={(e) => {
                       let status = e.target.checked;
                       if (status) {
@@ -74,7 +80,18 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
                   }}
                 >
                   <p>Select All</p>
-                  <Checkbox style={{ marginLeft: 10 }} />
+                  <Checkbox
+                    checked={reschedule.length === 0 ? false : true}
+                    onChange={(e) => {
+                      // console.log(e.target.checked);
+                      if (e.target.checked) {
+                        setReschedule(datas);
+                      } else {
+                        setReschedule([]);
+                      }
+                    }}
+                    style={{ marginLeft: 10 }}
+                  />
                 </div>
               }
             />
@@ -257,7 +274,9 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
                             status: false,
                             dataContext: [],
                           });
+
                           getData();
+                          setReschedule([]);
                         })
                         .catch((err) => {
                           setLoadingCancel(false);

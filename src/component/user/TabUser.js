@@ -28,6 +28,7 @@ const TabUser = ({
   valuePaginate,
   setValuePaginate,
   handleSearch,
+  getUser,
 }) => {
   const { Column, ColumnGroup } = Table;
   const [open, setOpen] = useState(false);
@@ -72,11 +73,13 @@ const TabUser = ({
                 });
                 setOpen(false);
                 setStatusModal("");
+                getUser();
               } else if (statusModal === "Edit") {
                 EditUser(value, detail?.id, (res) => {
                   setDetail(false);
                   setOpen(false);
                   setStatusModal("");
+                  getUser();
                 });
               }
             });
@@ -271,7 +274,6 @@ const TabUser = ({
         />
         <Column
           title="Action"
-          // dataIndex="is_active"
           key="id"
           render={(_, record) => {
             return (

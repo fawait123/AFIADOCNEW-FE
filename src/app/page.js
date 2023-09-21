@@ -156,11 +156,9 @@ const Home = () => {
                   // display: screens.xs ? "none" : "block",
                 }}
               >
-                Consequat Lorem commodo mollit ut enim do ipsum. Nulla cillum
-                ipsum magna deserunt commodo consequat officia duis. Id et
-                commodo qui excepteur fugiat deserunt amet ad occaecat ipsum in
-                reprehenderit minim. Elit enim fugiat dolor sunt incididunt
-                culpa cupidatat amet deserunt.
+                Temukan Dokter Terbaik Anda Kami Membantu Anda Menemukan Dokter
+                Yang Sesuai Dengan Kebutuhan Kesehatan Anda, Untuk
+                Perawatan Yang Lebih Baik
               </p>
               <Row gutter={[10, 10]} style={{ marginTop: 20 }}>
                 <Col>
