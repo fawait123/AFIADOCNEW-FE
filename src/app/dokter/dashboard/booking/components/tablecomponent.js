@@ -1,6 +1,6 @@
 "use client";
 import API from "@/API";
-import { Button, Checkbox, Col, Form, Modal, Row, Table } from "antd";
+import { Button, Checkbox, Col, Form, Input, Modal, Row, Table } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import moment from "moment";
@@ -16,27 +16,25 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
   });
   const [loadingCancel, setLoadingCancel] = useState(false);
   const [formCancel] = useForm();
+  const [formReschedule] = useForm();
+  const [modalReschedule, setModalReschedule] = useState({
+    status: false,
+    dataContext: [],
+  });
 
   return (
     <Row gutter={[10, 10]}>
       {type == "process" || type == "reschedule" ? (
         <Col span={24}>
           <Button
-            disabled={datas.length > 0 ? false : true}
+            disabled={datas.length > 0 && reschedule.length > 0 ? false : true}
             onClick={async () => {
               const dataPost = reschedule.map((vls) => {
                 return vls.id;
               });
-
-              await API({
-                url: "admin/registration/reschedule",
-                method: "put",
-                data: {
-                  id: dataPost,
-                },
-              }).then((res) => {
-                // console.log(res);
-                getData();
+              setModalReschedule({
+                status: true,
+                dataContext: dataPost,
               });
             }}
             type="primary"
@@ -204,6 +202,73 @@ export const TableComponent = ({ datas, loading, type, getData }) => {
                 }}
               >
                 Batalkan
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      </Modal>
+
+      {/* modal reshedule */}
+      <Modal
+        title={"Reschedule"}
+        width={"80%"}
+        footer={null}
+        onCancel={() => {
+          setModalReschedule({
+            status: false,
+            dataContext: [],
+          });
+        }}
+        open={modalReschedule.status}
+      >
+        <Row gutter={[10, 10]}>
+          <Col span={24}>
+            <Form form={formReschedule} layout="vertical">
+              <Form.Item
+                name="due_date"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+                label={"Tanggal"}
+              >
+                <Input type="date" min={moment().format("YYYY-MM-DD")} />
+              </Form.Item>
+              <Button
+                type="primary"
+                loading={loadingCancel}
+                onClick={() => {
+                  setLoadingCancel(true);
+                  formReschedule
+                    .validateFields()
+                    .then(async (field) => {
+                      await API({
+                        url: "admin/registration/reschedule",
+                        method: "put",
+                        data: {
+                          id: modalReschedule.dataContext,
+                          ...field,
+                        },
+                      })
+                        .then((res) => {
+                          setLoadingCancel(false);
+                          setModalReschedule({
+                            status: false,
+                            dataContext: [],
+                          });
+                          getData();
+                        })
+                        .catch((err) => {
+                          setLoadingCancel(false);
+                        });
+                    })
+                    .catch((err) => {
+                      setLoadingCancel(false);
+                    });
+                }}
+              >
+                Reschedule
               </Button>
             </Form>
           </Col>

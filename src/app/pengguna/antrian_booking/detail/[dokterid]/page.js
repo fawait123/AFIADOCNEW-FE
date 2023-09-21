@@ -1,7 +1,7 @@
 "use client";
 import LayoutApp from "@/component/app_component/LayoutApp";
 import React, { useContext, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Button, Card, Col, Form, Input, Row, Select } from "antd";
 import Texting from "@/utils/Texting";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ import moment from "moment";
 
 const ListPage = () => {
   const navigation = useRouter();
+  const query = useSearchParams();
   const params = useParams();
   const [form] = Form.useForm();
   const fontSize = useContext(Texting);
@@ -35,6 +36,7 @@ const ListPage = () => {
       params: {
         doctorID: params.dokterid,
         status: ["process", "reschedule"],
+        date: query.get("date"),
       },
     }).then((res) => {
       setDataAntrian(res.data.results.data);

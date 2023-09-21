@@ -55,7 +55,13 @@ const DashboardLayout = ({ children }) => {
       prefix: "admin",
       onClick: (e) => navigation.push(e.key),
     },
-
+    {
+      key: "/admin/dashboard/doctors",
+      icon: <FaUserDoctor />,
+      label: "Dokter",
+      prefix: "admin",
+      onClick: (e) => navigation.push(e.key),
+    },
     {
       key: "/admin/dashboard/validation",
       icon: <BsKeyFill />,

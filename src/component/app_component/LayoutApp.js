@@ -20,6 +20,7 @@ import {
   FaBlog,
   FaHome,
   FaMap,
+  FaMapMarked,
   FaUsers,
 } from "react-icons/fa";
 import { getWallet } from "@/API/wallet";
@@ -27,6 +28,7 @@ import { Grid } from "antd";
 import { FaPerson } from "react-icons/fa6";
 import Screens from "@/utils/Screens";
 import Texting from "@/utils/Texting";
+import API from "@/API";
 const { useBreakpoint } = Grid;
 
 const LayoutApp = ({ children }) => {
@@ -36,6 +38,7 @@ const LayoutApp = ({ children }) => {
   const [wallet, setWallet] = useState(0);
   const navigation = useRouter();
   const fontSize = useContext(Texting);
+  const [address, setAddress] = useState(null);
 
   // console.log(screens, fontSize, "context");
 
@@ -65,11 +68,29 @@ const LayoutApp = ({ children }) => {
     }
   };
 
+  const getAddress = async () => {
+    await API({
+      url: "/public/find-location",
+      method: "get",
+      params: {
+        latitude: -7.748424,
+        longitude: 110.356346,
+      },
+    }).then((response) => {
+      setAddress(
+        response?.data?.results?.data.length > 0
+          ? response?.data?.results?.data[0]?.administrativeLevels?.level1long
+          : null
+      );
+    });
+  };
+
   useEffect(() => {
     getLogin();
     if (user) {
       getDataWallet();
     }
+    getAddress();
   }, []);
 
   const items = screens.xs
@@ -243,7 +264,24 @@ const LayoutApp = ({ children }) => {
             })}
           </Row>
         </Col>
-        <Col>
+        <Col
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 7,
+            }}
+          >
+            <FaMapMarked style={{ marginRight: 5, color: "gray" }} />
+            <p style={{ color: "gray" }}>{address}</p>
+          </div>
           {isLogin ? (
             user?.role?.name !== "pengguna" ? (
               <Button
@@ -430,7 +468,9 @@ const LayoutApp = ({ children }) => {
                       </p>
                       <Button
                         style={{ borderRadius: 2 }}
-                        onClick={() => navigation.push("/doctor_register")}
+                        onClick={() =>
+                          navigation.push("/dokter/doctor_register")
+                        }
                       >
                         Daftar
                       </Button>

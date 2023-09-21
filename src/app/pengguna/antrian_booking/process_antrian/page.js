@@ -121,8 +121,7 @@ const ProsesAntrian = () => {
                             style={{ color: "gray", cursor: "pointer" }}
                             onClick={() => {
                               navigation.push(
-                                `/pengguna/antrian_booking/detail/${rec?.doctor?.id}`,
-                                { query: { date: "234" } }
+                                `/pengguna/antrian_booking/detail/${rec?.doctor?.id}?date=${rec.date}`
                               );
                             }}
                           />
