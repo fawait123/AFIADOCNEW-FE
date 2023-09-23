@@ -20,8 +20,11 @@ import { useRef } from "react";
 import { FaEye } from "react-icons/fa6";
 import moment from "moment";
 import { FaTrash } from "react-icons/fa";
+import Screens from "@/utils/Screens";
+import { useContext } from "react";
 
 const PasienPage = () => {
+  const screen = useContext(Screens);
   let [formTambah] = Form.useForm();
   const [modalDetailPasien, setModalDetailPasien] = useState({
     status: false,
@@ -35,6 +38,7 @@ const PasienPage = () => {
     limit: 10,
   });
   const [photo, setPhoto] = useState(null);
+  const [loadingBtn, setLoadingBtn] = useState(false);
 
   const uploadphoto = useRef(null);
   const datadummy = [
@@ -73,8 +77,9 @@ const PasienPage = () => {
             <Table
               rowKey={"id"}
               pagination={{
-                total: dataMasterTable.count,
-                pageSize: dataMasterTable.page,
+                current: dataMasterTable?.page,
+                pageSize: dataMasterTable?.limit,
+                total: dataMasterTable?.total,
               }}
               dataSource={dataMasterTable.rows}
             >
@@ -295,10 +300,10 @@ const PasienPage = () => {
         open={modalTambahPasien.status}
         // footer={null}
         cancelText={"Batal"}
+        confirmLoading={loadingBtn}
         okText={"Tambah"}
         onOk={() => {
-          // console.log(formTambah.getFieldsValue());
-
+          setLoadingBtn(true);
           formTambah
             .validateFields()
             .then((res) => {
@@ -306,14 +311,20 @@ const PasienPage = () => {
                 url: "/admin/patient",
                 data: res,
                 method: "post",
-              }).then(() => {
-                setModalTambahPasien({ status: false });
-                formTambah.resetFields();
-                getDataTablePatient();
-              });
+              })
+                .then(() => {
+                  setModalTambahPasien({ status: false });
+                  formTambah.resetFields();
+                  getDataTablePatient();
+                  setLoadingBtn(false);
+                })
+                .catch((error) => {
+                  setLoadingBtn(false);
+                });
             })
             .catch((err) => {
               console.log(err);
+              setLoadingBtn(false);
             });
         }}
         onCancel={() => {
@@ -410,7 +421,7 @@ const PasienPage = () => {
                   { name: "height", label: "Tinggi Badan", type: "number" },
                 ].map((value, index) => {
                   return value.type === "select" ? (
-                    <Col span={12} key={index}>
+                    <Col span={screen.xs ? 24 : 12} key={index}>
                       <Form.Item
                         name={value.name}
                         label={value.label}
@@ -432,7 +443,7 @@ const PasienPage = () => {
                       </Form.Item>
                     </Col>
                   ) : (
-                    <Col span={12} key={index}>
+                    <Col span={screen.xs ? 24 : 12} key={index}>
                       <Form.Item
                         name={value.name}
                         rules={[
