@@ -185,12 +185,21 @@ const Home = () => {
             </div>
           </Col>
 
-          <Col span={screens.xs ? 24 : 12}>
+          <Col
+            span={screens.xs ? 24 : 12}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: screens.xs ? 20 : 0,
+              marginBottom: screens.xs ? 20 : 0,
+            }}
+          >
             <Image
               alt="doctor"
-              src={"/assets/doctor.svg"}
-              width={"100%"}
-              height={400}
+              src={"/assets/pic_doc.png"}
+              width={screens.xs ? 300 : 400}
+              height={screens.xs ? 300 : 400}
               preview={false}
             />
           </Col>

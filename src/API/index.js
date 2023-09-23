@@ -41,7 +41,11 @@ API.interceptors.response.use(
   },
   function (error) {
     if (!error.response) {
-      handleNotification("error", "Error", "Something when wrong");
+      handleNotification(
+        "error",
+        "Error",
+        "Server sedang sibuk, menunggu response dari server! Silahkan reload aplikasi anda"
+      );
     }
     if (error?.response?.data?.message) {
       handleNotification("error", "Error", error.response.data.message);

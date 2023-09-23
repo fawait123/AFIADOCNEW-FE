@@ -69,19 +69,21 @@ const LayoutApp = ({ children }) => {
   };
 
   const getAddress = async () => {
-    await API({
-      url: "/public/find-location",
-      method: "get",
-      params: {
-        latitude: -7.748424,
-        longitude: 110.356346,
-      },
-    }).then((response) => {
-      setAddress(
-        response?.data?.results?.data.length > 0
-          ? response?.data?.results?.data[0]?.administrativeLevels?.level1long
-          : null
-      );
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      await API({
+        url: "/public/find-location",
+        method: "get",
+        params: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        },
+      }).then((response) => {
+        setAddress(
+          response?.data?.results?.data.length > 0
+            ? response?.data?.results?.data[0]?.administrativeLevels?.level1long
+            : null
+        );
+      });
     });
   };
 
@@ -221,7 +223,7 @@ const LayoutApp = ({ children }) => {
       <Row
         justify={"space-between"}
         style={{
-          padding: screens.xs ? "10px 0px" : "10px 30px",
+          padding: screens.xs ? "10px 20px" : "10px 30px",
           borderBottom: "1px solid #F0F0F0",
           position: "sticky",
           top: 0,
@@ -248,16 +250,26 @@ const LayoutApp = ({ children }) => {
         </Col>
         <Col xs={{ span: 0 }} md={{ span: 8 }} xl={{ span: 15 }}>
           <Row gutter={20}>
-            {["Beranda", "Artikel", "Aplikasi", "Riwayat"].map((val, i) => {
+            {[
+              { name: "Beranda", url: "/" },
+              { name: "Artikel", url: "/" },
+              { name: "Aplikasi", url: "/" },
+              { name: "Riwayat", url: "/" },
+              { name: "Pasien", url: "/pengguna/pasien" },
+              {
+                name: "Booking",
+                url: "/pengguna/antrian_booking/process_antrian",
+              },
+            ].map((val, i) => {
               return (
                 <Col key={i} style={{ cursor: "pointer" }}>
                   {" "}
                   <p
-                    onClick={() => navigation.push("/")}
+                    onClick={() => navigation.push(val.url)}
                     className="text"
                     style={{ fontWeight: 450, fontSize: 14 }}
                   >
-                    {val}
+                    {val.name}
                   </p>
                 </Col>
               );
@@ -492,7 +504,7 @@ const LayoutApp = ({ children }) => {
         }}
       >
         <Col span={21} style={{ margin: "0px auto" }}>
-          <p>&copy; AFIA DOC 2023. ALL RIGHTS RESERVED</p>
+          <p>&copy; AFIA DOC 2023. ALL RIGHTS RESERVED version 1.0.0</p>
         </Col>
       </Row>
     </div>

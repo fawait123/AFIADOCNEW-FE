@@ -15,7 +15,7 @@ import Card from "antd/es/card/Card";
 import Image from "next/image";
 import { colorPallate } from "@/utils/colorpallate";
 import { useForm } from "antd/es/form/Form";
-// import { authenticationLogin } from "@/API/http";
+import Screens from "@/utils/Screens";
 import { BsFillTrashFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { UploadOutlined } from "@ant-design/icons";
@@ -23,14 +23,17 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { isNull } from "lodash";
 import { getRegional, registerDoctor } from "@/API/doctor";
 import { getPublicSpecialist } from "@/API/http";
+import { useContext } from "react";
 
 const RegisterDoctor = () => {
+  const screen = useContext(Screens);
   const { useToken } = theme;
   const navigation = useRouter();
   const [form] = useForm();
   const [edit, setEdit] = useState(false);
   const [open, setOpen] = useState(false);
   const [dataSpecialist, setDataSpecialist] = useState([]);
+  const [loadingBtn, setLoadingBtn] = useState(false);
 
   const [dataProvince, setDataProvince] = useState({
     ProvSelect: null,
@@ -80,43 +83,52 @@ const RegisterDoctor = () => {
   };
 
   const registerAction = () => {
-    form.validateFields().then(() => {
-      const formData = new FormData();
-      let formValues = form.getFieldValue();
-      let keys = Object.keys(form.getFieldValue());
-      keys.map((item, index) => {
-        console.log(item, typeof formValues[item]);
-        if (item == "photos") {
-          formData.append("photos", formValues[item].file.originFileObj);
-        } else if (item == "ktp") {
-          formData.append("ktp", formValues[item].file.originFileObj);
-        } else if (item == "practice") {
-          formData.append("practice", formValues[item].file.originFileObj);
-        } else if (item == "academics" || item == "works") {
-          formData.append(item, JSON.stringify(formValues[item]));
-        } else {
-          formData.append(item, formValues[item]);
-        }
+    setLoading(true);
+    form
+      .validateFields()
+      .then(() => {
+        const formData = new FormData();
+        let formValues = form.getFieldValue();
+        let keys = Object.keys(form.getFieldValue());
+        keys.map((item, index) => {
+          console.log(item, typeof formValues[item]);
+          if (item == "photos") {
+            formData.append("photos", formValues[item].file.originFileObj);
+          } else if (item == "ktp") {
+            formData.append("ktp", formValues[item].file.originFileObj);
+          } else if (item == "practice") {
+            formData.append("practice", formValues[item].file.originFileObj);
+          } else if (item == "academics" || item == "works") {
+            formData.append(item, JSON.stringify(formValues[item]));
+          } else {
+            formData.append(item, formValues[item]);
+          }
+        });
+
+        let prices = [
+          {
+            type: "chatt",
+            price: formValues.chatt,
+          },
+          {
+            type: "booking",
+            price: formValues.booking,
+          },
+        ];
+
+        formData.append("prices", JSON.stringify(prices));
+
+        registerDoctor(formData, (res) => {
+          form.resetFields();
+          setLoading(false);
+          window.location.href = "/login";
+        }).catch((err) => {
+          setLoading(false);
+        });
+      })
+      .catch((e) => {
+        setLoading(false);
       });
-
-      let prices = [
-        {
-          type: "chatt",
-          price: formValues.chatt,
-        },
-        {
-          type: "booking",
-          price: formValues.booking,
-        },
-      ];
-
-      formData.append("prices", JSON.stringify(prices));
-
-      registerDoctor(formData, (res) => {
-        form.resetFields();
-        window.location.href = "/login";
-      });
-    });
   };
 
   return (
@@ -130,7 +142,7 @@ const RegisterDoctor = () => {
         backgroundColor: colorPallate.gray,
       }}
     >
-      <Col span={12} style={{ margin: "0px auto" }}>
+      <Col span={screen.xs ? 24 : 12} style={{ margin: "0px auto" }}>
         <Card
           // title="RegisterDoctor"
           bordered={true}
@@ -147,17 +159,17 @@ const RegisterDoctor = () => {
 
           <Form form={form} layout="vertical" style={{ marginTop: 30 }}>
             <Row gutter={[20]}>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item name="str" label="STR" rules={[{ required: true }]}>
                   <Input placeholder="STR" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item name="nik" label="NIK" rules={[{ required: true }]}>
                   <Input placeholder="NIK" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="name"
                   label="Nama"
@@ -167,7 +179,7 @@ const RegisterDoctor = () => {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   label="Jenis Kelamin"
                   name={"gender"}
@@ -179,7 +191,7 @@ const RegisterDoctor = () => {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="placebirth"
                   label="Tempat Lahir"
@@ -188,7 +200,7 @@ const RegisterDoctor = () => {
                   <Input placeholder="Tempat Lahir" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="birthdate"
                   label="Tanggal Lahir"
@@ -197,7 +209,7 @@ const RegisterDoctor = () => {
                   <Input placeholder="Tanggal Lahir" type="date" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="religion"
                   label="Agama"
@@ -213,7 +225,7 @@ const RegisterDoctor = () => {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="email"
                   label="Email"
@@ -222,7 +234,7 @@ const RegisterDoctor = () => {
                   <Input placeholder="Email" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="phone"
                   label="Telepon"
@@ -236,7 +248,7 @@ const RegisterDoctor = () => {
                   <Input type="number" placeholder="Telepon" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="specialistID"
                   label="Spesialis"
@@ -259,7 +271,7 @@ const RegisterDoctor = () => {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   label="Provinsi"
                   name={"provinceID"}
@@ -297,7 +309,7 @@ const RegisterDoctor = () => {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   label="Kabupaten"
                   name={"districtID"}
@@ -338,7 +350,7 @@ const RegisterDoctor = () => {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   label="Kecamatan"
                   disabled={isNull(dataDistrict.DistSelect)}
@@ -379,7 +391,7 @@ const RegisterDoctor = () => {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   label="Desa"
                   disabled={isNull(dataSubDistrict.SubDistSelect)}
@@ -409,7 +421,7 @@ const RegisterDoctor = () => {
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="rt"
                   label="RT"
@@ -423,7 +435,7 @@ const RegisterDoctor = () => {
                   <Input type="number" placeholder="RT" />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="rw"
                   label="RW"
@@ -444,7 +456,7 @@ const RegisterDoctor = () => {
                 </Col>
                 <Card>
                   <Row gutter={[15, 15]}>
-                    <Col span={12}>
+                    <Col span={screen.xs ? 24 : 12}>
                       <Form.Item
                         name="chatt"
                         label="Chat"
@@ -457,7 +469,7 @@ const RegisterDoctor = () => {
                         <Input type="number" placeholder="harga" />
                       </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={screen.xs ? 24 : 12}>
                       <Form.Item
                         name="booking"
                         label="Booking"
@@ -514,7 +526,7 @@ const RegisterDoctor = () => {
                             />
 
                             <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                              <Col span={12}>
+                              <Col span={screen.xs ? 24 : 12}>
                                 <Form.Item
                                   // style={{ width: "100%" }}
                                   name={[index, "name"]}
@@ -524,7 +536,7 @@ const RegisterDoctor = () => {
                                   <Input />
                                 </Form.Item>
                               </Col>
-                              <Col span={12}>
+                              <Col span={screen.xs ? 24 : 12}>
                                 <Form.Item
                                   // style={{ width: "100%" }}
                                   name={[index, "degree"]}
@@ -536,7 +548,7 @@ const RegisterDoctor = () => {
                               </Col>
                             </Row>
                             <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                              <Col span={12}>
+                              <Col span={screen.xs ? 24 : 12}>
                                 <Form.Item
                                   // style={{ width: "100%" }}
                                   name={[index, "year_entry"]}
@@ -546,7 +558,7 @@ const RegisterDoctor = () => {
                                   <Input />
                                 </Form.Item>
                               </Col>
-                              <Col span={12}>
+                              <Col span={screen.xs ? 24 : 12}>
                                 <Form.Item
                                   // style={{ width: "100%" }}
                                   name={[index, "year_out"]}
@@ -615,7 +627,7 @@ const RegisterDoctor = () => {
                               </Col>
                             </Row>
                             <Row gutter={[10, 10]} style={{ width: "100%" }}>
-                              <Col span={12}>
+                              <Col span={screen.xs ? 24 : 12}>
                                 <Form.Item
                                   // style={{ width: "100%" }}
                                   name={[index, "year_entry"]}
@@ -625,7 +637,7 @@ const RegisterDoctor = () => {
                                   <Input />
                                 </Form.Item>
                               </Col>
-                              <Col span={12}>
+                              <Col span={screen.xs ? 24 : 12}>
                                 <Form.Item
                                   // style={{ width: "100%" }}
                                   name={[index, "year_out"]}
@@ -643,7 +655,7 @@ const RegisterDoctor = () => {
                   }}
                 </Form.List>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="photos"
                   label="Gambar"
@@ -660,7 +672,7 @@ const RegisterDoctor = () => {
                   </Upload>
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={screen.xs ? 24 : 12}>
                 <Form.Item
                   name="ktp"
                   label="KTP"
@@ -697,6 +709,7 @@ const RegisterDoctor = () => {
               <Col span={24}>
                 <Button
                   type="primary"
+                  loading={loadingBtn}
                   style={{ width: "100%" }}
                   onClick={() => registerAction()}
                 >
