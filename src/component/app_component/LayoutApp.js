@@ -472,19 +472,35 @@ const LayoutApp = ({ children }) => {
         >
           <Row>
             <Col span={24}>
-              <span style={{ color: "white", fontSize: 14 }}>
-                Apakah Kamu Dokter ?{" "}
-                <span
-                  style={{
-                    color: "red",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => navigation.push("/dokter/doctor_register")}
-                >
-                  Daftar
+              {!user ? (
+                <span style={{ color: "white", fontSize: 14 }}>
+                  Apakah Kamu Dokter ?{" "}
+                  <span
+                    style={{
+                      color: "red",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigation.push("/dokter/doctor_register")}
+                  >
+                    Daftar
+                  </span>
                 </span>
-              </span>
+              ) : (
+                <span style={{ color: "white", fontSize: 14 }}>
+                  Kamu login sebagai, {user?.name} ?{" "}
+                  <span
+                    style={{
+                      color: "red",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => logout()}
+                  >
+                    Logout
+                  </span>
+                </span>
+              )}
             </Col>
           </Row>
         </Col>
