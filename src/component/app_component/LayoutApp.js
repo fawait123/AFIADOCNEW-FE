@@ -108,6 +108,18 @@ const LayoutApp = ({ children }) => {
               }}
             >
               <h3>{user?.name}</h3>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "start",
+                  alignItems: "center",
+                }}
+              >
+                <FaMapMarked
+                  style={{ marginRight: 5, color: "gray", fontSize: 10 }}
+                />
+                <span style={{ color: "gray", fontSize: 10 }}>{address}</span>
+              </div>
             </div>
           ),
         },
@@ -183,7 +195,6 @@ const LayoutApp = ({ children }) => {
             </div>
           ),
         },
-
         {
           key: "3",
           label: (
@@ -229,6 +240,7 @@ const LayoutApp = ({ children }) => {
           top: 0,
           zIndex: 99,
           background: "white",
+          marginBottom: screens.xs ? 20 : 0,
         }}
         align={"middle"}
       >
@@ -283,17 +295,6 @@ const LayoutApp = ({ children }) => {
             alignItems: "center",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginRight: 7,
-            }}
-          >
-            <FaMapMarked style={{ marginRight: 5, color: "gray" }} />
-            <p style={{ color: "gray" }}>{address}</p>
-          </div>
           {isLogin ? (
             user?.role?.name !== "pengguna" ? (
               <Button
@@ -335,9 +336,26 @@ const LayoutApp = ({ children }) => {
                       border: `2px solid ${colorPallate.blue}`,
                     }}
                   />
-                  <p style={{ display: screens.xs ? "none" : "block" }}>
-                    {user.name}
-                  </p>
+                  <div>
+                    <p style={{ display: screens.xs ? "none" : "block" }}>
+                      {user.name}
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "start",
+                        alignItems: "center",
+                        display: screens.xs ? "none" : "block",
+                      }}
+                    >
+                      <FaMapMarked
+                        style={{ marginRight: 5, color: "gray", fontSize: 10 }}
+                      />
+                      <span style={{ color: "gray", fontSize: 10 }}>
+                        {address}
+                      </span>
+                    </div>
+                  </div>
                 </a>
               </Dropdown>
             )
@@ -363,147 +381,124 @@ const LayoutApp = ({ children }) => {
         {children}
       </div>
       {/* FOOTER */}
-      <div
-        style={{
-          backgroundColor: colorPallate.blue,
-          color: "white",
-          padding: "10px 10px",
-        }}
+      <Row
+        style={{ padding: screens.xs ? 20 : 60, background: colorPallate.blue }}
       >
-        <div style={{ width: "85%", margin: "0px auto" }}>
-          <p style={{ fontSize: fontSize.xl, fontWeight: "bold" }}>AFIA DOCS</p>
-        </div>
-        <Row justify={"space-between"} align={"top"} style={{ marginTop: 20 }}>
-          <Col
-            span={screens.xs ? 24 : 8}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <div>
-              <p
-                style={{
-                  fontSize: fontSize.md,
-                  fontWeight: "500",
-                  marginBottom: 10,
-                }}
-              >
-                Site Map
+        <Col
+          span={screens.xs ? 24 : 7}
+          style={{ marginBottom: screens.xs ? 10 : 0, padding: 15 }}
+        >
+          <Row>
+            <Col span={24}>
+              <h1 style={{ color: "white", marginBottom: 8 }}>AFIA DOC</h1>
+            </Col>
+            <Col>
+              <p style={{ color: "white", textAlign: "justify" }}>
+                Selamat datang di portal kesehatan kami, Afia Doc adalah sumber
+                informasi kesehatan terkemuka dan anda dapat terhubung dengan
+                dokter berpengalaman
               </p>
-              <Row gutter={30}>
-                <Col>
-                  <p style={{ marginBottom: 5 }}>FAQ</p>
-                  <p style={{ marginBottom: 5 }}>Blog</p>
-                  <p style={{ marginBottom: 5 }}>Syarat & Ketentuan</p>
-                  <p style={{ marginBottom: 5 }}>Kebijakan Privasi</p>
-                  <p style={{ marginBottom: 5 }}>Ketentuan</p>
-                </Col>
-                <Col>
-                  <p style={{ marginBottom: 5 }}>Karir</p>
-                  <p style={{ marginBottom: 5 }}>Security</p>
-                  <p style={{ marginBottom: 5 }}>Media</p>
-                  <p>Corporate Partnership</p>
-                </Col>
-              </Row>
-            </div>
-          </Col>
-          <Col
-            span={screens.xs ? 24 : 8}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <div>
-              <p
-                style={{
-                  fontSize: fontSize.md,
-                  fontWeight: "500",
-                  marginBottom: 10,
-                }}
-              >
-                Layanan Pengaduan Konsumen
-              </p>
-              <Row gutter={30}>
-                <Col>
-                  <p style={{ marginBottom: 5 }}>
-                    Jl. H.R. Rasuna Said Kav B32-33, Jakarta Selatan
-                    help@halodoc.com / 021-5095-9900
-                  </p>
-                </Col>
-                <Col>
-                  <p style={{ marginTop: 5 }}>
-                    Direktorat Jenderal Perlindungan Konsumen dan Tertib Niaga
-                    Kementerian Perdagangan Republik Indonesia 0853 1111 1010
-                    (WhatsApp)
-                  </p>
-                </Col>
-              </Row>
-            </div>
-          </Col>
-          <Col
-            span={screens.xs ? 24 : 8}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <div>
-              <Row gutter={30}>
-                <Col>
-                  <p
+            </Col>
+          </Row>
+        </Col>
+        <Col
+          span={screens.xs ? 24 : 7}
+          style={{ marginBottom: screens.xs ? 10 : 0, padding: 15 }}
+        >
+          <Row>
+            <Col span={24}>
+              <h2 style={{ color: "white", marginBottom: 8 }}>Afia Doc</h2>
+            </Col>
+            <Col span={24}>
+              {[
+                { name: "Tentang Kami", url: "/" },
+                { name: "Kontak Kami", url: "/" },
+                { name: "Artikel", url: "/" },
+                { name: "Karir", url: "/" },
+                { name: "Tim Dokter", url: "/" },
+              ].map((item) => {
+                return (
+                  <span
                     style={{
-                      fontSize: fontSize.md,
-                      fontWeight: "500",
-                      marginBottom: 5,
+                      display: "block",
+                      color: "white",
+                      margin: "10px 0px",
+                      cursor: "pointer",
                     }}
+                    onClick={() => navigation.push(item.url)}
                   >
-                    Download App di
-                  </p>
-                  <Row>
-                    <Col>
-                      <Image width={100} src="/assets/playstore.png" />
-                    </Col>
-                  </Row>
-                  {user ? null : (
-                    <>
-                      {" "}
-                      <p
-                        style={{
-                          fontSize: fontSize.md,
-                          fontWeight: "500",
-                          margin: " 5px 0px",
-                        }}
-                      >
-                        Apakah kamu Dokter?
-                      </p>
-                      <Button
-                        style={{ borderRadius: 2 }}
-                        onClick={() =>
-                          navigation.push("/dokter/doctor_register")
-                        }
-                      >
-                        Daftar
-                      </Button>
-                    </>
-                  )}
-                </Col>
-              </Row>
-            </div>
-          </Col>
-        </Row>
-      </div>
+                    {item.name}
+                  </span>
+                );
+              })}
+            </Col>
+          </Row>
+        </Col>
+        <Col
+          span={screens.xs ? 24 : 7}
+          style={{ marginBottom: screens.xs ? 10 : 0, padding: 15 }}
+        >
+          <Row>
+            <Col span={24}>
+              <h2 style={{ color: "white", marginBottom: 8 }}>Informasi</h2>
+            </Col>
+            <Col span={24}>
+              {[
+                { name: "Syarat & Ketentuan", url: "/" },
+                { name: "Kebijakan Privasi", url: "/" },
+                { name: "Gabung Di Tim Dokter", url: "/" },
+                { name: "Pasang Iklan", url: "/" },
+              ].map((item) => {
+                return (
+                  <span
+                    style={{
+                      display: "block",
+                      color: "white",
+                      margin: "10px 0px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => navigation.push(item.url)}
+                  >
+                    {item.name}
+                  </span>
+                );
+              })}
+            </Col>
+          </Row>
+        </Col>
+        <Col
+          span={screens.xs ? 24 : 3}
+          style={{ marginBottom: screens.xs ? 10 : 0, padding: 15 }}
+        >
+          <Row>
+            <Col span={24}>
+              <span style={{ color: "white", fontSize: 14 }}>
+                Apakah Kamu Dokter ?{" "}
+                <span
+                  style={{
+                    color: "red",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => navigation.push("/dokter/doctor_register")}
+                >
+                  Daftar
+                </span>
+              </span>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
       {/* LiCENSE FOOTER */}
       <Row
         style={{
           backgroundColor: "#35406B",
           textAlign: "left",
           color: "white",
-          padding: "10px 0px",
+          padding: screens.xs ? "10px 20px" : "10px 60px",
         }}
       >
-        <Col span={21} style={{ margin: "0px auto" }}>
+        <Col span={24} style={{ margin: "0px auto", padding: 10 }}>
           <p>&copy; AFIA DOC 2023. ALL RIGHTS RESERVED version 1.0.0</p>
         </Col>
       </Row>

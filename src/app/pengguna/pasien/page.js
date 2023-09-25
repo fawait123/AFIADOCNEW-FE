@@ -39,6 +39,7 @@ const PasienPage = () => {
   });
   const [photo, setPhoto] = useState(null);
   const [loadingBtn, setLoadingBtn] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
 
   const uploadphoto = useRef(null);
   const datadummy = [
@@ -55,13 +56,19 @@ const PasienPage = () => {
     getDataTablePatient();
   }, []);
   const getDataTablePatient = async () => {
+    setLoadingTable(true);
     await API({
       url: "/admin/patient",
       method: "get",
-    }).then((res) => {
-      const result = res.data.results.data;
-      setDataMasterTable(result);
-    });
+    })
+      .then((res) => {
+        const result = res.data.results.data;
+        setDataMasterTable(result);
+        setLoadingTable(false);
+      })
+      .catch((e) => {
+        setLoadingTable(false);
+      });
   };
 
   return (
@@ -75,6 +82,7 @@ const PasienPage = () => {
           </Col>
           <Col span={20} style={{ overflow: "auto" }}>
             <Table
+              loading={loadingTable}
               rowKey={"id"}
               pagination={{
                 current: dataMasterTable?.page,
@@ -315,6 +323,7 @@ const PasienPage = () => {
                 .then(() => {
                   setModalTambahPasien({ status: false });
                   formTambah.resetFields();
+                  setPhoto(null);
                   getDataTablePatient();
                   setLoadingBtn(false);
                 })
