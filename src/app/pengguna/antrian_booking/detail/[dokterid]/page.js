@@ -10,8 +10,10 @@ import ProsesAntrian from "../../process_antrian/page";
 import { useEffect } from "react";
 import API from "@/API";
 import moment from "moment";
+import Screens from "@/utils/Screens";
 
 const ListPage = () => {
+  const screen = useContext(Screens);
   const navigation = useRouter();
   const query = useSearchParams();
   const params = useParams();
@@ -74,7 +76,11 @@ const ListPage = () => {
             <Row justify={"center"} gutter={[0, 20]}>
               <Col span={22}>
                 <p
-                  style={{ fontSize: 18, fontWeight: "bold", color: "#213555" }}
+                  style={{
+                    fontSize: screen.xs ? 14 : 18,
+                    fontWeight: "bold",
+                    color: "#213555",
+                  }}
                 >
                   {" "}
                   ANTRIAN{" "}
@@ -98,19 +104,49 @@ const ListPage = () => {
                                 user?.id == val?.userID ? "#213555" : "#F0F0F0",
                               color:
                                 user?.id == val?.userID ? "white" : "black",
+                              position: "relative",
                             }}
                           >
                             <div
                               style={{
                                 display: "flex",
-                                justifyContent: "space-around",
+                                justifyContent: screen.xs
+                                  ? "center"
+                                  : "space-around",
+                                flexDirection: screen.xs ? "column" : "row",
+                                alignItems: screen.xs ? "start" : "center",
                               }}
                             >
-                              <p>{val?.registrationID}</p>
-                              <p>{val?.patient?.name}</p>
-                              {/* <p>Dr hesemeleh</p> */}
-                              <p>{(index + 1) * 7} menit</p>
-                              <p>{index + 1}</p>
+                              <p
+                                style={{
+                                  fontWeight: "bold",
+                                  fontSize: screen.xs ? 16 : 14,
+                                }}
+                              >
+                                {val?.registrationID}
+                              </p>
+                              <p>
+                                {val?.patient?.name}{" "}
+                                {screen.xs ? (
+                                  <span> , {(index + 1) * 7} menit</span>
+                                ) : null}
+                              </p>
+                              <p style={{ display: screen.xs ? "none" : "" }}>
+                                {(index + 1) * 7} menit
+                              </p>
+                              <h1 style={{ display: screen.xs ? "none" : "" }}>
+                                {++index}
+                              </h1>
+                            </div>
+                            <div
+                              style={{
+                                position: "absolute",
+                                right: 30,
+                                top: 15,
+                                display: screen.xs ? "" : "none",
+                              }}
+                            >
+                              <h1>{index++}</h1>
                             </div>
                           </Card>
                         </Col>
@@ -143,6 +179,7 @@ const ListPage = () => {
                 style={{ display: "flex", justifyContent: "space-between" }}
               >
                 <Button
+                  type="primary"
                   onClick={() => navigation.back()}
                   style={{ maxWidth: 300, width: 300 }}
                 >
