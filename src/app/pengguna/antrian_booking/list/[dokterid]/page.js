@@ -10,8 +10,10 @@ import ProsesAntrian from "../../process_antrian/page";
 import { useEffect } from "react";
 import API from "@/API";
 import moment from "moment";
+import Screens from "@/utils/Screens";
 
 const ListPage = () => {
+  const screen = useContext(Screens);
   const navigation = useRouter();
   const params = useParams();
   const [form] = Form.useForm();
@@ -77,7 +79,11 @@ const ListPage = () => {
             <Row justify={"center"} gutter={[0, 20]}>
               <Col span={22}>
                 <p
-                  style={{ fontSize: 18, fontWeight: "bold", color: "#213555" }}
+                  style={{
+                    fontSize: screen.xs ? 14 : 18,
+                    fontWeight: "bold",
+                    color: "#213555",
+                  }}
                 >
                   {" "}
                   ANTRIAN{" "}
@@ -106,18 +112,51 @@ const ListPage = () => {
                                     : "#F0F0F0",
                                 color:
                                   user?.id == val?.userID ? "white" : "black",
+                                position: "relative",
                               }}
                             >
                               <div
                                 style={{
                                   display: "flex",
-                                  justifyContent: "space-around",
+                                  justifyContent: screen.xs
+                                    ? "center"
+                                    : "space-around",
+                                  flexDirection: screen.xs ? "column" : "row",
+                                  alignItems: screen.xs ? "start" : "center",
                                 }}
                               >
-                                <p>{val?.registrationID}</p>
-                                <p>{val?.patient?.name?.toUpperCase()}</p>
-                                <p>{(index + 1) * 7} menit</p>
-                                <p>{"ANTRIAN " + ++index}</p>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    fontSize: screen.xs ? 16 : 14,
+                                  }}
+                                >
+                                  {val?.registrationID}
+                                </p>
+                                <p>
+                                  {val?.patient?.name?.toUpperCase()}{" "}
+                                  {screen.xs ? (
+                                    <span> , {(index + 1) * 7} menit</span>
+                                  ) : null}
+                                </p>
+                                <p style={{ display: screen.xs ? "none" : "" }}>
+                                  {(index + 1) * 7} menit
+                                </p>
+                                <h1
+                                  style={{ display: screen.xs ? "none" : "" }}
+                                >
+                                  {++index}
+                                </h1>
+                              </div>
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  right: 30,
+                                  top: 15,
+                                  display: screen.xs ? "" : "none",
+                                }}
+                              >
+                                <h1>{index++}</h1>
                               </div>
                             </Card>
                           </Col>
@@ -164,6 +203,7 @@ const ListPage = () => {
                 style={{ display: "flex", justifyContent: "space-between" }}
               >
                 <Button
+                  type="default"
                   style={{ maxWidth: 300, width: 300 }}
                   onClick={() => setSelanjutnya(true)}
                 >
@@ -171,6 +211,7 @@ const ListPage = () => {
                 </Button>
                 <Button
                   style={{ maxWidth: 300, width: 300 }}
+                  type="primary"
                   onClick={() => {
                     const field = form.getFieldValue();
                     API({
@@ -282,6 +323,7 @@ const ListPage = () => {
                   </Button>
                   <Button
                     style={{ maxWidth: 300, width: 300 }}
+                    type="primary"
                     onClick={() => {
                       form.validateFields().then((response) => {
                         setSelanjutnya(false);

@@ -12,7 +12,10 @@ import { BsCalendarCheckFill } from "react-icons/bs";
 import { AiFillCloseCircle } from "react-icons/ai";
 import TextArea from "antd/es/input/TextArea";
 import { useForm } from "antd/es/form/Form";
+import { useContext } from "react";
+import Screens from "@/utils/Screens";
 const ProsesAntrian = () => {
+  const screen = useContext(Screens);
   const navigation = useRouter();
   const [modalDetailPemeriksaan, setModalDetailPemeriksaan] = useState({
     status: false,
@@ -29,6 +32,7 @@ const ProsesAntrian = () => {
   const [dataCancel, setDataCancel] = useState([]);
   const [formCancel] = useForm();
   const [loadingCancel, setLoadingCancel] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
 
   useEffect(() => {
     gettableProcess(["process"], (res) => setDataProcess(res));
@@ -38,15 +42,21 @@ const ProsesAntrian = () => {
   }, []);
 
   const gettableProcess = async (status, next) => {
+    setLoadingTable(true);
     await API({
       method: "GET",
       url: "/admin/registration",
       params: {
         status,
       },
-    }).then((response) => {
-      next(response.data.results.data);
-    });
+    })
+      .then((response) => {
+        next(response.data.results.data);
+        setLoadingTable(false);
+      })
+      .catch((e) => {
+        setLoadingTable(false);
+      });
   };
 
   const getDetailRekamMedis = async (id) => {
@@ -74,6 +84,7 @@ const ProsesAntrian = () => {
                   pagination={{
                     pageSize: 10,
                   }}
+                  loading={loadingTable}
                   rowKey={"id"}
                   dataSource={dataProcess}
                 >
@@ -152,7 +163,11 @@ const ProsesAntrian = () => {
             </Tabs.TabPane>
             <Tabs.TabPane tab="Reschedule" key={"reschedule"}>
               <Card style={{ overflow: "auto" }}>
-                <Table rowKey={"id"} dataSource={dataReschedule}>
+                <Table
+                  rowKey={"id"}
+                  dataSource={dataReschedule}
+                  loading={loadingTable}
+                >
                   <Table.Column
                     render={(_, rec, index) => {
                       return index + 1;
@@ -227,7 +242,11 @@ const ProsesAntrian = () => {
             </Tabs.TabPane>
             <Tabs.TabPane tab="Selesai" key={"selesai"}>
               <Card style={{ overflow: "auto" }}>
-                <Table rowKey={"id"} dataSource={dataSelesai}>
+                <Table
+                  rowKey={"id"}
+                  dataSource={dataSelesai}
+                  loading={loadingTable}
+                >
                   <Table.Column
                     render={(_, rec, index) => {
                       return index + 1;
@@ -281,7 +300,7 @@ const ProsesAntrian = () => {
                 </Table>
               </Card>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="Cancel" key={"cancel"}>
+            <Tabs.TabPane tab="Cancel" key={"cancel"} loading={loadingTable}>
               <Card style={{ overflow: "auto" }}>
                 <Table rowKey={"id"} dataSource={dataCancel}>
                   <Table.Column
@@ -345,7 +364,7 @@ const ProsesAntrian = () => {
       >
         <Row gutter={[10, 10]}>
           <Col span={24}>
-            <p>
+            <p style={{ textAlign: "justify" }}>
               Berikut merupakan detail rekam medis dari pasien untuk nomor
               registrasi{" "}
               <Tag color="blue">
@@ -362,7 +381,7 @@ const ProsesAntrian = () => {
               </Tag>
             </p>
           </Col>
-          <Col span={12}>
+          <Col span={screen.xs ? 24 : 12}>
             <Card>
               <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
                 Data Pasien
@@ -378,7 +397,7 @@ const ProsesAntrian = () => {
               </p>
             </Card>
           </Col>
-          <Col span={12}>
+          <Col span={screen.xs ? 24 : 12}>
             <Card>
               <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
                 Data Dokter
@@ -393,7 +412,7 @@ const ProsesAntrian = () => {
               </p>
             </Card>
           </Col>
-          <Col span={12}>
+          <Col span={screen.xs ? 24 : 12}>
             <Card>
               <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
                 Keluhan
@@ -401,7 +420,7 @@ const ProsesAntrian = () => {
               <p>{modalDetailPemeriksaan?.dataContext?.complaint}</p>
             </Card>
           </Col>
-          <Col span={12}>
+          <Col span={screen.xs ? 24 : 12}>
             <Card>
               <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
                 Diagnosa
@@ -409,7 +428,7 @@ const ProsesAntrian = () => {
               <p>{modalDetailPemeriksaan?.dataContext?.diagnosis}</p>
             </Card>
           </Col>
-          <Col span={12}>
+          <Col span={screen.xs ? 24 : 12}>
             <Card>
               <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 20 }}>
                 Tindakan
