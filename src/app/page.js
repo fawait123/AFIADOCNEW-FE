@@ -30,6 +30,7 @@ import Screens from "@/utils/Screens";
 import Texting from "@/utils/Texting";
 import CardComponent from "@/component/CardComponent";
 import API from "@/API";
+import { SpecialistCard } from "@/component/SpecialistCard";
 // import {useBrea}
 const { useBreakpoint } = Grid;
 const Home = () => {
@@ -237,6 +238,11 @@ const Home = () => {
                           style={{
                             cursor: "pointer",
                             border: "1px solid #B4B4B3",
+                            backgroundImage: `url(${BASE_URL}/public/uploads/${val.picture})`,
+                            backgroundSize: "cover",
+                            backdropFilter: "revert-layer",
+                            backgroundClip: "revert-layer",
+                            backgroundBlendMode: "color-burn",
                           }}
                           onClick={() => {
                             navigation.push(`/specialist/${val.id}`);

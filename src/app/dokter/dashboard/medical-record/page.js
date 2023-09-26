@@ -1,13 +1,16 @@
 "use client";
 import API from "@/API";
 import LayoutApp from "@/component/app_component/LayoutApp";
+import Screens from "@/utils/Screens";
 import { Button, Card, Col, Form, Input, Row, Select, Tag } from "antd";
 import { useForm } from "antd/es/form/Form";
 import moment from "moment";
 import React, { useState } from "react";
+import { useContext } from "react";
 import { useEffect } from "react";
 
 const Page = () => {
+  const screens = useContext(Screens);
   const [form] = useForm();
   const [dataAntrian, setDataAntrian] = useState([]);
   const [rekamMedis, setRekamMedis] = useState(null);
@@ -73,7 +76,7 @@ const Page = () => {
   }, []);
   return (
     <Row gutter={[10, 10]}>
-      <Col span={14}>
+      <Col span={screens.xs ? 24 : 14}>
         <Row gutter={[10, 10]}>
           <Col span={24}>
             <Card>
@@ -155,7 +158,10 @@ const Page = () => {
                           {fields.map((field, index) => {
                             return (
                               <>
-                                <Col span={11} key={index + "action"}>
+                                <Col
+                                  span={screens.xs ? 24 : 11}
+                                  key={index + "action"}
+                                >
                                   <Form.Item
                                     rules={[
                                       {
@@ -169,7 +175,10 @@ const Page = () => {
                                   </Form.Item>
                                 </Col>
 
-                                <Col span={11} key={index + "result"}>
+                                <Col
+                                  span={screens.xs ? 24 : 11}
+                                  key={index + "result"}
+                                >
                                   <Form.Item
                                     rules={[
                                       {
@@ -184,18 +193,24 @@ const Page = () => {
                                 </Col>
                                 {index === 0 ? (
                                   <Col
-                                    span={2}
+                                    span={screens.xs ? 24 : 2}
                                     style={{
                                       display: "flex",
                                       justifyContent: "center",
                                       alignItems: "center",
                                     }}
                                   >
-                                    <Button onClick={() => add()}>+</Button>
+                                    <Button
+                                      type="primary"
+                                      onClick={() => add()}
+                                      block={screens.xs ? true : false}
+                                    >
+                                      +
+                                    </Button>
                                   </Col>
                                 ) : (
                                   <Col
-                                    span={2}
+                                    span={screens.xs ? 24 : 2}
                                     style={{
                                       display: "flex",
                                       justifyContent: "center",
@@ -207,6 +222,7 @@ const Page = () => {
                                         backgroundColor: "red",
                                         color: "white",
                                       }}
+                                      block={screens.xs ? true : false}
                                       onClick={() => remove(field.name)}
                                     >
                                       -
@@ -224,14 +240,9 @@ const Page = () => {
               </Form>
             </Card>
           </Col>
-          <Col span={24}>
-            <Button type="primary" onClick={() => handleClick()}>
-              Simpan
-            </Button>
-          </Col>
         </Row>
       </Col>
-      <Col span={10}>
+      <Col span={screens.xs ? 24 : 10}>
         <Row gutter={[10, 10]}>
           <Col span={24}>
             <Card>
@@ -324,6 +335,11 @@ const Page = () => {
             </Col>
           ) : null}
         </Row>
+      </Col>
+      <Col span={24}>
+        <Button type="primary" onClick={() => handleClick()}>
+          Simpan
+        </Button>
       </Col>
     </Row>
   );
