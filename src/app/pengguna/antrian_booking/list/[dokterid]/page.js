@@ -85,11 +85,10 @@ const ListPage = () => {
                     color: "#213555",
                   }}
                 >
-                  {" "}
                   ANTRIAN{" "}
-                  {`${dataDoctor?.name?.toUpperCase()} | ${moment().format(
-                    "MM-DD-YYYY"
-                  )}`}
+                  {`${dataDoctor?.name?.toUpperCase()} | ${moment(
+                    form.getFieldValue()?.date
+                  ).format("DD MMMM YYYY")}`}
                 </p>
               </Col>
               <Col span={22}>
@@ -250,10 +249,15 @@ const ListPage = () => {
                 }}
               >
                 <div>
-                  <p>
+                  <p
+                    style={{
+                      fontSize: screen.xs ? 14 : 18,
+                      fontWeight: "bold",
+                      color: "#213555",
+                    }}
+                  >
                     {" "}
-                    Antrian{" "}
-                    {`${dataDoctor?.name} | ${moment().format("MM-DD-YYYY")}`}
+                    ANTRIAN {`${dataDoctor?.name}`}
                   </p>
                   <Form form={form}>
                     <Form.Item
